@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Logo } from "./Header";
 import { motion } from "framer-motion";
 import { useTranslation } from "../context/TranslationContext";
+import { Mail, Clock, MapPin } from "lucide-react";
 
 export function Footer() {
   const { t } = useTranslation();
@@ -171,19 +172,7 @@ export function Footer() {
             <h3 className="text-gray-900 dark:text-white font-semibold mb-4 text-lg">{t('footer.contact.title')}</h3>
             <ul className="space-y-2">
               <li className="flex items-center space-x-2">
-                <svg
-                  className="w-5 h-5 text-gray-900 dark:text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
+                <Mail className="w-5 h-5 text-gray-900 dark:text-white" />
                 <a
                   href="mailto:support@wedesist.com"
                   className="text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300"
@@ -192,43 +181,13 @@ export function Footer() {
                 </a>
               </li>
               <li className="flex items-center space-x-2">
-                <svg
-                  className="w-5 h-5 text-gray-900 dark:text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+                <Clock className="w-5 h-5 text-gray-900 dark:text-white" />
                 <span className="text-gray-900 dark:text-white">
                   24/7 Support Available
                 </span>
               </li>
               <li className="flex items-center space-x-2">
-                <svg
-                  className="w-5 h-5 text-gray-900 dark:text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
+                <MapPin className="w-5 h-5 text-gray-900 dark:text-white" />
                 <span className="text-gray-900 dark:text-white">
                   Global Community
                 </span>

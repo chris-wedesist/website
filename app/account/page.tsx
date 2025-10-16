@@ -58,6 +58,9 @@ export default function AccountPage() {
   });
   const [incidentReports, setIncidentReports] = useState<IncidentReport[]>([]);
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState('');
 
   useEffect(() => {
     const getUser = async () => {
@@ -125,7 +128,7 @@ export default function AccountPage() {
             setIncidentReports(incidents || []);
             
             // Create recent activity from all user data
-            const activities = [];
+            const activities: any[] = [];
             
             // Add recent posts
             if (posts && posts.length > 0) {
@@ -209,6 +212,107 @@ export default function AccountPage() {
       router.push('/');
     } catch (error) {
       console.error('Error signing out:', error);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user) {
+      alert('You must be logged in to delete your account.');
+      return;
+    }
+
+    if (deleteConfirmation !== 'DELETE') {
+      alert('Please type "DELETE" to confirm account deletion.');
+      return;
+    }
+
+    setIsDeleting(true);
+
+    try {
+      console.log('Starting account deletion process...');
+
+      // Step 1: Delete all user-related data from all tables
+      const userId = user.id;
+
+      // Delete incident reports
+      const { error: incidentsError } = await supabase
+        .from('incidents')
+        .delete()
+        .eq('user_id', userId);
+
+      if (incidentsError) {
+        console.error('Error deleting incidents:', incidentsError);
+        throw new Error('Failed to delete incident reports');
+      }
+
+      // Delete community posts
+      const { error: postsError } = await supabase
+        .from('posts')
+        .delete()
+        .eq('user_id', userId);
+
+      if (postsError) {
+        console.error('Error deleting posts:', postsError);
+        throw new Error('Failed to delete community posts');
+      }
+
+      // Delete post comments
+      const { error: commentsError } = await supabase
+        .from('post_comments')
+        .delete()
+        .eq('user_id', userId);
+
+      if (commentsError) {
+        console.error('Error deleting comments:', commentsError);
+        throw new Error('Failed to delete comments');
+      }
+
+      // Delete post likes
+      const { error: likesError } = await supabase
+        .from('post_likes')
+        .delete()
+        .eq('user_id', userId);
+
+      if (likesError) {
+        console.error('Error deleting likes:', likesError);
+        throw new Error('Failed to delete likes');
+      }
+
+      // Delete user profile from custom users table
+      const { error: userError } = await supabase
+        .from('users')
+        .delete()
+        .eq('id', userId);
+
+      if (userError) {
+        console.error('Error deleting user profile:', userError);
+        // Don't throw error here as user might not exist in custom table
+      }
+
+      // Step 2: Sign out the user (this removes the session)
+      const { error: signOutError } = await supabase.auth.signOut();
+
+      if (signOutError) {
+        console.error('Error signing out:', signOutError);
+        // Continue anyway as data is already deleted
+      }
+
+      console.log('Account deletion completed successfully');
+
+      // Step 3: Clear local storage and redirect
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      alert('All your data has been permanently deleted and you have been signed out. Your account is no longer accessible.');
+      router.push('/');
+
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      alert(`Failed to delete account: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteModal(false);
+      setDeleteConfirmation('');
     }
   };
 
@@ -490,7 +594,7 @@ export default function AccountPage() {
                         </div>
                       ) : (
                         incidentReports.map((report) => {
-                          const statusColors = {
+                          const statusColors: { [key: string]: string } = {
                             active: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
                             investigating: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
                             resolved: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
@@ -714,7 +818,10 @@ export default function AccountPage() {
                           {/* <button className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 ml-4">
                             Enable Two-Factor Authentication
                           </button> */}
-                          <button className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-600 rounded-lg hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 dark:bg-gray-800 dark:text-red-400 dark:border-red-400 dark:hover:bg-red-900/20 ml-4">
+                          <button 
+                            onClick={() => setShowDeleteModal(true)}
+                            className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-600 rounded-lg hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 dark:bg-gray-800 dark:text-red-400 dark:border-red-400 dark:hover:bg-red-900/20 ml-4"
+                          >
                             Delete Account
                           </button>
                         </div>
@@ -733,6 +840,86 @@ export default function AccountPage() {
           </div>
         </div>
       </div>
+
+      {/* Delete Account Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full p-6"
+          >
+            <div className="text-center">
+              <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                Delete Account Permanently
+              </h3>
+              
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
+                This action cannot be undone. This will permanently delete all of your data from our servers and sign you out. Note: Your authentication account will remain in the system but will be inaccessible.
+              </p>
+
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
+                <h4 className="font-semibold text-red-800 dark:text-red-300 mb-2">The following data will be deleted:</h4>
+                <ul className="text-sm text-red-700 dark:text-red-400 text-left space-y-1">
+                  <li>• All incident reports ({stats.incidentReports})</li>
+                  <li>• All community posts ({stats.communityPosts})</li>
+                  <li>• All comments and interactions ({stats.resourcesShared})</li>
+                  <li>• All likes and votes ({stats.helpfulVotes})</li>
+                  <li>• Your profile and account information</li>
+                  <li>• All associated data and preferences</li>
+                </ul>
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Type <span className="font-bold text-red-600">DELETE</span> to confirm:
+                </label>
+                <input
+                  type="text"
+                  value={deleteConfirmation}
+                  onChange={(e) => setDeleteConfirmation(e.target.value)}
+                  placeholder="Type DELETE here"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowDeleteModal(false);
+                    setDeleteConfirmation('');
+                  }}
+                  disabled={isDeleting}
+                  className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteAccount}
+                  disabled={isDeleting || deleteConfirmation !== 'DELETE'}
+                  className="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isDeleting ? (
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Deleting...
+                    </div>
+                  ) : (
+                    'Delete Account'
+                  )}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

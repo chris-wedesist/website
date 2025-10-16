@@ -11,6 +11,8 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -65,7 +67,7 @@ export default function RegisterPage() {
         }
 
         // Send custom confirmation email
-        const emailResponse = await fetch('http://localhost:8100/api/send-email', {
+        const emailResponse = await fetch('https://desist-server.vercel.app/api/send-email', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -107,9 +109,9 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Background with Creative Elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-accent-purple-50 via-white to-accent-green-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800">
+      <div className="inset-0 bg-gradient-to-br from-accent-purple-50 via-white to-accent-green-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800">
         {/* Animated Background Patterns */}
-        <div className="absolute inset-0 overflow-hidden">
+        <div className="inset-0 overflow-hidden">
           {/* Floating Geometric Shapes */}
           <motion.div
             className="absolute top-16 right-16 w-40 h-40 bg-accent-purple-200/25 dark:bg-accent-purple-800/15 rounded-full blur-2xl"
@@ -178,7 +180,7 @@ export default function RegisterPage() {
         </div>
 
         {/* Main Content */}
-        <div className="relative z-10 min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
+        <div className="relative z-10 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
           <div className="w-full max-w-xl">
             {/* Logo/Brand Section */}
             <motion.div
@@ -348,14 +350,30 @@ export default function RegisterPage() {
                       <input
                         id="password"
                         name="password"
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         autoComplete="new-password"
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="block w-full pl-12 pr-4 py-4 border border-gray-200 dark:border-gray-600 rounded-xl shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700/50 dark:text-white text-base transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-500"
+                        className="block w-full pl-12 pr-12 py-4 border border-gray-200 dark:border-gray-600 rounded-xl shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700/50 dark:text-white text-base transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-500"
                         placeholder="Create a password"
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                      >
+                        {showPassword ? (
+                          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                          </svg>
+                        ) : (
+                          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        )}
+                      </button>
                     </div>
                   </motion.div>
 
@@ -377,14 +395,30 @@ export default function RegisterPage() {
                       <input
                         id="confirm-password"
                         name="confirm-password"
-                        type="password"
+                        type={showConfirmPassword ? "text" : "password"}
                         autoComplete="new-password"
                         required
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="block w-full pl-12 pr-4 py-4 border border-gray-200 dark:border-gray-600 rounded-xl shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700/50 dark:text-white text-base transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-500"
+                        className="block w-full pl-12 pr-12 py-4 border border-gray-200 dark:border-gray-600 rounded-xl shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700/50 dark:text-white text-base transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-500"
                         placeholder="Confirm your password"
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                      >
+                        {showConfirmPassword ? (
+                          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                          </svg>
+                        ) : (
+                          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        )}
+                      </button>
                     </div>
                   </motion.div>
 

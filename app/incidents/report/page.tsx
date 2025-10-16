@@ -499,7 +499,7 @@ export default function ReportIncidentPage() {
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-blue-500"></div>
                     <span>
-                      <strong>Distance Limit:</strong> You can only report incidents within 10 miles of your current location
+                      <strong>Distance Limit:</strong> You can only report incidents near your current location
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
