@@ -26,11 +26,40 @@ export default function LoginPage() {
 
       if (error) throw error;
 
-      // Save user ID to localStorage
       if (data.user) {
+        // Check if email is confirmed in our custom users table
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('email_confirmed')
+          .eq('id', data.user.id)
+          .single();
+
+        if (userError) {
+          console.error('Error checking email confirmation:', userError);
+          // If user doesn't exist in our table, create them
+          const { error: insertError } = await supabase
+            .from('users')
+            .insert({
+              id: data.user.id,
+              email: email,
+              full_name: data.user.user_metadata?.full_name || '',
+              email_confirmed: true // Assume confirmed if they can log in
+            });
+
+          if (insertError) {
+            console.error('Error creating user record:', insertError);
+          }
+        } else if (!userData.email_confirmed) {
+          // Email not confirmed - prevent login
+          setError("Please confirm your email address before logging in. Check your inbox for a confirmation email.");
+          return;
+        }
+
+        // Save user ID to localStorage
         localStorage.setItem('userId', data.user.id);
         localStorage.setItem('userEmail', data.user.email || '');
         localStorage.setItem('userName', data.user.user_metadata?.full_name || '');
+        localStorage.setItem('emailConfirmed', userData?.email_confirmed ? 'true' : 'false');
       }
 
       router.push("/community");

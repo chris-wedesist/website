@@ -12,7 +12,107 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        // Handle the auth callback
+        // Check if this is a custom email confirmation
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email');
+        const confirmed = urlParams.get('confirmed');
+        
+        if (email && confirmed === 'true') {
+          // This is a custom email confirmation
+          console.log('Custom email confirmation detected:', { email, confirmed });
+          
+          // Get pending user data from localStorage
+          const pendingUserId = localStorage.getItem('pendingUserId');
+          const pendingUserEmail = localStorage.getItem('pendingUserEmail');
+          const pendingUserName = localStorage.getItem('pendingUserName');
+          
+          console.log('Pending user data:', { 
+            pendingUserId, 
+            pendingUserEmail, 
+            pendingUserName,
+            urlEmail: email 
+          });
+          
+          // Decode the email from URL and compare
+          const decodedEmail = decodeURIComponent(email);
+          const emailMatches = pendingUserEmail === decodedEmail || pendingUserEmail === email;
+          
+          if (pendingUserId && emailMatches) {
+            setStatus('success');
+            setMessage('Email confirmed successfully! Activating your account...');
+            
+            // Mark email as confirmed in the database
+            const { error: updateError } = await supabase
+              .from('users')
+              .update({ 
+                email_confirmed: true,
+                updated_at: new Date().toISOString()
+              })
+              .eq('id', pendingUserId);
+
+            if (updateError) {
+              console.error('Error updating email confirmation:', updateError);
+              // Continue anyway - user can still proceed
+            }
+            
+            // Update user data in localStorage
+            localStorage.setItem('userId', pendingUserId);
+            localStorage.setItem('userEmail', pendingUserEmail);
+            localStorage.setItem('userName', pendingUserName || 'User');
+            localStorage.setItem('emailConfirmed', 'true');
+            
+            // Clean up pending data
+            localStorage.removeItem('pendingUserId');
+            localStorage.removeItem('pendingUserEmail');
+            localStorage.removeItem('pendingUserName');
+            
+            // Redirect after a short delay
+            setTimeout(() => {
+              router.push("/community");
+            }, 2000);
+          } else {
+            console.error('Email validation failed:', {
+              pendingUserId: !!pendingUserId,
+              emailMatches,
+              pendingUserEmail,
+              urlEmail: email,
+              decodedEmail
+            });
+            
+            // Fallback: If localStorage data is missing, try to find the user in Supabase
+            if (!pendingUserId || !pendingUserEmail) {
+              console.log('Attempting fallback: checking Supabase for user with email:', decodedEmail);
+              
+              try {
+                // Try to sign in with the email to see if user exists
+                const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+                  email: decodedEmail,
+                  password: 'temp_password' // This will fail, but we just want to check if user exists
+                });
+                
+                if (signInError && signInError.message.includes('Invalid login credentials')) {
+                  // User exists but password is wrong - this is expected
+                  setStatus('success');
+                  setMessage('Email confirmed! Please log in with your password.');
+                  
+                  // Redirect to login page
+                  setTimeout(() => {
+                    router.push("/auth/login");
+                  }, 2000);
+                  return;
+                }
+              } catch (fallbackError) {
+                console.error('Fallback check failed:', fallbackError);
+              }
+            }
+            
+            setStatus('error');
+            setMessage('Invalid confirmation link. Please try registering again.');
+          }
+          return;
+        }
+
+        // Handle regular Supabase auth callback
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {

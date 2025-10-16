@@ -35,11 +35,11 @@ export default function RegisterPage() {
     }
 
     try {
+      // First, create the user account in Supabase
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
           data: {
             full_name: fullName,
           },
@@ -48,19 +48,54 @@ export default function RegisterPage() {
 
       if (error) throw error;
 
-      // Check if email confirmation is required
-      if (data.user && !data.user.email_confirmed_at) {
+      if (data.user) {
+        // Create user record in our custom users table
+        const { error: userError } = await supabase
+          .from('users')
+          .insert({
+            id: data.user.id,
+            email: email,
+            full_name: fullName,
+            email_confirmed: false
+          });
+
+        if (userError) {
+          console.error('Error creating user record:', userError);
+          // Continue anyway - the user exists in Supabase auth
+        }
+
+        // Send custom confirmation email
+        const emailResponse = await fetch('http://localhost:8100/api/send-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email,
+            username: fullName,
+            shelterName: 'DESIST Community', // You can customize this
+            plan: 'community' // You can customize this
+          }),
+        });
+
+        if (!emailResponse.ok) {
+          throw new Error('Failed to send confirmation email');
+        }
+
+        // Show email sent confirmation
         setEmailSent(true);
         setError(null);
-        return;
-      }
-
-      // If email is already confirmed, proceed normally
-      if (data.user) {
-        localStorage.setItem('userId', data.user.id);
-        localStorage.setItem('userEmail', data.user.email || '');
-        localStorage.setItem('userName', fullName);
-        router.push("/");
+        
+        // Store user data temporarily (they'll be confirmed after email click)
+        localStorage.setItem('pendingUserId', data.user.id);
+        localStorage.setItem('pendingUserEmail', email);
+        localStorage.setItem('pendingUserName', fullName);
+        
+        console.log('Stored pending user data:', {
+          userId: data.user.id,
+          email: email,
+          name: fullName
+        });
       }
     } catch (error) {
       setError(error instanceof Error ? error.message : "An unknown error occurred");
