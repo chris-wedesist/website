@@ -143,7 +143,7 @@ export function validateLocationDistance(
     if (distance > INCIDENT_RESTRICTIONS_CONFIG.MAX_DISTANCE_FROM_USER_KM) {
       return {
         isValid: false,
-        message: `You can only report incidents within ${INCIDENT_RESTRICTIONS_CONFIG.MAX_DISTANCE_FROM_USER_KM.toFixed(1)} km (10 miles) of your current location. This incident is ${distance.toFixed(1)} km away.`,
+        message: `You can only report incidents within ${INCIDENT_RESTRICTIONS_CONFIG.MAX_DISTANCE_FROM_USER_KM.toFixed(1)} km (10 miles) of your current location. This incident is ${distance.toFixed(1)} km away. Please select a location closer to your current position or use the "📍" button on the map to center it on your location.`,
         distance
       };
     }

@@ -6,9 +6,10 @@ import LocationPermissionHandler from './LocationPermissionHandler';
 interface LocationPickerProps {
   onLocationSelect: (location: { lat: number; lng: number; address: string }) => void;
   className?: string;
+  userLocation?: { lat: number; lng: number } | null;
 }
 
-export default function LocationPicker({ onLocationSelect, className = "w-full h-[400px]" }: LocationPickerProps) {
+export default function LocationPicker({ onLocationSelect, className = "w-full h-[400px]", userLocation }: LocationPickerProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
@@ -75,8 +76,8 @@ export default function LocationPicker({ onLocationSelect, className = "w-full h
     });
 
     if (!mapInstanceRef.current && mapRef.current) {
-      // Initialize with a default location (will be updated by geolocation)
-      const initialLocation = { lat: 37.7749, lng: -122.4194 };
+      // Initialize with user's location if available, otherwise default location
+      const initialLocation = userLocation || { lat: 37.7749, lng: -122.4194 };
       const mapInstance = L.map(mapRef.current).setView([initialLocation.lat, initialLocation.lng], 13);
 
       // Add tile layer
@@ -88,6 +89,14 @@ export default function LocationPicker({ onLocationSelect, className = "w-full h
       const markerInstance = L.marker([initialLocation.lat, initialLocation.lng], {
         draggable: true
       }).addTo(mapInstance);
+
+      // If we have user location, set the initial address and notify parent
+      if (userLocation) {
+        getAddressFromCoords(userLocation.lat, userLocation.lng).then(address => {
+          setAddress(address);
+          onLocationSelect({ lat: userLocation.lat, lng: userLocation.lng, address });
+        });
+      }
 
       // Add locate control
       const locateControl = L.Control.extend({
@@ -145,7 +154,7 @@ export default function LocationPicker({ onLocationSelect, className = "w-full h
         markerRef.current = null;
       }
     };
-  }, [getUserLocation, updateLocation]);
+  }, [getUserLocation, updateLocation, userLocation]);
 
   // Handle resize events
   useEffect(() => {

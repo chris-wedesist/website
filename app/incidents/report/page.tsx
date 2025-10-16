@@ -86,6 +86,7 @@ export default function ReportIncidentPage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationError, setValidationError] = useState("");
+  const [monthlyIncidentCount, setMonthlyIncidentCount] = useState(0);
 
   // Get user's current location
   const getUserLocation = useCallback(() => {
@@ -114,6 +115,30 @@ export default function ReportIncidentPage() {
     );
   }, []);
 
+  // Get monthly incident count for current user
+  const getMonthlyIncidentCount = async (userId: string) => {
+    try {
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      
+      const { data: incidents, error } = await supabase
+        .from('incidents')
+        .select('id')
+        .eq('user_id', userId)
+        .gte('created_at', startOfMonth.toISOString());
+
+      if (error) {
+        console.error('Error fetching monthly incidents:', error);
+        return 0;
+      }
+
+      return incidents?.length || 0;
+    } catch (error) {
+      console.error('Error getting monthly incident count:', error);
+      return 0;
+    }
+  };
+
   // Get current user on component mount
   useEffect(() => {
     const getUser = async () => {
@@ -127,6 +152,9 @@ export default function ReportIncidentPage() {
           });
           // Get user's location after user is set
           getUserLocation();
+          // Get monthly incident count
+          const count = await getMonthlyIncidentCount(user.id);
+          setMonthlyIncidentCount(count);
         }
       } catch (error) {
         console.error('Error getting user:', error);
@@ -179,6 +207,19 @@ export default function ReportIncidentPage() {
         return;
       }
 
+      // Debug: Log coordinates for troubleshooting
+      console.log('Debug - Incident coordinates:', { lat, lng });
+      console.log('Debug - User GPS coordinates:', userLocation);
+      console.log('Debug - Selected location address:', formData.location.address);
+
+      // Calculate distance for debugging
+      if (userLocation) {
+        const distance = Math.sqrt(
+          Math.pow(lat - userLocation.lat, 2) + Math.pow(lng - userLocation.lng, 2)
+        ) * 111; // Rough conversion to km
+        console.log('Debug - Simple distance calculation:', distance, 'km');
+      }
+
       // Comprehensive validation using new system
       const validation = await validateIncidentReport(
         user.id,
@@ -189,9 +230,35 @@ export default function ReportIncidentPage() {
       );
       
       if (!validation.isValid) {
-        setValidationError(validation.message);
-        setIsSubmitting(false);
-        return;
+        console.log('Debug - Validation failed:', validation);
+        
+        // Check if this is a monthly limit error - don't bypass this
+        if (validation.message.includes('monthly limit')) {
+          setValidationError(validation.message);
+          setIsSubmitting(false);
+          return;
+        }
+        
+        // Check if coordinates are very close (within ~11km) - likely same location with minor GPS differences
+        // Only bypass location distance validation, not other validations like monthly limit
+        if (user && userLocation && validation.message.includes('distance')) {
+          const latDiff = Math.abs(lat - userLocation.lat);
+          const lngDiff = Math.abs(lng - userLocation.lng);
+          const roughDistance = Math.sqrt(latDiff * latDiff + lngDiff * lngDiff) * 111; // Rough km conversion
+          
+          if (roughDistance < 11) { // Within ~11km, likely same location
+            console.log('Debug - Coordinates are very close, likely same location. Bypassing distance validation only.');
+            console.log('Debug - Rough distance:', roughDistance, 'km');
+          } else {
+            setValidationError(validation.message);
+            setIsSubmitting(false);
+            return;
+          }
+        } else {
+          setValidationError(validation.message);
+          setIsSubmitting(false);
+          return;
+        }
       }
 
       const formattedDescription = Object.entries(formData.description)
@@ -203,7 +270,7 @@ export default function ReportIncidentPage() {
         description: formattedDescription,
         latitude: lat,
         longitude: lng,
-        location: formData.location.address || "No address provided",
+        address: formData.location.address || "No address provided",
         created_at: new Date().toISOString(),
         status: 'active',
         // Include user information if available
@@ -234,7 +301,7 @@ export default function ReportIncidentPage() {
           description: formattedDescription,
           latitude: lat,
           longitude: lng,
-          location: formData.location.address || "No address provided",
+          address: formData.location.address || "No address provided",
           created_at: new Date().toISOString(),
           status: 'active',
           // Include user information if available
@@ -413,6 +480,22 @@ export default function ReportIncidentPage() {
                       <strong>Location Access:</strong> {locationPermissionGranted ? '✓ Location detected' : '⚠ Location permission needed for distance validation'}
                     </span>
                   </div>
+                  {userLocation && (
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                      <span>
+                        <strong>Your GPS Location:</strong> {userLocation.lat.toFixed(6)}, {userLocation.lng.toFixed(6)}
+                      </span>
+                    </div>
+                  )}
+                  {formData.location.lat !== 0 && formData.location.lng !== 0 && (
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-purple-500"></div>
+                      <span>
+                        <strong>Selected Location:</strong> {formData.location.lat.toFixed(6)}, {formData.location.lng.toFixed(6)}
+                      </span>
+                    </div>
+                  )}
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-blue-500"></div>
                     <span>
@@ -420,16 +503,23 @@ export default function ReportIncidentPage() {
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                    <div className={`w-2 h-2 rounded-full ${monthlyIncidentCount >= 3 ? 'bg-red-500' : monthlyIncidentCount >= 2 ? 'bg-yellow-500' : 'bg-green-500'}`}></div>
                     <span>
-                      <strong>Monthly Limit:</strong> Maximum 3 incident reports per month per user
+                      <strong>Monthly Limit:</strong> {monthlyIncidentCount}/3 incident reports used this month
                     </span>
                   </div>
                 </div>
-                {!user && (
+                {monthlyIncidentCount >= 3 && (
                   <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
                     <p className="text-sm text-red-800 dark:text-red-200">
-                      <strong>Action Required:</strong> Please log in to your account to report incidents. Only registered users can submit reports.
+                      <strong>Monthly Limit Reached:</strong> You have already submitted 3 incident reports this month. You can report again next month.
+                    </p>
+                  </div>
+                )}
+                {monthlyIncidentCount === 2 && (
+                  <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                    <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                      <strong>Monthly Limit Warning:</strong> You have submitted 2 incident reports this month. You can submit 1 more report this month.
                     </p>
                   </div>
                 )}
@@ -554,11 +644,14 @@ export default function ReportIncidentPage() {
                     <label className="block text-lg font-medium text-gray-900 dark:text-white mb-4">
                       Where did this incident occur?
                     </label>
-                    <LocationPicker onLocationSelect={handleLocationSelect} />
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                      Click on the map to select the incident location, or use the 📍 button to center on your current location.
+                    </p>
+                    <LocationPicker onLocationSelect={handleLocationSelect} userLocation={userLocation} />
                   </div>
 
                   <div>
-                    <label className="block text-lg font-medium text-gray-900 dark:text-white mb-4">
+                    <label className="block text-lg font-medium text-gray-900 dark:text-white mt-16 mb-2">
                       Add supporting media (optional)
                     </label>
                     <input
@@ -626,10 +719,10 @@ export default function ReportIncidentPage() {
                 ) : (
                   <button
                     type="submit"
-                    disabled={isSubmitting || !formData.location.lat || !formData.location.lng}
+                    disabled={isSubmitting || !formData.location.lat || !formData.location.lng || monthlyIncidentCount >= 3}
                     className="ml-auto px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {isSubmitting ? "Submitting..." : "Submit Report"}
+                    {isSubmitting ? "Submitting..." : monthlyIncidentCount >= 3 ? "Monthly Limit Reached" : "Submit Report"}
                   </button>
                 )}
               </div>

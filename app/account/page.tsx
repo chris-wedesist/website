@@ -212,6 +212,53 @@ export default function AccountPage() {
     }
   };
 
+  // Delete incident function - COMMENTED OUT FOR NOW
+  // const deleteIncident = async (incidentId: number) => {
+  //   if (!user) {
+  //     alert('You must be logged in to delete incidents.');
+  //     return;
+  //   }
+
+  //   if (!confirm('Are you sure you want to delete this incident? This action cannot be undone.')) {
+  //     return;
+  //   }
+
+  //   try {
+  //     const { error } = await supabase
+  //       .from("incidents")
+  //       .delete()
+  //       .eq("id", incidentId)
+  //       .eq("user_id", user.id); // Only allow deletion of own incidents
+
+  //     if (error) {
+  //       console.error("Error deleting incident:", error);
+  //       alert('Failed to delete incident. You can only delete your own incidents.');
+  //       return;
+  //     }
+
+  //     // Refresh the incidents list
+  //     const { data: incidents, error: incidentsError } = await supabase
+  //       .from('incidents')
+  //       .select('*')
+  //       .eq('user_id', user.id)
+  //       .order('created_at', { ascending: false });
+
+  //     if (incidentsError) throw incidentsError;
+  //     setIncidentReports(incidents || []);
+      
+  //     // Update stats
+  //     setStats(prev => ({
+  //       ...prev,
+  //       incidentReports: incidents?.length || 0
+  //     }));
+
+  //     alert('Incident deleted successfully.');
+  //   } catch (error) {
+  //     console.error("Unexpected error:", error);
+  //     alert('An unexpected error occurred. Please try again.');
+  //   }
+  // };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
@@ -460,6 +507,16 @@ export default function AccountPage() {
                                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[report.status.toLowerCase()] || statusColors.closed}`}>
                                     {report.status.charAt(0).toUpperCase() + report.status.slice(1)}
                                   </span>
+                                  {/* DELETE BUTTON COMMENTED OUT FOR NOW */}
+                                  {/* <button
+                                    onClick={() => deleteIncident(report.id)}
+                                    className="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors"
+                                    title="Delete incident"
+                                  >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                  </button> */}
                                 </div>
                               </div>
                               
