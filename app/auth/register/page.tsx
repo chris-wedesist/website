@@ -193,8 +193,13 @@ export default function RegisterPage() {
                         Check Your Email
                       </h2>
                       <p className="text-gray-600 dark:text-gray-400 mb-4">
-                        We've sent a confirmation link to <strong>{email}</strong>
+                        We've sent a confirmation link to:
                       </p>
+                      <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-3 mb-4">
+                        <p className="text-gray-900 dark:text-white font-medium break-all text-sm">
+                          {email}
+                        </p>
+                      </div>
                       <p className="text-sm text-gray-500 dark:text-gray-500 mb-6">
                         Click the link in your email to activate your account. The link will expire in 24 hours.
                       </p>
