@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import dynamic from 'next/dynamic';
 import Link from "next/link";
 import supabase from "../../../utils/supabase";
-import { validateIncidentReport, getIncidentRestrictionsConfig } from "../../../utils/incidentValidation";
+import { validateIncidentReport } from "../../../utils/incidentValidation";
 
 const LocationPicker = dynamic(() => import("../../components/LocationPicker"), {
   ssr: false,
@@ -179,7 +179,7 @@ export default function ReportIncidentPage() {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [getUserLocation]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

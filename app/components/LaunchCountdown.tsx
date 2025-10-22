@@ -62,7 +62,7 @@ export const LaunchCountdown = ({
     return (
       <div className={`${className} ${variant === 'header' ? 'text-xs' : 'text-sm'} font-medium text-accent-green-600 dark:text-accent-green-500`}>
         <span className="inline-flex items-center gap-1">
-          🎉 <span className="hidden sm:inline">We're Live!</span><span className="sm:hidden">Live!</span>
+          🎉 <span className="hidden sm:inline">We&apos;re Live!</span><span className="sm:hidden">Live!</span>
         </span>
       </div>
     );

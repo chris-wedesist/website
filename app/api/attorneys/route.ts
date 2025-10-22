@@ -49,10 +49,30 @@ interface SocialMedia {
   instagram?: string;
 }
 
+interface OverpassElement {
+  id: number;
+  lat?: number;
+  lon?: number;
+  tags: {
+    name?: string;
+    phone?: string;
+    website?: string;
+    email?: string;
+    address?: string;
+    "addr:full"?: string;
+    "addr:street"?: string;
+    "addr:housenumber"?: string;
+    "addr:city"?: string;
+    "addr:state"?: string;
+    "addr:postcode"?: string;
+    [key: string]: string | undefined;
+  };
+}
+
 // Mock data completely removed - using only real attorney data
 
 // Function to determine specialization based on law firm name
-function determineSpecialization(name: string, tags: any): string[] {
+function determineSpecialization(name: string): string[] {
   const nameLower = name.toLowerCase();
   const specializations: string[] = [];
   
@@ -267,12 +287,12 @@ async function searchAttorneys(lat: number, lng: number, radius: number): Promis
 
     // Transform Overpass data
     const attorneys: Attorney[] = response.data.elements
-      .filter((element: any) => {
+      .filter((element: OverpassElement) => {
         return element.tags.name && element.tags.name.trim().length > 0;
       })
-      .map((element: any, index: number) => {
+      .map((element: OverpassElement, index: number) => {
         const name = element.tags.name!;
-        const intelligentSpecializations = determineSpecialization(name, element.tags);
+        const intelligentSpecializations = determineSpecialization(name);
         
         return {
         id: element.id.toString(),
@@ -323,7 +343,7 @@ async function searchAttorneys(lat: number, lng: number, radius: number): Promis
         return specializedCivilRightsAttorneys;
       }
     } catch (error) {
-      console.log('Multi-source search failed, falling back to OSM filtering:', error.message);
+      console.log('Multi-source search failed, falling back to OSM filtering:', error instanceof Error ? error.message : 'Unknown error');
     }
     
     // Fallback: Filter OSM attorneys for civil rights focus

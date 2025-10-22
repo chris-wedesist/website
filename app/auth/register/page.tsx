@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "../../components/ui/Button";
 import supabase from "../../../utils/supabase";
@@ -17,7 +16,6 @@ export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
-  const router = useRouter();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -230,7 +228,7 @@ export default function RegisterPage() {
                         Check Your Email
                       </h2>
                       <p className="text-gray-600 dark:text-gray-400 mb-4">
-                        We've sent a confirmation link to:
+                        We&apos;ve sent a confirmation link to:
                       </p>
                       <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-3 mb-4">
                         <p className="text-gray-900 dark:text-white font-medium break-all text-sm">
@@ -252,7 +250,7 @@ export default function RegisterPage() {
                         Back to Registration
                       </button>
                       <p className="text-sm text-gray-500 dark:text-gray-500">
-                        Didn't receive the email? Check your spam folder or{" "}
+                        Didn&apos;t receive the email? Check your spam folder or{" "}
                         <button
                           onClick={handleRegister}
                           className="text-primary-600 hover:text-primary-500 font-medium"

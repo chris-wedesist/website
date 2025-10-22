@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { StatsDisplay } from "../components/StatsDisplay";
 import { CallToAction } from "../components/CallToAction";
@@ -47,7 +47,7 @@ export default function LegalHelpPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSpecialization, setSelectedSpecialization] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
-  const { attorneys, setAttorneys, loading, setLoading, error, setError, fetchAttorneys } = useAttorneys();
+  const { attorneys, loading, setLoading, error, setError, fetchAttorneys } = useAttorneys();
   const { t } = useTranslation();
   // const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
 

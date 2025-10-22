@@ -85,7 +85,7 @@ export default function AuthCallbackPage() {
               
               try {
                 // Try to sign in with the email to see if user exists
-                const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+                const { error: signInError } = await supabase.auth.signInWithPassword({
                   email: decodedEmail,
                   password: 'temp_password' // This will fail, but we just want to check if user exists
                 });

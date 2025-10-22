@@ -1,64 +1,64 @@
 'use client';
 
 export default function PressPage() {
-  const pressAssets = {
-    logos: [
-      {
-        name: 'Primary Logo (PNG)',
-        description: 'High-resolution logo with transparent background',
-        size: '2048x512px',
-        downloadUrl: '/press/logo-primary.png',
-      },
-      {
-        name: 'Logo Mark (SVG)',
-        description: 'Scalable vector logo mark',
-        size: 'Vector',
-        downloadUrl: '/press/logo-mark.svg',
-      },
-      {
-        name: 'Logo White (PNG)',
-        description: 'Logo optimized for dark backgrounds',
-        size: '2048x512px',
-        downloadUrl: '/press/logo-white.png',
-      },
-      {
-        name: 'Favicon Package',
-        description: 'Complete favicon set for web use',
-        size: 'Multiple sizes',
-        downloadUrl: '/press/favicon-package.zip',
-      },
-    ],
-    screenshots: [
-      {
-        name: 'Dashboard Overview',
-        description: 'Main user dashboard interface',
-        downloadUrl: '/press/screenshot-dashboard.jpg',
-      },
-      {
-        name: 'Community Features',
-        description: 'Community forum and interaction tools',
-        downloadUrl: '/press/screenshot-community.jpg',
-      },
-      {
-        name: 'Emergency Resources',
-        description: 'Crisis support and safety features',
-        downloadUrl: '/press/screenshot-emergency.jpg',
-      },
-      {
-        name: 'Mobile App Interface',
-        description: 'iOS and Android app screenshots',
-        downloadUrl: '/press/screenshot-mobile.jpg',
-      },
-    ],
-    brandColors: [
-      { name: 'Primary Blue', hex: '#3B82F6', rgb: 'rgb(59, 130, 246)' },
-      { name: 'Secondary Purple', hex: '#8B5CF6', rgb: 'rgb(139, 92, 246)' },
-      { name: 'Success Green', hex: '#10B981', rgb: 'rgb(16, 185, 129)' },
-      { name: 'Warning Orange', hex: '#F59E0B', rgb: 'rgb(245, 158, 11)' },
-      { name: 'Error Red', hex: '#EF4444', rgb: 'rgb(239, 68, 68)' },
-      { name: 'Neutral Gray', hex: '#6B7280', rgb: 'rgb(107, 114, 128)' },
-    ],
-  };
+  // const pressAssets = {
+  //   logos: [
+  //     {
+  //       name: 'Primary Logo (PNG)',
+  //       description: 'High-resolution logo with transparent background',
+  //       size: '2048x512px',
+  //       downloadUrl: '/press/logo-primary.png',
+  //     },
+  //     {
+  //       name: 'Logo Mark (SVG)',
+  //       description: 'Scalable vector logo mark',
+  //       size: 'Vector',
+  //       downloadUrl: '/press/logo-mark.svg',
+  //     },
+  //     {
+  //       name: 'Logo White (PNG)',
+  //       description: 'Logo optimized for dark backgrounds',
+  //       size: '2048x512px',
+  //       downloadUrl: '/press/logo-white.png',
+  //     },
+  //     {
+  //       name: 'Favicon Package',
+  //       description: 'Complete favicon set for web use',
+  //       size: 'Multiple sizes',
+  //       downloadUrl: '/press/favicon-package.zip',
+  //     },
+  //   ],
+  //   screenshots: [
+  //     {
+  //       name: 'Dashboard Overview',
+  //       description: 'Main user dashboard interface',
+  //       downloadUrl: '/press/screenshot-dashboard.jpg',
+  //     },
+  //     {
+  //       name: 'Community Features',
+  //       description: 'Community forum and interaction tools',
+  //       downloadUrl: '/press/screenshot-community.jpg',
+  //     },
+  //     {
+  //       name: 'Emergency Resources',
+  //       description: 'Crisis support and safety features',
+  //       downloadUrl: '/press/screenshot-emergency.jpg',
+  //     },
+  //     {
+  //       name: 'Mobile App Interface',
+  //       description: 'iOS and Android app screenshots',
+  //       downloadUrl: '/press/screenshot-mobile.jpg',
+  //     },
+  //   ],
+  //   brandColors: [
+  //     { name: 'Primary Blue', hex: '#3B82F6', rgb: 'rgb(59, 130, 246)' },
+  //     { name: 'Secondary Purple', hex: '#8B5CF6', rgb: 'rgb(139, 92, 246)' },
+  //     { name: 'Success Green', hex: '#10B981', rgb: 'rgb(16, 185, 129)' },
+  //     { name: 'Warning Orange', hex: '#F59E0B', rgb: 'rgb(245, 158, 11)' },
+  //     { name: 'Error Red', hex: '#EF4444', rgb: 'rgb(239, 68, 68)' },
+  //     { name: 'Neutral Gray', hex: '#6B7280', rgb: 'rgb(107, 114, 128)' },
+  //   ],
+  // };
 
   const companyFacts = {
     founded: '2025',

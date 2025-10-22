@@ -1,11 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Card, CardContent, CardHeader } from '../../components/ui/Card';
-import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { AppDownloadCTA } from '../../components/AppDownloadCTA';
-import Link from 'next/link';
 
 export default function StealthModePage() {
   const features = [

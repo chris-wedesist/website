@@ -51,7 +51,7 @@ export default function AllIncidentsPage() {
   const [sortBy, setSortBy] = useState("newest");
   const [currentPage, setCurrentPage] = useState(1);
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
-  const [user, setUser] = useState<{id: string, email: string, name: string} | null>(null);
+  // const [user, setUser] = useState<{id: string, email: string, name: string} | null>(null);
   const itemsPerPage = 12;
   const { t } = useTranslation();
 
@@ -104,11 +104,11 @@ export default function AllIncidentsPage() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        setUser({
-          id: user.id,
-          email: user.email || '',
-          name: user.user_metadata?.full_name || user.email || 'Anonymous User'
-        });
+        // setUser({
+        //   id: user.id,
+        //   email: user.email || '',
+        //   name: user.user_metadata?.full_name || user.email || 'Anonymous User'
+        // });
       }
     } catch (error) {
       console.error('Error getting user:', error);

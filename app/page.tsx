@@ -5,7 +5,6 @@ import { FeatureGrid } from "./components/FeatureGrid";
 import { CallToAction } from "./components/CallToAction";
 import FeaturedNews from './components/FeaturedNews';
 import { NewsletterSignup } from "./components/NewsletterSignup";
-import { AnnouncementSystem } from "./components/AnnouncementSystem";
 import { useTranslation } from "./context/TranslationContext";
 
 export default function JoinPage() {

@@ -158,7 +158,7 @@ const NavItem = memo(({ item, isActive }: { item: { name: string; href: string; 
 NavItem.displayName = 'NavItem';
 
 // Navigation group component with dropdown
-const NavGroup = memo(({ groupKey, group }: { groupKey: string; group: any }) => {
+const NavGroup = memo(({ group }: { groupKey: string; group: { label: string; href: string; items: Array<{ name: string; href: string; isMain?: boolean }> } }) => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const shouldReduceMotion = useReducedMotion();
@@ -176,8 +176,7 @@ const NavGroup = memo(({ groupKey, group }: { groupKey: string; group: any }) =>
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const isGroupActive = group.items.some((item: any) => pathname === item.href);
-  const mainItem = group.items.find((item: any) => item.isMain);
+  const isGroupActive = group.items.some((item) => pathname === item.href);
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -214,7 +213,7 @@ const NavGroup = memo(({ groupKey, group }: { groupKey: string; group: any }) =>
 
       {isOpen && (
         <div className="absolute top-full left-0 mt-2 w-48 bg-white dark:bg-gray-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
-          {group.items.map((item: any) => {
+          {group.items.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link
@@ -449,7 +448,7 @@ const AccountMenu = memo(() => {
         className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-colors"
       >
         {user.image ? (
-          <img
+          <Image
             src={user.image}
             alt="Profile"
             className="w-8 h-8 rounded-full object-cover"
@@ -828,8 +827,8 @@ export const Header = () => {
                     })}
                     
                     {/* Navigation Groups Items (flattened for mobile) */}
-                    {Object.entries(navigationGroups).map(([key, group]: [string, any]) => 
-                      group.items.map((item: any) => {
+                    {Object.entries(navigationGroups).map(([, group]) => 
+                      group.items.map((item) => {
                         const isActive = pathname === item.href;
                         return (
                           <li key={item.href} role="none">

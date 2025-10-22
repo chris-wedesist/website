@@ -1,5 +1,22 @@
 import axios from 'axios';
-import * as cheerio from 'cheerio';
+
+interface GoogleSearchItem {
+  title: string;
+  link: string;
+  snippet: string;
+}
+
+interface OverpassElement {
+  id: number;
+  lat: number;
+  lon: number;
+  tags: {
+    name?: string;
+    office?: string;
+    description?: string;
+    [key: string]: string | undefined;
+  };
+}
 
 /**
  * Real Google Search for Civil Rights Attorneys
@@ -89,12 +106,16 @@ class RealGoogleCivilRightsSearch {
       if (googleResults.length > 0) {
         return this.convertGoogleResultsToAttorneys(googleResults, userLat, userLng);
       }
-    } catch (error) {
-      console.log('Google search failed, using OpenStreetMap:', error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log('Google search failed, using OpenStreetMap:', error.message);
+      } else {
+        console.log('Google search failed, using OpenStreetMap:', String(error));
+      }
     }
     
     // Fallback to OpenStreetMap search
-    return this.searchOpenStreetMapForCivilRights(location, userLat, userLng);
+    return this.searchOpenStreetMapForAttorneys(location, userLat, userLng);
   }
 
   /**
@@ -114,7 +135,7 @@ class RealGoogleCivilRightsSearch {
       }
     });
 
-    return response.data.items?.map((item: any) => ({
+    return response.data.items?.map((item: GoogleSearchItem) => ({
       title: item.title,
       url: item.link,
       snippet: item.snippet,
@@ -126,6 +147,22 @@ class RealGoogleCivilRightsSearch {
       hours: this.extractHours(item.snippet),
       website: item.link
     })) || [];
+  }
+
+  /**
+   * Convert multiple Google search results to attorney objects
+   */
+  private async convertGoogleResultsToAttorneys(results: GoogleSearchResult[], userLat?: number, userLng?: number): Promise<RealCivilRightsAttorney[]> {
+    const attorneys: RealCivilRightsAttorney[] = [];
+    
+    for (const result of results) {
+      const attorney = await this.convertGoogleResultToAttorney(result, 'Civil Rights attorney', userLat, userLng);
+      if (attorney) {
+        attorneys.push(attorney);
+      }
+    }
+    
+    return this.removeDuplicates(attorneys);
   }
 
   /**
@@ -149,7 +186,7 @@ class RealGoogleCivilRightsSearch {
     const location = this.extractLocationFromResult(result);
     
     // Calculate distance if user location provided
-    const distance = userLat && userLng ? this.calculateDistance(userLat, userLng, result) : undefined;
+    const distance = userLat && userLng ? this.getRandomDistance() : undefined;
 
     const attorney: RealCivilRightsAttorney = {
       id: `google-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -322,7 +359,7 @@ class RealGoogleCivilRightsSearch {
   /**
    * Calculate distance between user and attorney (simplified)
    */
-  private calculateDistance(userLat: number, userLng: number, result: GoogleSearchResult): number {
+  private getRandomDistance(): number {
     // Simplified distance calculation - in real implementation, you'd use the attorney's actual coordinates
     return Math.random() * 20 + 1; // Random distance between 1-21 km
   }
@@ -456,7 +493,7 @@ class RealGoogleCivilRightsSearch {
   /**
    * Convert OpenStreetMap element to attorney (less strict filtering)
    */
-  private convertOSMElementToAttorney(element: any, userLat: number, userLng: number): RealCivilRightsAttorney | null {
+  private convertOSMElementToAttorney(element: OverpassElement, userLat: number, userLng: number): RealCivilRightsAttorney | null {
     const name = element.tags.name;
     const specialization = this.determineSpecializationFromOSM(element);
     
@@ -464,7 +501,7 @@ class RealGoogleCivilRightsSearch {
 
     return {
       id: element.id.toString(),
-      name,
+      name: name || 'Unknown Attorney',
       specialization,
       location: element.tags["addr:city"] || element.tags.city || 'Location not specified',
       detailedLocation: [
@@ -491,11 +528,11 @@ class RealGoogleCivilRightsSearch {
       verified: true,
       lastUpdated: new Date(),
       googleSearchData: {
-        title: name,
+        title: name || 'Unknown Attorney',
         url: element.tags.website || '',
-        snippet: `${name} - ${specialization.join(', ')} attorney in ${element.tags["addr:city"] || 'Karachi'}`,
-        phone: element.tags.phone,
-        address: element.tags["addr:full"] || element.tags.address
+        snippet: `${name || 'Unknown Attorney'} - ${specialization.join(', ')} attorney in ${element.tags["addr:city"] || 'Karachi'}`,
+        phone: element.tags.phone || '',
+        address: element.tags["addr:full"] || element.tags.address || ''
       },
       searchQuery: `Attorney near me`,
       distanceFromUser: distance
@@ -505,8 +542,8 @@ class RealGoogleCivilRightsSearch {
   /**
    * Determine specialization from OpenStreetMap data (more inclusive)
    */
-  private determineSpecializationFromOSM(element: any): string[] {
-    const name = element.tags.name.toLowerCase();
+  private determineSpecializationFromOSM(element: OverpassElement): string[] {
+    const name = (element.tags.name || '').toLowerCase();
     const office = (element.tags.office || '').toLowerCase();
     const description = (element.tags.description || '').toLowerCase();
     const combinedText = `${name} ${office} ${description}`;

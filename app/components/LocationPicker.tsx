@@ -154,7 +154,7 @@ export default function LocationPicker({ onLocationSelect, className = "w-full h
         markerRef.current = null;
       }
     };
-  }, [getUserLocation, updateLocation, userLocation]);
+  }, [getUserLocation, updateLocation, userLocation, onLocationSelect]);
 
   // Handle resize events
   useEffect(() => {

@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Badge } from '../../components/ui';
 import { cn } from '../../../utils/cn';
 
 export interface SuccessStory {
@@ -39,12 +38,12 @@ const impactIcons = {
   awareness_raised: '📢',
 };
 
-const impactColors = {
-  incident_resolved: 'bg-blue-100 text-primary-800 dark:bg-blue-900/30 dark:text-primary-300',
-  support_provided: 'bg-secondary-100 text-secondary-800 dark:bg-secondary-900/30 dark:text-secondary-300',
-  policy_change: 'bg-blue-100 text-primary-800 dark:bg-blue-900/30 dark:text-primary-300',
-  awareness_raised: 'bg-blue-100 text-primary-800 dark:bg-blue-900/30 dark:text-primary-300',
-};
+// const impactColors = {
+//   incident_resolved: 'bg-blue-100 text-primary-800 dark:bg-blue-900/30 dark:text-primary-300',
+//   support_provided: 'bg-secondary-100 text-secondary-800 dark:bg-secondary-900/30 dark:text-secondary-300',
+//   policy_change: 'bg-blue-100 text-primary-800 dark:bg-blue-900/30 dark:text-primary-300',
+//   awareness_raised: 'bg-blue-100 text-primary-800 dark:bg-blue-900/30 dark:text-primary-300',
+// };
 
 export const SuccessStories: React.FC<SuccessStoriesProps> = ({
   stories,

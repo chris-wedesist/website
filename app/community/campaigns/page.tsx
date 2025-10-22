@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 
@@ -212,13 +211,6 @@ export default function CampaignsPage() {
   const filteredCampaigns = selectedCategory === 'all' 
     ? campaigns 
     : campaigns.filter(campaign => campaign.category === selectedCategory);
-
-  const categoryColors = {
-    awareness: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300',
-    fundraising: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300',
-    action: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300',
-    education: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300'
-  };
 
   const difficultyColors = {
     easy: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300',

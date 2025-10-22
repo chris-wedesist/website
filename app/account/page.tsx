@@ -583,7 +583,7 @@ export default function AccountPage() {
                             No Incident Reports Yet
                           </h4>
                           <p className="text-gray-600 dark:text-gray-400 mb-4">
-                            You haven't submitted any incident reports yet.
+                            You haven&apos;t submitted any incident reports yet.
                           </p>
                           <button
                             onClick={() => router.push('/incidents/report')}

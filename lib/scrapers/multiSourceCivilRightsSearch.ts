@@ -1,5 +1,24 @@
 import axios from 'axios';
-import * as cheerio from 'cheerio';
+
+interface OverpassElement {
+  id: number;
+  lat: number;
+  lon: number;
+  tags: {
+    name?: string;
+    phone?: string;
+    website?: string;
+    email?: string;
+    address?: string;
+    "addr:full"?: string;
+    "addr:street"?: string;
+    "addr:housenumber"?: string;
+    "addr:city"?: string;
+    "addr:state"?: string;
+    "addr:postcode"?: string;
+    [key: string]: string | undefined;
+  };
+}
 
 /**
  * Multi-Source Civil Rights Attorney Search
@@ -92,18 +111,18 @@ class MultiSourceCivilRightsSearch {
       allAttorneys.push(...osmAttorneys);
       console.log(`Found ${osmAttorneys.length} real attorneys from OpenStreetMap`);
     } catch (error) {
-      console.log('OpenStreetMap search failed:', error.message);
+      console.log('OpenStreetMap search failed:', error instanceof Error ? error.message : 'Unknown error');
     }
 
     // Source 2: Google Search (if available)
     if (this.googleApiKey && this.googleCseId) {
       try {
         console.log('🌐 Searching Google for real attorneys...');
-        const googleAttorneys = await this.searchGoogle(location, userLat, userLng);
+        const googleAttorneys = await this.searchGoogle();
         allAttorneys.push(...googleAttorneys);
         console.log(`Found ${googleAttorneys.length} attorneys from Google`);
       } catch (error) {
-        console.log('Google search failed:', error.message);
+        console.log('Google search failed:', error instanceof Error ? error.message : 'Unknown error');
       }
     }
 
@@ -173,7 +192,7 @@ class MultiSourceCivilRightsSearch {
   /**
    * Search Google for civil rights attorneys
    */
-  private async searchGoogle(location: string, userLat?: number, userLng?: number): Promise<CivilRightsAttorney[]> {
+  private async searchGoogle(): Promise<CivilRightsAttorney[]> {
     // Implementation for Google search when API is available
     return [];
   }
@@ -181,13 +200,13 @@ class MultiSourceCivilRightsSearch {
   /**
    * Convert OpenStreetMap element to attorney
    */
-  private convertOSMElementToAttorney(element: any, userLat: number, userLng: number): CivilRightsAttorney | null {
+  private convertOSMElementToAttorney(element: OverpassElement, userLat: number, userLng: number): CivilRightsAttorney | null {
     const name = element.tags.name;
     const distance = this.calculateDistance(userLat, userLng, { lat: element.lat, lng: element.lon });
 
     return {
       id: element.id.toString(),
-      name,
+      name: name || 'Unknown Attorney',
       specialization: ['Civil Rights Law'], // Will be enhanced later
       location: element.tags["addr:city"] || element.tags.city || 'Location not specified',
       detailedLocation: [
