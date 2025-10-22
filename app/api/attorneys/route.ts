@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import axios from 'axios';
+import MultiSourceCivilRightsSearch from '../../../lib/scrapers/multiSourceCivilRightsSearch';
 
 interface Attorney {
   id: string;
   name: string;
-  specialization: string;
+  specialization: string[];
   location: string;
   detailedLocation: string;
   rating: number;
@@ -21,174 +22,219 @@ interface Attorney {
   experience?: string;
   lat?: number;
   lng?: number;
+  // Enriched fields
+  practiceAreas?: string[];
+  reviews?: Review[];
+  socialMedia?: SocialMedia;
+  verified?: boolean;
+  lastUpdated?: Date;
+  // Civil Rights specific fields
+  civilRightsFocus?: string[];
+  proBonoWork?: boolean;
+  immigrationServices?: string[];
+  communityInvolvement?: string;
 }
 
-interface OverpassElement {
-  type: string;
-  id: number;
-  lat: number;
-  lon: number;
-  tags: {
-    name?: string;
-    office?: string;
-    phone?: string;
-    website?: string;
-    email?: string;
-    address?: string;
-    "addr:full"?: string;
-    "addr:street"?: string;
-    "addr:housenumber"?: string;
-    "addr:city"?: string;
-    "addr:state"?: string;
-    "addr:postcode"?: string;
-    [key: string]: string | undefined;
-  };
+interface Review {
+  rating: number;
+  comment: string;
+  source: string;
+  date?: Date;
 }
 
-interface OverpassResponse {
-  version: number;
-  generator: string;
-  osm3s: {
-    timestamp_osm_base: string;
-    copyright: string;
-  };
-  elements: OverpassElement[];
+interface SocialMedia {
+  linkedin?: string;
+  facebook?: string;
+  twitter?: string;
+  instagram?: string;
 }
 
-// Mock attorney data as fallback
-function generateMockAttorneys(lat: number, lng: number): Attorney[] {
-  const mockAttorneys: Attorney[] = [
-    {
-      id: 'mock-1',
-      name: 'Sarah Johnson',
-      specialization: 'Criminal Defense',
-      location: 'Downtown',
-      detailedLocation: '123 Main St, Downtown, State 12345',
-      rating: 4.8,
-      cases: 150,
-      image: '/images/attorneys/attorney1.jpg',
-      languages: ['English', 'Spanish'],
-      featured: true,
-      phone: '(555) 123-4567',
-      website: 'https://sarahjohnsonlaw.com',
-      address: '123 Main St, Downtown, State 12345',
-      email: 'sarah@sarahjohnsonlaw.com',
-      lat: lat + (Math.random() - 0.5) * 0.01,
-      lng: lng + (Math.random() - 0.5) * 0.01
-    },
-    {
-      id: 'mock-2',
-      name: 'Michael Chen',
-      specialization: 'Personal Injury',
-      location: 'Midtown',
-      detailedLocation: '456 Oak Ave, Midtown, State 12345',
-      rating: 4.6,
-      cases: 200,
-      image: '/images/attorneys/attorney2.jpg',
-      languages: ['English', 'Mandarin'],
-      featured: true,
-      phone: '(555) 234-5678',
-      website: 'https://michaelchenlaw.com',
-      address: '456 Oak Ave, Midtown, State 12345',
-      email: 'michael@michaelchenlaw.com',
-      lat: lat + (Math.random() - 0.5) * 0.01,
-      lng: lng + (Math.random() - 0.5) * 0.01
-    },
-    {
-      id: 'mock-3',
-      name: 'Emily Rodriguez',
-      specialization: 'Family Law',
-      location: 'Uptown',
-      detailedLocation: '789 Pine St, Uptown, State 12345',
-      rating: 4.9,
-      cases: 120,
-      image: '/images/attorneys/attorney3.jpg',
-      languages: ['English', 'Spanish'],
-      featured: false,
-      phone: '(555) 345-6789',
-      website: 'https://emilyrodriguezlaw.com',
-      address: '789 Pine St, Uptown, State 12345',
-      email: 'emily@emilyrodriguezlaw.com',
-      lat: lat + (Math.random() - 0.5) * 0.01,
-      lng: lng + (Math.random() - 0.5) * 0.01
-    },
-    {
-      id: 'mock-4',
-      name: 'David Thompson',
-      specialization: 'Business Law',
-      location: 'Financial District',
-      detailedLocation: '321 Business Blvd, Financial District, State 12345',
-      rating: 4.7,
-      cases: 180,
-      image: '/images/attorneys/attorney1.jpg',
-      languages: ['English'],
-      featured: false,
-      phone: '(555) 456-7890',
-      website: 'https://davidthompsonlaw.com',
-      address: '321 Business Blvd, Financial District, State 12345',
-      email: 'david@davidthompsonlaw.com',
-      lat: lat + (Math.random() - 0.5) * 0.01,
-      lng: lng + (Math.random() - 0.5) * 0.01
-    },
-    {
-      id: 'mock-5',
-      name: 'Lisa Wang',
-      specialization: 'Immigration Law',
-      location: 'Chinatown',
-      detailedLocation: '654 Heritage St, Chinatown, State 12345',
-      rating: 4.5,
-      cases: 95,
-      image: '/images/attorneys/attorney2.jpg',
-      languages: ['English', 'Mandarin', 'Cantonese'],
-      featured: false,
-      phone: '(555) 567-8901',
-      website: 'https://lisawanglaw.com',
-      address: '654 Heritage St, Chinatown, State 12345',
-      email: 'lisa@lisawanglaw.com',
-      lat: lat + (Math.random() - 0.5) * 0.01,
-      lng: lng + (Math.random() - 0.5) * 0.01
-    }
-  ];
+// Mock data completely removed - using only real attorney data
 
-  return mockAttorneys;
+// Function to determine specialization based on law firm name
+function determineSpecialization(name: string, tags: any): string[] {
+  const nameLower = name.toLowerCase();
+  const specializations: string[] = [];
+  
+  // Analyze firm name for specialization hints
+  if (nameLower.includes('criminal') || nameLower.includes('defense')) {
+    specializations.push('Criminal Law');
+  }
+  if (nameLower.includes('family') || nameLower.includes('divorce')) {
+    specializations.push('Family Law');
+  }
+  if (nameLower.includes('corporate') || nameLower.includes('business') || nameLower.includes('company')) {
+    specializations.push('Corporate Law');
+  }
+  if (nameLower.includes('property') || nameLower.includes('real estate') || nameLower.includes('land')) {
+    specializations.push('Property Law');
+  }
+  if (nameLower.includes('immigration') || nameLower.includes('visa')) {
+    specializations.push('Immigration Law');
+  }
+  if (nameLower.includes('tax') || nameLower.includes('revenue')) {
+    specializations.push('Tax Law');
+  }
+  if (nameLower.includes('labor') || nameLower.includes('employment') || nameLower.includes('worker')) {
+    specializations.push('Labor Law');
+  }
+  if (nameLower.includes('banking') || nameLower.includes('finance') || nameLower.includes('loan')) {
+    specializations.push('Banking Law');
+  }
+  if (nameLower.includes('constitutional') || nameLower.includes('civil rights')) {
+    specializations.push('Constitutional Law');
+  }
+  if (nameLower.includes('commercial') || nameLower.includes('trade')) {
+    specializations.push('Commercial Law');
+  }
+  if (nameLower.includes('personal injury') || nameLower.includes('accident')) {
+    specializations.push('Personal Injury');
+  }
+  if (nameLower.includes('estate') || nameLower.includes('inheritance') || nameLower.includes('will')) {
+    specializations.push('Estate Planning');
+  }
+  if (nameLower.includes('bankruptcy') || nameLower.includes('insolvency')) {
+    specializations.push('Bankruptcy Law');
+  }
+  if (nameLower.includes('intellectual') || nameLower.includes('patent') || nameLower.includes('trademark')) {
+    specializations.push('Intellectual Property');
+  }
+  
+  // If no specific specialization found, add General Practice
+  if (specializations.length === 0) {
+    specializations.push('General Practice');
+  }
+  
+  return specializations;
 }
 
-// Function to make HTTP request with retry logic
-async function makeRequestWithRetry<T>(
-  requestFn: () => Promise<T>,
-  maxRetries: number = 3,
-  delay: number = 1000
-): Promise<T> {
-  let lastError: Error;
-
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      console.log(`Attempt ${attempt}/${maxRetries}`);
-      return await requestFn();
-    } catch (error) {
-      lastError = error as Error;
-      console.log(`Attempt ${attempt} failed:`, error);
-      
-      if (attempt < maxRetries) {
-        console.log(`Waiting ${delay}ms before retry...`);
-        await new Promise(resolve => setTimeout(resolve, delay));
-        delay *= 2; // Exponential backoff
-      }
+// Function to enhance specialization for civil rights focus
+function enhanceSpecializationForCivilRights(currentSpecialization: string[], attorneyName: string): string[] {
+  const nameLower = attorneyName.toLowerCase();
+  const currentLower = currentSpecialization.map(s => s.toLowerCase()).join(' ');
+  const combinedText = `${nameLower} ${currentLower}`;
+  
+  const civilRightsSpecializations: string[] = [];
+  
+  // First, check if this is NOT a civil rights attorney (exclude these)
+  if (combinedText.includes('tax') || combinedText.includes('revenue') || 
+      combinedText.includes('trademark') || combinedText.includes('patent') ||
+      combinedText.includes('intellectual property') || combinedText.includes('corporate') ||
+      combinedText.includes('business') || combinedText.includes('commercial') ||
+      combinedText.includes('banking') || combinedText.includes('finance') ||
+      combinedText.includes('real estate') || combinedText.includes('property') ||
+      combinedText.includes('nadra') || combinedText.includes('documentation') ||
+      combinedText.includes('registration')) {
+    return []; // Return empty array to exclude this attorney
+  }
+  
+  // Check for specific civil rights specializations
+  if (combinedText.includes('civil rights') || combinedText.includes('human rights')) {
+    civilRightsSpecializations.push('Civil Rights Law');
+  }
+  
+  if (combinedText.includes('immigration') || combinedText.includes('asylum') || combinedText.includes('refugee')) {
+    civilRightsSpecializations.push('Immigration Law');
+    civilRightsSpecializations.push('Asylum & Refugee Law');
+  }
+  
+  if (combinedText.includes('constitutional')) {
+    civilRightsSpecializations.push('Constitutional Law');
+    civilRightsSpecializations.push('First Amendment Rights');
+  }
+  
+  if (combinedText.includes('police') && combinedText.includes('misconduct')) {
+    civilRightsSpecializations.push('Police Misconduct');
+  }
+  
+  if (combinedText.includes('discrimination')) {
+    civilRightsSpecializations.push('Discrimination Law');
+  }
+  
+  if (combinedText.includes('employment') && combinedText.includes('discrimination')) {
+    civilRightsSpecializations.push('Employment Discrimination');
+  }
+  
+  if (combinedText.includes('housing') && combinedText.includes('discrimination')) {
+    civilRightsSpecializations.push('Housing Discrimination');
+  }
+  
+  if (combinedText.includes('education') && combinedText.includes('law')) {
+    civilRightsSpecializations.push('Education Law');
+  }
+  
+  if (combinedText.includes('disability') || combinedText.includes('accessibility')) {
+    civilRightsSpecializations.push('Disability Rights');
+  }
+  
+  if (combinedText.includes('lgbt') || combinedText.includes('lgbtq') || combinedText.includes('transgender')) {
+    civilRightsSpecializations.push('LGBTQ+ Rights');
+  }
+  
+  // Enhanced women's rights detection
+  if (combinedText.includes('women') || combinedText.includes('marriage') || 
+      combinedText.includes('divorce') || combinedText.includes('khula') ||
+      combinedText.includes('court marriage') || combinedText.includes('family')) {
+    civilRightsSpecializations.push('Women\'s Rights');
+    if (combinedText.includes('family') || combinedText.includes('marriage') || combinedText.includes('divorce')) {
+      civilRightsSpecializations.push('Family Law');
     }
   }
-
-  throw lastError!;
+  
+  if (combinedText.includes('racial') && combinedText.includes('justice')) {
+    civilRightsSpecializations.push('Racial Justice');
+  }
+  
+  if (combinedText.includes('criminal') && combinedText.includes('justice')) {
+    civilRightsSpecializations.push('Criminal Justice Reform');
+  }
+  
+  if (combinedText.includes('environmental') && combinedText.includes('justice')) {
+    civilRightsSpecializations.push('Environmental Justice');
+  }
+  
+  // Pakistani specific civil rights issues
+  if (combinedText.includes('blasphemy')) {
+    civilRightsSpecializations.push('Constitutional Law');
+    civilRightsSpecializations.push('First Amendment Rights');
+  }
+  
+  if (combinedText.includes('honor killing') || combinedText.includes('honour killing')) {
+    civilRightsSpecializations.push('Women\'s Rights');
+    civilRightsSpecializations.push('Criminal Justice Reform');
+  }
+  
+  if (combinedText.includes('forced conversion') || combinedText.includes('forced marriage')) {
+    civilRightsSpecializations.push('Women\'s Rights');
+    civilRightsSpecializations.push('Constitutional Law');
+  }
+  
+  if (combinedText.includes('acid attack')) {
+    civilRightsSpecializations.push('Women\'s Rights');
+    civilRightsSpecializations.push('Criminal Justice Reform');
+  }
+  
+  // If no specific civil rights specialization found, add general civil rights
+  if (civilRightsSpecializations.length === 0) {
+    civilRightsSpecializations.push('Civil Rights Law');
+  }
+  
+  // Remove duplicates and return
+  return [...new Set(civilRightsSpecializations)];
 }
 
-// Function to search for attorneys using Overpass API with retry mechanism
+// Initialize multi-source civil rights search
+const multiSourceSearch = new MultiSourceCivilRightsSearch();
+
+// Simple attorney search function (no Google enrichment)
 async function searchAttorneys(lat: number, lng: number, radius: number): Promise<Attorney[]> {
-  console.log('\n=== STARTING ATTORNEY SEARCH ===');
+  console.log('\n=== STARTING SIMPLE ATTORNEY SEARCH ===');
   console.log('Search parameters:', { lat, lng, radius });
   
   try {
-    // Create Overpass QL query
+    // Try to get data from Overpass API with timeout
     const query = `
-      [out:json][timeout:15];
+      [out:json][timeout:10];
       (
         node["amenity"="lawyer"](around:${radius * 1000},${lat},${lng});
         node["office"="lawyer"](around:${radius * 1000},${lat},${lng});
@@ -199,19 +245,15 @@ async function searchAttorneys(lat: number, lng: number, radius: number): Promis
       out skel qt;
     `;
 
-    console.log('Making request to Overpass API with retry mechanism');
+    console.log('Making request to Overpass API...');
     
-    const response = await makeRequestWithRetry(
-      () => axios.post<OverpassResponse>('https://overpass-api.de/api/interpreter', query, {
+    const response = await axios.post('https://overpass-api.de/api/interpreter', query, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        timeout: 10000, // 10 second timeout
-        maxRedirects: 5
-      }),
-      3, // 3 retries
-      1000 // 1 second initial delay
-    );
+      timeout: 8000, // 8 second timeout
+      maxRedirects: 3
+    });
 
     console.log('Overpass API response received:', {
       status: response.status,
@@ -219,18 +261,23 @@ async function searchAttorneys(lat: number, lng: number, radius: number): Promis
     });
 
     if (!response.data.elements || response.data.elements.length === 0) {
-      console.log('No attorneys found in Overpass API, using mock data');
-      return generateMockAttorneys(lat, lng);
+      console.log('No attorneys found in Overpass API, returning empty array');
+      return [];
     }
 
+    // Transform Overpass data
     const attorneys: Attorney[] = response.data.elements
-      .filter((element) => {
+      .filter((element: any) => {
         return element.tags.name && element.tags.name.trim().length > 0;
       })
-      .map((element, index) => ({
+      .map((element: any, index: number) => {
+        const name = element.tags.name!;
+        const intelligentSpecializations = determineSpecialization(name, element.tags);
+        
+        return {
         id: element.id.toString(),
-        name: element.tags.name!,
-        specialization: element.tags.office || "General Practice",
+          name: name,
+          specialization: intelligentSpecializations,
         location: element.tags["addr:city"] || "Location not available",
         detailedLocation: [
           element.tags["addr:street"],
@@ -242,27 +289,100 @@ async function searchAttorneys(lat: number, lng: number, radius: number): Promis
         rating: Math.random() * 2 + 3, // Random rating between 3 and 5
         cases: Math.floor(Math.random() * 200) + 50,
         image: `/images/attorneys/attorney${Math.floor(Math.random() * 3) + 1}.jpg`,
-        languages: ["English"],
-        featured: index < 2,
+          languages: [],
+          featured: index < 3,
         phone: element.tags.phone,
         website: element.tags.website,
         address: element.tags["addr:full"] || element.tags.address,
         email: element.tags.email,
         lat: element.lat,
-        lng: element.lon
-      }));
+          lng: element.lon,
+          practiceAreas: intelligentSpecializations,
+          reviews: [],
+          socialMedia: {},
+          verified: false,
+          lastUpdated: new Date()
+        };
+      });
 
-    // If we got results but they're empty after filtering, use mock data
+    // If we got results but they're empty after filtering, return empty array
     if (attorneys.length === 0) {
-      console.log('No valid attorneys after filtering, using mock data');
-      return generateMockAttorneys(lat, lng);
+      console.log('No valid attorneys after filtering, returning empty array');
+      return [];
     }
 
-    return attorneys;
+    // Step 2: Use multi-source search for specialized civil rights attorneys
+    console.log(`Using multi-source search for specialized civil rights attorneys near ${lat}, ${lng}...`);
+    
+    try {
+      const specializedCivilRightsAttorneys = await multiSourceSearch.searchCivilRightsAttorneys('Karachi', lat, lng);
+      
+      console.log(`Found ${specializedCivilRightsAttorneys.length} specialized civil rights attorneys from multi-source search`);
+      
+      if (specializedCivilRightsAttorneys.length > 0) {
+        return specializedCivilRightsAttorneys;
+      }
+    } catch (error) {
+      console.log('Multi-source search failed, falling back to OSM filtering:', error.message);
+    }
+    
+    // Fallback: Filter OSM attorneys for civil rights focus
+    console.log('Filtering OSM attorneys for civil rights focus...');
+    const civilRightsAttorneys = attorneys.filter(attorney => {
+      const nameLower = attorney.name.toLowerCase();
+      const specializationLower = attorney.specialization.map(s => s.toLowerCase()).join(' ');
+      
+      // Check for civil rights keywords in name or specialization
+      return nameLower.includes('rights') || 
+             nameLower.includes('human') || 
+             nameLower.includes('immigration') ||
+             nameLower.includes('civil') ||
+             nameLower.includes('women') ||
+             nameLower.includes('constitutional') ||
+             nameLower.includes('discrimination') ||
+             nameLower.includes('asylum') ||
+             nameLower.includes('refugee') ||
+             nameLower.includes('employment') ||
+             nameLower.includes('housing') ||
+             nameLower.includes('education') ||
+             nameLower.includes('disability') ||
+             nameLower.includes('lgbt') ||
+             nameLower.includes('racial') ||
+             nameLower.includes('criminal') ||
+             nameLower.includes('environmental') ||
+             nameLower.includes('marriage') ||
+             nameLower.includes('divorce') ||
+             nameLower.includes('family') ||
+             specializationLower.includes('civil rights') ||
+             specializationLower.includes('immigration') ||
+             specializationLower.includes('constitutional') ||
+             specializationLower.includes('discrimination') ||
+             specializationLower.includes('women') ||
+             specializationLower.includes('asylum') ||
+             specializationLower.includes('refugee') ||
+             specializationLower.includes('employment') ||
+             specializationLower.includes('housing') ||
+             specializationLower.includes('education') ||
+             specializationLower.includes('disability') ||
+             specializationLower.includes('lgbt') ||
+             specializationLower.includes('racial') ||
+             specializationLower.includes('criminal') ||
+             specializationLower.includes('environmental');
+    }).map(attorney => {
+      const enhancedSpecialization = enhanceSpecializationForCivilRights(attorney.specialization, attorney.name);
+      return {
+        ...attorney,
+        specialization: enhancedSpecialization
+      };
+    }).filter(attorney => attorney.specialization.length > 0); // Only include attorneys with civil rights specializations
+    
+    console.log(`Found ${civilRightsAttorneys.length} civil rights attorneys in OSM data`);
+    
+    return civilRightsAttorneys;
   } catch (error) {
-    console.error('Error searching attorneys after retries:', error);
-    console.log('Falling back to mock data due to API failure');
-    return generateMockAttorneys(lat, lng);
+    console.error('Error searching attorneys:', error);
+    console.log('Returning empty array due to API failure');
+    return [];
   }
 }
 
@@ -317,13 +437,9 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error('Unexpected error in GET handler:', error);
     
-    // Even if there's an unexpected error, return mock data to prevent 500 errors
-    const lat = parseFloat(new URL(request.url).searchParams.get('lat') || '0');
-    const lng = parseFloat(new URL(request.url).searchParams.get('lng') || '0');
-    const mockAttorneys = generateMockAttorneys(lat, lng);
-    
+    // Return empty array instead of mock data
     return NextResponse.json(
-      { attorneys: mockAttorneys },
+      { attorneys: [] },
       {
         headers: {
           'Access-Control-Allow-Origin': '*',

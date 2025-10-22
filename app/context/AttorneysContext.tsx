@@ -1,27 +1,6 @@
 "use client";
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-
-interface Attorney {
-  id: string;
-  name: string;
-  specialization: string;
-  location: string;
-  detailedLocation: string;
-  rating: number;
-  cases: number;
-  image: string;
-  languages: string[];
-  featured: boolean;
-  phone?: string;
-  website?: string;
-  address?: string;
-  email?: string;
-  barNumber?: string;
-  education?: string[];
-  experience?: string;
-  lat?: number;
-  lng?: number;
-}
+import { Attorney } from '../../types/attorney';
 
 interface AttorneysContextType {
   attorneys: Attorney[];
@@ -30,6 +9,7 @@ interface AttorneysContextType {
   setLoading: (loading: boolean) => void;
   error: string | null;
   setError: (error: string | null) => void;
+  fetchAttorneys: (lat: number, lng: number) => Promise<void>;
 }
 
 const AttorneysContext = createContext<AttorneysContextType | undefined>(undefined);
@@ -116,7 +96,7 @@ export function AttorneysProvider({ children }: { children: ReactNode }) {
   }, [attorneys, loading, error]);
 
   return (
-    <AttorneysContext.Provider value={{ attorneys, setAttorneys, loading, setLoading, error, setError }}>
+    <AttorneysContext.Provider value={{ attorneys, setAttorneys, loading, setLoading, error, setError, fetchAttorneys }}>
       {children}
     </AttorneysContext.Provider>
   );
