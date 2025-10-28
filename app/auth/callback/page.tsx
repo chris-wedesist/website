@@ -53,6 +53,8 @@ export default function AuthCallbackPage() {
             if (updateError) {
               console.error('Error updating email confirmation:', updateError);
               // Continue anyway - user can still proceed
+            } else {
+              console.log('Email confirmation updated successfully for user:', pendingUserId);
             }
             
             // Update user data in localStorage
@@ -68,7 +70,7 @@ export default function AuthCallbackPage() {
             
             // Redirect after a short delay
             setTimeout(() => {
-              router.push("/community");
+              router.push("/auth/login");
             }, 2000);
           } else {
             console.error('Email validation failed:', {
@@ -84,14 +86,31 @@ export default function AuthCallbackPage() {
               console.log('Attempting fallback: checking Supabase for user with email:', decodedEmail);
               
               try {
-                // Try to sign in with the email to see if user exists
-                const { error: signInError } = await supabase.auth.signInWithPassword({
-                  email: decodedEmail,
-                  password: 'temp_password' // This will fail, but we just want to check if user exists
-                });
+                // Query the users table to find the user by email
+                const { data: userData, error: queryError } = await supabase
+                  .from('users')
+                  .select('id, email, full_name, email_confirmed')
+                  .eq('email', decodedEmail)
+                  .single();
                 
-                if (signInError && signInError.message.includes('Invalid login credentials')) {
-                  // User exists but password is wrong - this is expected
+                if (userData && !queryError) {
+                  console.log('User found in database:', userData);
+                  
+                  // Update email_confirmed to true
+                  const { error: updateError } = await supabase
+                    .from('users')
+                    .update({ 
+                      email_confirmed: true,
+                      updated_at: new Date().toISOString()
+                    })
+                    .eq('id', userData.id);
+                  
+                  if (updateError) {
+                    console.error('Error updating email confirmation:', updateError);
+                  } else {
+                    console.log('Email confirmation updated successfully for user:', userData.id);
+                  }
+                  
                   setStatus('success');
                   setMessage('Email confirmed! Please log in with your password.');
                   
@@ -100,6 +119,8 @@ export default function AuthCallbackPage() {
                     router.push("/auth/login");
                   }, 2000);
                   return;
+                } else {
+                  console.error('User not found in database:', queryError);
                 }
               } catch (fallbackError) {
                 console.error('Fallback check failed:', fallbackError);

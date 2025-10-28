@@ -350,12 +350,25 @@ const AccountMenu = memo(() => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
-          setUser({
-            id: user.id,
-            email: user.email || '',
-            name: user.user_metadata?.full_name || user.email || '',
-            image: user.user_metadata?.avatar_url
-          });
+          // Check if email is confirmed in our custom users table
+          const { data: userData } = await supabase
+            .from('users')
+            .select('email_confirmed')
+            .eq('id', user.id)
+            .single();
+
+          // Only set user if email is confirmed
+          if (userData && userData.email_confirmed === true) {
+            setUser({
+              id: user.id,
+              email: user.email || '',
+              name: user.user_metadata?.full_name || user.email || '',
+              image: user.user_metadata?.avatar_url
+            });
+          } else {
+            // If email not confirmed, don't set user
+            setUser(null);
+          }
         }
       } catch (error) {
         console.error('Error getting user:', error);
@@ -365,15 +378,28 @@ const AccountMenu = memo(() => {
     getUser();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth state changed:', event, session?.user?.email);
       if (session?.user) {
-        setUser({
-          id: session.user.id,
-          email: session.user.email || '',
-          name: session.user.user_metadata?.full_name || session.user.email || '',
-          image: session.user.user_metadata?.avatar_url
-        });
+        // Check if email is confirmed in our custom users table
+        const { data: userData } = await supabase
+          .from('users')
+          .select('email_confirmed')
+          .eq('id', session.user.id)
+          .single();
+
+        // Only set user if email is confirmed
+        if (userData && userData.email_confirmed === true) {
+          setUser({
+            id: session.user.id,
+            email: session.user.email || '',
+            name: session.user.user_metadata?.full_name || session.user.email || '',
+            image: session.user.user_metadata?.avatar_url
+          });
+        } else {
+          // If email not confirmed, don't set user
+          setUser(null);
+        }
       } else {
         setUser(null);
       }
@@ -632,18 +658,41 @@ export const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  // Check for user session
+  // Check for user session and email confirmation status
   useEffect(() => {
     const getUser = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
-          setUser({
-            id: user.id,
-            email: user.email || '',
-            name: user.user_metadata?.full_name || user.email || '',
-            image: user.user_metadata?.avatar_url
-          });
+          // Check if email is confirmed in our custom users table
+          const { data: userData, error } = await supabase
+            .from('users')
+            .select('email_confirmed')
+            .eq('id', user.id)
+            .single();
+
+          // If user doesn't exist in our table, check localStorage and logout
+          if (error || !userData) {
+            console.log('User not found in users table or error:', error);
+            await supabase.auth.signOut();
+            setUser(null);
+            return;
+          }
+
+          // Only set user if email is confirmed
+          if (userData && userData.email_confirmed === true) {
+            setUser({
+              id: user.id,
+              email: user.email || '',
+              name: user.user_metadata?.full_name || user.email || '',
+              image: user.user_metadata?.avatar_url
+            });
+          } else {
+            // If email not confirmed, sign out the user
+            console.log('Email not confirmed, signing out');
+            await supabase.auth.signOut();
+            setUser(null);
+          }
         }
       } catch (error) {
         console.error('Error getting user:', error);
@@ -653,14 +702,37 @@ export const Header = () => {
     getUser();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
-        setUser({
-          id: session.user.id,
-          email: session.user.email || '',
-          name: session.user.user_metadata?.full_name || session.user.email || '',
-          image: session.user.user_metadata?.avatar_url
-        });
+        // Check if email is confirmed in our custom users table
+        const { data: userData, error } = await supabase
+          .from('users')
+          .select('email_confirmed')
+          .eq('id', session.user.id)
+          .single();
+
+        // If user doesn't exist in our table, logout
+        if (error || !userData) {
+          console.log('User not found in users table, signing out');
+          await supabase.auth.signOut();
+          setUser(null);
+          return;
+        }
+
+        // Only set user if email is confirmed
+        if (userData && userData.email_confirmed === true) {
+          setUser({
+            id: session.user.id,
+            email: session.user.email || '',
+            name: session.user.user_metadata?.full_name || session.user.email || '',
+            image: session.user.user_metadata?.avatar_url
+          });
+        } else {
+          // If email not confirmed, sign out the user
+          console.log('Email not confirmed, signing out');
+          await supabase.auth.signOut();
+          setUser(null);
+        }
       } else {
         setUser(null);
       }

@@ -82,6 +82,9 @@ export default function RegisterPage() {
           throw new Error('Failed to send confirmation email');
         }
 
+        // Sign out the user immediately to prevent login without email confirmation
+        await supabase.auth.signOut();
+
         // Show email sent confirmation
         setEmailSent(true);
         setError(null);

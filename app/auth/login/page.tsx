@@ -50,9 +50,11 @@ export default function LoginPage() {
           if (insertError) {
             console.error('Error creating user record:', insertError);
           }
-        } else if (!userData.email_confirmed) {
-          // Email not confirmed - prevent login
+        } else if (!userData || !userData.email_confirmed) {
+          // Email not confirmed - sign out the user and prevent login
+          await supabase.auth.signOut();
           setError("Please confirm your email address before logging in. Check your inbox for a confirmation email.");
+          setLoading(false);
           return;
         }
 
