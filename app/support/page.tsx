@@ -2,7 +2,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { CallToAction } from "../components/CallToAction";
-import { FeatureGrid } from "../components/FeatureGrid";
 import { HeroSection } from "../components/HeroSection";
 import { useTranslation } from "../context/TranslationContext";
 

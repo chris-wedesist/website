@@ -3,7 +3,6 @@ import { NewHero } from "../components/NewHero";
 import { AppFeatures } from "../components/AppFeatures";
 import { NotificationDemo } from "../components/NotificationDemo";
 import { AppStats } from "../components/AppStats";
-import { Testimonials } from "../components/Testimonials";
 import { AppDownloadCTA } from "../components/AppDownloadCTA";
 
 export default function Home() {
