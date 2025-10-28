@@ -19,7 +19,7 @@ export default function Home() {
         <AppFeatures />
         <NotificationDemo />
         <AppStats />
-        <Testimonials />
+        {/* <Testimonials /> */}
         <section className="container mx-auto py-12 ">
           <AppDownloadCTA />
         </section>

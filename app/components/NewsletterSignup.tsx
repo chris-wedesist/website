@@ -135,6 +135,13 @@ export const NewsletterSignup: React.FC<NewsletterSignupProps> = ({
       {...fadeInVariants}
     >
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden relative">
+        {/* Upcoming Badge */}
+        <div className="absolute top-4 right-4 z-20">
+          <div className="inline-flex items-center px-3 py-1 bg-yellow-500 text-white text-xs font-bold rounded-full shadow-lg animate-pulse">
+            🚀 COMING SOON
+          </div>
+        </div>
+        
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 opacity-50" />
         <div className="absolute inset-0 bg-[url('/community-pattern.svg')] opacity-5" />
         
@@ -158,6 +165,29 @@ export const NewsletterSignup: React.FC<NewsletterSignupProps> = ({
           </motion.div>
         </div>
         <div className="relative z-10 px-6 pb-6">
+          {/* Upcoming Disclaimer */}
+          <div className="mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 rounded-lg">
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-yellow-600 dark:text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-300">
+                  Newsletter Coming Soon
+                </h3>
+                <div className="mt-2 text-sm text-yellow-700 dark:text-yellow-400">
+                  <p>
+                    The DESIST Newsletter is currently under development and will be launching soon! 
+                    Subscribe now to get notified when it goes live. We&apos;re working hard to bring you 
+                    the best content about safety, community updates, and platform news.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
           {isSubmitted ? (
             <motion.div 
               className="text-center py-8"
@@ -191,7 +221,7 @@ export const NewsletterSignup: React.FC<NewsletterSignupProps> = ({
           ) : (
             <motion.form 
               onSubmit={handleSubmit} 
-              className="space-y-6"
+              className="space-y-6 opacity-50 pointer-events-none"
               variants={staggerVariants}
               initial="initial"
               animate="animate"
@@ -212,8 +242,8 @@ export const NewsletterSignup: React.FC<NewsletterSignupProps> = ({
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email address"
                   required
-                  disabled={isLoading}
-                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white transition-all duration-200"
+                  disabled={true}
+                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white transition-all duration-200 cursor-not-allowed"
                 />
               </motion.div>
 
@@ -231,16 +261,14 @@ export const NewsletterSignup: React.FC<NewsletterSignupProps> = ({
                       key={option.id}
                       type="button"
                       onClick={() => handleInterestToggle(option.id)}
-                      disabled={isLoading}
+                      disabled={true}
                       variants={staggerVariants}
                       custom={index + 2}
-                      className={`p-3 rounded-lg border transition-all duration-200 text-left hover:shadow-sm ${
+                      className={`p-3 rounded-lg border transition-all duration-200 text-left cursor-not-allowed ${
                         interests.includes(option.id)
                           ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 shadow-sm'
-                          : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 hover:bg-gray-50 dark:hover:bg-gray-800'
+                          : 'border-gray-200 dark:border-gray-700'
                       }`}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
                     >
                       <div className="flex items-center gap-2">
                         <span className="text-lg">{option.emoji}</span>
@@ -273,8 +301,8 @@ export const NewsletterSignup: React.FC<NewsletterSignupProps> = ({
               >
                 <button
                   type="submit"
-                  disabled={isLoading || !email.trim()}
-                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 hover:shadow-md group relative overflow-hidden"
+                  disabled={true}
+                  className="w-full bg-gray-400 cursor-not-allowed text-white font-medium py-3 px-4 rounded-lg transition-all duration-300"
                 >
                   {isLoading ? (
                     <div className="flex items-center justify-center gap-2">

@@ -151,10 +151,11 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
     >
       <Card className={cn(
         'h-full transition-all duration-200 hover:shadow-lg cursor-pointer',
-        resource.featured && 'ring-2 ring-primary-500/20 bg-gradient-to-br from-primary-50 to-white dark:from-primary-950/20 dark:to-gray-950'
+        resource.featured && 'ring-2 ring-primary-500/20',
+        'bg-white dark:bg-gray-800'
       )}>
         {resource.thumbnail && (
-          <div className="aspect-video bg-gray-100 dark:bg-gray-800 rounded-t-lg overflow-hidden">
+          <div className="aspect-video bg-gray-300 dark:bg-gray-700 rounded-t-lg overflow-hidden">
             <Image
               src={resource.thumbnail}
               alt={resource.title}
@@ -165,6 +166,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
           </div>
         )}
         
+        <div className="bg-white dark:bg-gray-800 rounded-b-lg">
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between gap-2 mb-2">
             <div className="flex items-center gap-2 flex-wrap">
@@ -274,6 +276,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
             </div>
           </div>
         </CardContent>
+        </div>
       </Card>
     </motion.div>
   );

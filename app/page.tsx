@@ -133,7 +133,7 @@ export default function JoinPage() {
         description={t('home.partner.description')}
         features={partnerFeatures}
         columns={3}
-        variant="minimal"
+        variant="news"
       />
 
       {/* Add FeaturedNews after the hero section */}

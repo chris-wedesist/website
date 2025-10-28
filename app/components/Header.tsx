@@ -14,15 +14,9 @@ import { LaunchCountdown } from "./LaunchCountdown";
 const getCoreNavigation = (isLoggedIn: boolean): Array<{ name: string; href: string; requiresAuth?: boolean }> => [
   { name: "header.navigation.about", href: "/about" },
   { name: "header.navigation.resources", href: "/resources" },
-  { name: "header.navigation.support", href: "/support" },
-  { name: "header.navigation.contact", href: "/contact" },
+  { name: "header.navigation.legalHelp", href: "/legal-help" },
   // Always show incidents tab, but handle login redirect
   { name: "header.navigation.incidents", href: "/incidents", requiresAuth: !isLoggedIn },
-  // Show Legal Help when not logged in
-  ...(isLoggedIn 
-    ? []
-    : [{ name: "header.navigation.legalHelp", href: "/legal-help" }]
-  ),
 ];
 
 // Navigation groups with dropdowns
@@ -576,6 +570,29 @@ const QuickActions = memo(() => {
           />
         )}
         {pathname === '/support/emergency' && shouldReduceMotion && (
+          <div className="absolute inset-0 bg-blue-100 dark:bg-blue-900/40 rounded-full -z-10" />
+        )}
+      </Link>
+      <Link
+        href="/support"
+        prefetch={false}
+        className={`relative px-3 py-2 rounded-full text-sm font-medium will-change-colors transition-colors duration-200 group ${
+          pathname === '/support' || pathname.startsWith('/support/')
+            ? "text-blue-900 dark:text-blue-100"
+            : "text-gray-700 hover:text-blue-900 dark:text-gray-300 dark:hover:text-blue-100"
+        }`}
+      >
+         {/* Hover background */}
+         <div className="absolute inset-0 bg-blue-100 dark:bg-blue-900/40 rounded-full -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+        {t('header.navigation.support')}
+        {(pathname === '/support' || pathname.startsWith('/support/')) && !shouldReduceMotion && (
+          <motion.div
+            layoutId="activeTab"
+            className="absolute inset-0 bg-blue-100 dark:bg-blue-900/40 rounded-full -z-10"
+            transition={{ type: "spring", duration: 0.4, bounce: 0.15 }}
+          />
+        )}
+        {(pathname === '/support' || pathname.startsWith('/support/')) && shouldReduceMotion && (
           <div className="absolute inset-0 bg-blue-100 dark:bg-blue-900/40 rounded-full -z-10" />
         )}
       </Link>
