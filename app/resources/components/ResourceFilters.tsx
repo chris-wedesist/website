@@ -142,7 +142,7 @@ export const ResourceFilters: React.FC<ResourceFiltersProps> = ({
                   'block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors',
                   activeFilters.type === type
                     ? 'bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300'
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    : 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800'
                 )}
               >
                 {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -165,7 +165,7 @@ export const ResourceFilters: React.FC<ResourceFiltersProps> = ({
                   'block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors',
                   activeFilters.category === category
                     ? 'bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300'
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    : 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800'
                 )}
               >
                 {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -188,7 +188,7 @@ export const ResourceFilters: React.FC<ResourceFiltersProps> = ({
                   'block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors',
                   activeFilters.difficulty === difficulty
                     ? 'bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300'
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    : 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800'
                 )}
               >
                 {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
@@ -211,7 +211,7 @@ export const ResourceFilters: React.FC<ResourceFiltersProps> = ({
                   'block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors',
                   activeFilters.language === language
                     ? 'bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300'
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    : 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800'
                 )}
               >
                 {language === 'en' ? 'English' : language === 'es' ? 'Español' : language}
