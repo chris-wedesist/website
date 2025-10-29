@@ -84,7 +84,7 @@ export default function LegalHelpPage() {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">Finding attorneys near you...</p>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">{t('legalHelp.attorneys.loading')}</p>
         </div>
       </div>
     );
@@ -111,13 +111,13 @@ export default function LegalHelpPage() {
                 await fetchAttorneys(lat, lng);
               } catch (error) {
                 console.error('Retry location error:', error);
-                setError("Failed to get location. Please try again.");
+                setError(t('legalHelp.attorneys.error'));
                 setLoading(false);
               }
             }}
             className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
-            Try Again
+            {t('legalHelp.attorneys.tryAgain')}
           </button>
         </div>
       </div>

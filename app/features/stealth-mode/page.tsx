@@ -3,60 +3,62 @@
 import { motion } from 'framer-motion';
 import { Badge } from '../../components/ui/Badge';
 import { AppDownloadCTA } from '../../components/AppDownloadCTA';
+import { useTranslation } from '../../context/TranslationContext';
 
 export default function StealthModePage() {
+  const { t } = useTranslation();
   const features = [
     {
       icon: '🔒',
-      title: 'Hidden App Icon',
-      description: 'Disguise the DESIST app to look like a calculator, weather app, or other innocuous utility.'
+      title: t('stealthMode.features.hiddenIcon.title'),
+      description: t('stealthMode.features.hiddenIcon.description')
     },
     {
       icon: '🛡️',
-      title: 'Secure PIN Access',
-      description: 'Access your safety tools and resources through a secret PIN that only you know.'
+      title: t('stealthMode.features.securePin.title'),
+      description: t('stealthMode.features.securePin.description')
     },
     {
       icon: '📱',
-      title: 'Panic Mode',
-      description: 'Quickly exit to a decoy screen if someone unexpectedly looks at your phone.'
+      title: t('stealthMode.features.panicMode.title'),
+      description: t('stealthMode.features.panicMode.description')
     },
     {
       icon: '🔄',
-      title: 'Quick Switch',
-      description: 'Instantly switch between stealth mode and normal mode based on your safety needs.'
+      title: t('stealthMode.features.quickSwitch.title'),
+           description: t('stealthMode.features.quickSwitch.description')
     },
     {
       icon: '📞',
-      title: 'Emergency Contacts',
-      description: 'Access emergency contacts and safety resources even in stealth mode.'
+      title: t('stealthMode.features.emergencyContacts.title'),
+      description: t('stealthMode.features.emergencyContacts.description')
     },
     {
       icon: '🤐',
-      title: 'No Notifications',
-      description: 'All notifications are disabled in stealth mode to maintain your privacy and safety.'
+      title: t('stealthMode.features.noNotifications.title'),
+      description: t('stealthMode.features.noNotifications.description')
     }
   ];
 
   const scenarios = [
     {
-      title: 'Workplace Harassment',
-      description: 'Document incidents discreetly while maintaining professional appearances.',
+      title: t('stealthMode.scenarios.workplace.title'),
+      description: t('stealthMode.scenarios.workplace.description'),
       icon: '🏢'
     },
     {
-      title: 'Domestic Situations',
-      description: 'Access safety resources without raising suspicion in your living environment.',
+      title: t('stealthMode.scenarios.domestic.title'),
+      description: t('stealthMode.scenarios.domestic.description'),
       icon: '🏠'
     },
     {
-      title: 'Public Transportation',
-      description: 'Report incidents and access help while appearing to use a normal app.',
+      title: t('stealthMode.scenarios.transportation.title'),
+      description: t('stealthMode.scenarios.transportation.description'),
       icon: '🚌'
     },
     {
-      title: 'Social Settings',
-      description: 'Get support and document experiences without drawing unwanted attention.',
+      title: t('stealthMode.scenarios.social.title'),
+      description: t('stealthMode.scenarios.social.description'),
       icon: '👥'
     }
   ];
@@ -74,14 +76,13 @@ export default function StealthModePage() {
               className="mb-6"
             >
               <Badge variant="default" className="mb-4 bg-blue-600 hover:bg-blue-700 text-white">
-                Privacy & Safety Feature
+                {t('stealthMode.hero.badge')}
               </Badge>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                Stealth Mode
+                {t('stealthMode.hero.title')}
               </h1>
               <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-                Protect yourself with discretion. DESIST&apos;s Stealth Mode lets you access support 
-                and document events without anyone knowing you&apos;re using a safety app.
+                {t('stealthMode.hero.description')}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
                 {/* <Link href="/support/emergency">
@@ -106,11 +107,10 @@ export default function StealthModePage() {
             className="text-center mb-12"
           >
             <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
-              How Stealth Mode Protects You
+              {t('stealthMode.features.title')}
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-              Your safety is our priority. Stealth Mode ensures you can access help and document incidents 
-              without putting yourself at additional risk.
+              {t('stealthMode.features.description')}
             </p>
           </motion.div>
 
@@ -147,10 +147,10 @@ export default function StealthModePage() {
             className="text-center mb-12"
           >
             <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
-              When to Use Stealth Mode
-          </h2>
+              {t('stealthMode.scenarios.title')}
+            </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-              Stealth Mode is designed for situations where using an obvious safety app could put you at risk.
+              {t('stealthMode.scenarios.description')}
             </p>
           </motion.div>
 
@@ -191,10 +191,10 @@ export default function StealthModePage() {
             className="text-center mb-12"
           >
             <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
-              Setting Up Stealth Mode
+              {t('stealthMode.setup.title')}
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400">
-              Follow these simple steps to enable and configure Stealth Mode on your device.
+              {t('stealthMode.setup.description')}
             </p>
           </motion.div>
 
@@ -203,33 +203,33 @@ export default function StealthModePage() {
                 {[
                   {
                     step: 1,
-                    title: 'Download the DESIST App',
-                    description: 'Install the DESIST app on your smartphone from the App Store or Google Play.'
+                    title: t('stealthMode.setup.steps.download.title'),
+                    description: t('stealthMode.setup.steps.download.description')
                   },
                   {
                     step: 2,
-                    title: 'Complete Initial Setup',
-                    description: 'Create your account and complete the safety assessment to personalize your experience.'
+                    title: t('stealthMode.setup.steps.setup.title'),
+                    description: t('stealthMode.setup.steps.setup.description')
                   },
                   {
                     step: 3,
-                    title: 'Enable Stealth Mode',
-                    description: 'Go to Settings > Privacy & Safety > Stealth Mode and toggle it on.'
+                    title: t('stealthMode.setup.steps.enable.title'),
+                    description: t('stealthMode.setup.steps.enable.description')
                   },
                   {
                     step: 4,
-                    title: 'Choose Your Disguise',
-                    description: 'Select what type of app you want DESIST to appear as (calculator, weather, etc.).'
+                    title: t('stealthMode.setup.steps.disguise.title'),
+                    description: t('stealthMode.setup.steps.disguise.description')
                   },
                   {
                     step: 5,
-                    title: 'Set Your PIN',
-                    description: 'Create a secure PIN that will be used to access DESIST features in stealth mode.'
+                    title: t('stealthMode.setup.steps.pin.title'),
+                    description: t('stealthMode.setup.steps.pin.description')
                   },
                   {
                     step: 6,
-                    title: 'Test the Feature',
-                    description: 'Practice switching in and out of stealth mode to ensure you\'re comfortable with the process.'
+                    title: t('stealthMode.setup.steps.test.title'),
+                    description: t('stealthMode.setup.steps.test.description')
                   }
                 ].map((instruction, index) => (
                   <div key={index} className="flex items-start gap-4">
@@ -263,28 +263,27 @@ export default function StealthModePage() {
             <div className="flex items-center gap-3 mb-6">
               <span className="text-2xl">⚠️</span>
               <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-300">
-                Important Safety Considerations
+                {t('stealthMode.safety.title')}
               </h3>
             </div>
             <div className="space-y-3 text-gray-700 dark:text-gray-300 mb-6">
               <p>
-                <strong>Trust Your Instincts:</strong> If you feel unsafe using any technology, prioritize your immediate safety over documentation.
+                <strong>{t('stealthMode.safety.trustInstincts').split(':')[0]}:</strong> {t('stealthMode.safety.trustInstincts').split(':').slice(1).join(':')}
               </p>
               <p>
-                <strong>Practice First:</strong> Familiarize yourself with stealth mode features before you need them in a real situation.
+                <strong>{t('stealthMode.safety.practiceFirst').split(':')[0]}:</strong> {t('stealthMode.safety.practiceFirst').split(':').slice(1).join(':')}
               </p>
               <p>
-                <strong>Have Backup Plans:</strong> Stealth mode is one tool among many. Always have multiple safety strategies.
+                <strong>{t('stealthMode.safety.backupPlans').split(':')[0]}:</strong> {t('stealthMode.safety.backupPlans').split(':').slice(1).join(':')}
               </p>
               <p>
-                <strong>Stay Updated:</strong> Keep the app updated to ensure you have the latest security and privacy features.
+                <strong>{t('stealthMode.safety.stayUpdated').split(':')[0]}:</strong> {t('stealthMode.safety.stayUpdated').split(':').slice(1).join(':')}
               </p>
             </div>
             
             <div className="mt-6 pt-4 border-t border-blue-200 dark:border-blue-700">
               <p className="text-sm text-blue-700 dark:text-blue-400">
-                If you are in immediate danger, call 911 or your local emergency services. 
-                Technology tools should supplement, not replace, traditional safety measures.
+                {t('stealthMode.safety.notice')}
               </p>
             </div>
           </motion.div>
@@ -300,10 +299,10 @@ export default function StealthModePage() {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">
-              Ready to Get Protected?
+              {t('stealthMode.cta.title')}
             </h2>
             <p className="text-xl mb-8 text-gray-600 dark:text-gray-400">
-              Download the DESIST app today and take control of your safety with discretion and confidence.
+              {t('stealthMode.cta.description')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <AppDownloadCTA />

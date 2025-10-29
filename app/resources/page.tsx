@@ -271,10 +271,10 @@ export default function ResourcesPage() {
           >
             <div className="mb-8">
               <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
-                Featured Resources
+                {t('resources.featured.title')}
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-400">
-                Hand-picked resources to help you get started
+                {t('resources.featured.description')}
               </p>
             </div>
 
@@ -300,10 +300,10 @@ export default function ResourcesPage() {
           >
             <div className="mb-8">
               <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
-                Resource Library
+                {t('resources.library.title')}
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl">
-                Browse our complete collection of guides, tools, and educational materials
+                {t('resources.library.description')}
               </p>
             </div>
 
@@ -321,20 +321,20 @@ export default function ResourcesPage() {
             <div className="mb-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  All Resources ({filteredResources.length})
+                  {t('resources.library.allResources').replace('{count}', filteredResources.length.toString())}
                 </h3>
               </div>
 
               {filteredResources.length === 0 ? (
                 <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
                   <div className="text-gray-500 dark:text-gray-400 mb-4">
-                    No resources found matching your criteria
+                    {t('resources.library.noResults')}
                   </div>
                   <button
                     onClick={() => setActiveFilters({})}
                     className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
                   >
-                    Clear all filters
+                    {t('resources.library.clearFilters')}
                   </button>
                 </div>
               ) : (

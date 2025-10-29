@@ -311,13 +311,13 @@ export default function CommunityPage() {
             <section className="space-y-6">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                  Featured Community Posts
+                  {t('community.posts.featuredTitle')}
                 </h2>
                 <Link
                   href="/community/forum"
                   className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
                 >
-                  View all posts →
+                  {t('community.posts.viewAll')}
                 </Link>
               </div>
               

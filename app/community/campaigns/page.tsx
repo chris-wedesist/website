@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
+import { useTranslation } from '../../context/TranslationContext';
 
 interface Campaign {
   id: string;
@@ -40,6 +41,7 @@ interface Challenge {
 }
 
 export default function CampaignsPage() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'campaigns' | 'challenges'>('campaigns');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
@@ -243,11 +245,10 @@ export default function CampaignsPage() {
               Community Action
             </Badge> */}
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-              Campaigns & Challenges
+              {t('campaigns.hero.title')}
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-              Join our community-driven campaigns and daily challenges to create a safer, 
-              more supportive digital world for everyone.
+              {t('campaigns.hero.description')}
             </p>
           </motion.div>
         </div>
@@ -263,7 +264,7 @@ export default function CampaignsPage() {
                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
               }`}
             >
-              Campaigns
+              {t('campaigns.tabs.campaigns')}
             </button>
             <button
               onClick={() => setActiveTab('challenges')}
@@ -273,7 +274,7 @@ export default function CampaignsPage() {
                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
               }`}
             >
-              Challenges
+              {t('campaigns.tabs.challenges')}
             </button>
           </div>
         </div>
@@ -292,7 +293,7 @@ export default function CampaignsPage() {
                       : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-blue-50 dark:hover:bg-gray-700 border-gray-200 dark:border-gray-700'
                   }`}
                 >
-                  {category === 'all' ? 'All Categories' : category.charAt(0).toUpperCase() + category.slice(1)}
+                  {t(`campaigns.filters.${category === 'all' ? 'all' : category}`)}
                 </button>
               ))}
             </div>
@@ -311,17 +312,17 @@ export default function CampaignsPage() {
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-2">
                       <span className="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-full">
-                        {campaign.category}
+                        {t(`campaigns.filters.${campaign.category}`)}
                       </span>
                       <span className={`text-xs px-2 py-1 rounded-full ${
                         campaign.status === 'active' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
                       }`}>
-                        {campaign.status}
+                        {t(`campaigns.status.${campaign.status}`)}
                       </span>
                     </div>
                     {campaign.userParticipating && (
                       <span className="text-xs px-2 py-1 bg-blue-600 text-white rounded-full">
-                        ✓ Participating
+                        {t('campaigns.campaign.participating')}
                       </span>
                     )}
                   </div>
@@ -349,21 +350,21 @@ export default function CampaignsPage() {
                     </div>
                     <div className="flex justify-between items-center mt-2 text-sm text-gray-600 dark:text-gray-400">
                       <span>{campaign.impact.current.toLocaleString()}</span>
-                      <span>Goal: {campaign.impact.target.toLocaleString()}</span>
+                      <span>{t('campaigns.campaign.goal')} {campaign.impact.target.toLocaleString()}</span>
                     </div>
                   </div>
 
                   {/* Participants */}
                   <div className="flex items-center gap-2 mb-4">
                     <span className="text-sm text-gray-600 dark:text-gray-400">
-                      {campaign.totalParticipants.toLocaleString()} participants
+                      {campaign.totalParticipants.toLocaleString()} {t('campaigns.campaign.participants')}
                     </span>
                   </div>
 
                   {/* Steps */}
                   <div className="mb-4">
                     <h4 className="font-medium text-gray-900 dark:text-white mb-2 text-sm">
-                      How to participate:
+                      {t('campaigns.campaign.howToParticipate')}
                     </h4>
                     <ul className="space-y-1">
                       {campaign.steps.map((step, stepIndex) => (
@@ -378,7 +379,7 @@ export default function CampaignsPage() {
                   {/* Rewards */}
                   <div className="mb-6">
                     <h4 className="font-medium text-gray-900 dark:text-white mb-2 text-sm">
-                      Rewards:
+                      {t('campaigns.campaign.rewards')}
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {campaign.rewards.map((reward, rewardIndex) => (
@@ -399,7 +400,7 @@ export default function CampaignsPage() {
                     onClick={() => handleJoinCampaign(campaign.id)}
                     disabled={campaign.status !== 'active'}
                   >
-                    {campaign.userParticipating ? 'Continue Campaign' : 'Join Campaign'}
+                    {campaign.userParticipating ? t('campaigns.campaign.continue') : t('campaigns.campaign.join')}
                   </button>
 
                   {/* Timeline */}
@@ -421,8 +422,7 @@ export default function CampaignsPage() {
               viewport={{ once: true }}
             >
               <p className="text-gray-600 dark:text-gray-400">
-                Complete daily, weekly, and monthly challenges to earn points and badges while 
-                making a positive impact in the community.
+                {t('campaigns.challenges.description')}
               </p>
             </motion.div>
 
@@ -443,10 +443,10 @@ export default function CampaignsPage() {
                     {type === 'monthly' && '🗓️'}
                   </div>
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
-                    {type.charAt(0).toUpperCase() + type.slice(1)} Challenges
+                    {t(`campaigns.challenges.${type}`)}
                   </h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {challenges.filter(c => c.type === type).length} available
+                    {challenges.filter(c => c.type === type).length} {t('campaigns.challenges.available')}
                   </p>
                 </motion.div>
               ))}
@@ -474,7 +474,7 @@ export default function CampaignsPage() {
                                 {challenge.title}
                               </h3>
                               <Badge className={difficultyColors[challenge.difficulty]}>
-                                {challenge.difficulty}
+                                {t(`campaigns.challenges.difficulty.${challenge.difficulty}`)}
                               </Badge>
                               <Badge variant="outline" className="text-xs">
                                 {challenge.type}
@@ -484,8 +484,8 @@ export default function CampaignsPage() {
                               {challenge.description}
                             </p>
                             <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-                              <span>{challenge.points} points</span>
-                              <span>⏰ Due: {new Date(challenge.deadline).toLocaleDateString()}</span>
+                            <span>{challenge.points} {t('campaigns.challenges.points')}</span>
+                            <span>⏰ {t('campaigns.challenges.due')} {new Date(challenge.deadline).toLocaleDateString()}</span>
                             </div>
                           </div>
                         </div>
@@ -497,7 +497,7 @@ export default function CampaignsPage() {
                             disabled={challenge.completed}
                             className={challenge.completed ? '' : 'bg-blue-600 hover:bg-blue-700'}
                           >
-                            {challenge.completed ? '✓ Completed' : 'Start Challenge'}
+                            {challenge.completed ? t('campaigns.challenges.completed') : t('campaigns.challenges.start')}
                           </Button>
                         </div>
                       </div>
@@ -512,14 +512,14 @@ export default function CampaignsPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Your Challenge Progress</h3>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">{t('campaigns.challenges.progressTitle')}</h3>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
                         {challenges.filter(c => c.completed).length}
                       </div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">
-                        Completed
+                        {t('campaigns.challenges.completedLabel')}
                       </div>
                     </div>
                 <div className="text-center">
@@ -527,7 +527,7 @@ export default function CampaignsPage() {
                     {challenges.filter(c => c.completed).reduce((sum, c) => sum + c.points, 0)}
                   </div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    Points Earned
+                    {t('campaigns.challenges.pointsEarned')}
                   </div>
                 </div>
                 <div className="text-center">
@@ -535,7 +535,7 @@ export default function CampaignsPage() {
                     7
                   </div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    Day Streak
+                    {t('campaigns.challenges.dayStreak')}
                   </div>
                 </div>
                 <div className="text-center">
@@ -543,7 +543,7 @@ export default function CampaignsPage() {
                     #42
                   </div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    Global Rank
+                    {t('campaigns.challenges.globalRank')}
                   </div>
                 </div>
               </div>

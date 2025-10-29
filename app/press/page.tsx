@@ -1,6 +1,9 @@
 'use client';
 
+import { useTranslation } from '../context/TranslationContext';
+
 export default function PressPage() {
+  const { t } = useTranslation();
   // const pressAssets = {
   //   logos: [
   //     {
@@ -62,7 +65,7 @@ export default function PressPage() {
 
   const companyFacts = {
     founded: '2025',
-    mission: 'To eliminate digital harassment and build safer online communities through technology, education, and community support.',
+    mission: t('press.companyOverview.description'),
     userBase: '50,000+ beta users',
     platforms: ['Web App', 'iOS', 'Android', 'Browser Extension'],
     languages: '12 languages supported',
@@ -72,28 +75,28 @@ export default function PressPage() {
 
   const keyFeatures = [
     {
-      title: '🛡️ Real-time Protection',
-      description: 'AI-powered detection and blocking of harassment across platforms',
+      title: t('press.keyFeatures.realTimeProtection.title'),
+      description: t('press.keyFeatures.realTimeProtection.description'),
     },
     {
-      title: '🤝 Community Support',
-      description: 'Peer-to-peer support networks and professional counseling resources',
+      title: t('press.keyFeatures.communitySupport.title'),
+      description: t('press.keyFeatures.communitySupport.description'),
     },
     {
-      title: '📚 Educational Resources',
-      description: 'Comprehensive guides on digital safety and harassment prevention',
+      title: t('press.keyFeatures.educationalResources.title'),
+      description: t('press.keyFeatures.educationalResources.description'),
     },
     {
-      title: '🚨 Emergency Response',
-      description: 'Immediate crisis support and connection to local resources',
+      title: t('press.keyFeatures.emergencyResponse.title'),
+      description: t('press.keyFeatures.emergencyResponse.description'),
     },
     {
-      title: '🔒 Privacy First',
-      description: 'End-to-end encryption and user-controlled data privacy',
+      title: t('press.keyFeatures.privacyFirst.title'),
+      description: t('press.keyFeatures.privacyFirst.description'),
     },
     {
-      title: '📱 Cross-Platform',
-      description: 'Seamless protection across web, mobile, and social platforms',
+      title: t('press.keyFeatures.crossPlatform.title'),
+      description: t('press.keyFeatures.crossPlatform.description'),
     },
   ];
 
@@ -107,21 +110,21 @@ export default function PressPage() {
 
   const pressReleases = [
     {
-      date: 'September 1, 2025',
-      title: 'DESIST Launches Public Beta with 50,000+ Users',
-      summary: 'Anti-harassment platform opens to public after successful closed beta testing.',
+      date: t('press.pressReleases.releases.betaLaunch.date'),
+      title: t('press.pressReleases.releases.betaLaunch.title'),
+      summary: t('press.pressReleases.releases.betaLaunch.summary'),
       downloadUrl: '/press/release-beta-launch.pdf',
     },
     {
-      date: 'August 15, 2025',
-      title: 'DESIST Completes $5M Seed Round Led by Social Impact Ventures',
-      summary: 'Funding will accelerate platform development and expand community support programs.',
+      date: t('press.pressReleases.releases.funding.date'),
+      title: t('press.pressReleases.releases.funding.title'),
+      summary: t('press.pressReleases.releases.funding.summary'),
       downloadUrl: '/press/release-funding.pdf',
     },
     {
-      date: 'July 30, 2025',
-      title: 'DESIST Partners with National Crisis Hotlines for Emergency Support',
-      summary: 'Platform integrates direct access to professional crisis intervention services.',
+      date: t('press.pressReleases.releases.crisisPartnership.date'),
+      title: t('press.pressReleases.releases.crisisPartnership.title'),
+      summary: t('press.pressReleases.releases.crisisPartnership.summary'),
       downloadUrl: '/press/release-crisis-partnership.pdf',
     },
   ];
@@ -132,14 +135,13 @@ export default function PressPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-sm font-medium rounded-full mb-4 shadow-sm">
-            📰 Press Kit
+            📰 {t('press.hero.badge')}
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-            DESIST Press Kit
+            {t('press.hero.title')}
           </h1>
           <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-8">
-            Media resources, company information, and brand assets for journalists, 
-            partners, and content creators covering DESIST.
+            {t('press.hero.description')}
           </p>
           {/* <button 
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 shadow-lg hover:shadow-xl"
@@ -155,22 +157,19 @@ export default function PressPage() {
             {/* Company Overview */}
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
               <div className="mb-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Company Overview</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('press.companyOverview.title')}</h2>
               </div>
               <div className="space-y-4">
                 <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                  DESIST is a comprehensive anti-harassment platform that combines cutting-edge 
-                  AI technology with community-driven support to create safer digital spaces. 
-                  Founded in 2025, we&apos;re on a mission to eliminate online harassment through 
-                  real-time protection, educational resources, and crisis support.
+                  {t('press.companyOverview.description')}
                 </p>
                 <div className="grid md:grid-cols-2 gap-4">
                   {Object.entries(companyFacts).map(([key, value]) => (
                     <div key={key} className="flex p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                       <span className="font-medium text-gray-600 dark:text-gray-400 capitalize">
-                        {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:
+                        {t(`press.companyOverview.facts.${key}`)}:
                       </span>
-                      <span className="text-gray-900 dark:text-white font-semibold ml-1">{value}</span>
+                      <span className="text-gray-900 dark:text-white font-semibold ml-1">{typeof value === 'string' ? value : Array.isArray(value) ? value.join(', ') : value}</span>
                     </div>
                   ))}
                 </div>
@@ -180,7 +179,7 @@ export default function PressPage() {
             {/* Key Features */}
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
               <div className="mb-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Key Features & Capabilities</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('press.keyFeatures.title')}</h2>
               </div>
               <div>
                 <div className="grid md:grid-cols-2 gap-4">
@@ -201,7 +200,7 @@ export default function PressPage() {
             {/* Press Releases */}
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
               <div className="mb-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Recent Press Releases</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('press.pressReleases.title')}</h2>
               </div>
               <div>
                 <div className="space-y-4">
@@ -213,7 +212,7 @@ export default function PressPage() {
                             {release.date}
                           </span>
                           <span className="inline-flex items-center px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-medium rounded-full border border-gray-200 dark:border-gray-600">
-                            Press Release
+                            {t('press.pressReleases.pressRelease')}
                           </span>
                         </div>
                         <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
@@ -227,7 +226,7 @@ export default function PressPage() {
                         className="px-3 py-1 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
                         onClick={() => window.open(release.downloadUrl, '_blank')}
                       >
-                        📄 Download
+                        📄 {t('press.pressReleases.download')}
                       </button>
                     </div>
                   ))}
@@ -326,7 +325,7 @@ export default function PressPage() {
             {/* Media Contact */}
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
               <div className="mb-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Media Contact</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('press.mediaContact.title')}</h2>
               </div>
               <div className="space-y-3">
                 <div>
@@ -361,7 +360,7 @@ export default function PressPage() {
                   </div>
                 </div>
                 <button className="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 mt-4">
-                  📞 Schedule Interview
+                  {t('press.mediaContact.scheduleInterview')}
                 </button>
               </div>
             </div>
@@ -369,32 +368,32 @@ export default function PressPage() {
             {/* Quick Facts */}
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
               <div className="mb-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Quick Facts</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('press.quickFacts.title')}</h2>
               </div>
               <div>
                 <div className="space-y-3">
                   <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                     <div className="font-semibold text-blue-900 dark:text-blue-300">
-                      Launch Status
+                      {t('press.quickFacts.launchStatus.title')}
                     </div>
                     <div className="text-sm text-blue-700 dark:text-blue-400">
-                      Public Beta • Full Launch Sept 15
+                      {t('press.quickFacts.launchStatus.value')}
                     </div>
                   </div>
                   <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
                     <div className="font-semibold text-green-900 dark:text-green-300">
-                      User Safety
+                      {t('press.quickFacts.userSafety.title')}
                     </div>
                     <div className="text-sm text-green-700 dark:text-green-400">
-                      99.2% harassment detection rate
+                      {t('press.quickFacts.userSafety.value')}
                     </div>
                   </div>
                   <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
                     <div className="font-semibold text-purple-900 dark:text-purple-300">
-                      Community Impact
+                      {t('press.quickFacts.communityImpact.title')}
                     </div>
                     <div className="text-sm text-purple-700 dark:text-purple-400">
-                      85% reduction in harassment reports
+                      {t('press.quickFacts.communityImpact.value')}
                     </div>
                   </div>
                 </div>
@@ -404,7 +403,7 @@ export default function PressPage() {
             {/* Social Media */}
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
               <div className="mb-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Follow DESIST</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('press.socialMedia.title')}</h2>
               </div>
               <div>
                 <div className="space-y-3">

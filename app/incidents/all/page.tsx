@@ -29,9 +29,9 @@ interface Incident {
   user_email?: string;
 }
 
-const transformIncidentToLocation = (incident: Incident) => ({
+const transformIncidentToLocation = (incident: Incident, t: any) => ({
   id: incident.id,
-  title: incident.type || 'Unknown Incident Type',
+  title: incident.type || t('incidents.recent.unknownType'),
   description: incident.description,
   latitude: incident.latitude,
   longitude: incident.longitude,
@@ -358,7 +358,7 @@ export default function AllIncidentsPage() {
                 </div>
               ) : viewMode === 'map' ? (
                 <div className="h-[600px] rounded-lg overflow-hidden">
-                  <DynamicMap locations={paginatedIncidents.map(transformIncidentToLocation)} />
+                  <DynamicMap locations={paginatedIncidents.map(incident => transformIncidentToLocation(incident, t))} />
                 </div>
               ) : listLayout === 'grid' ? (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -398,9 +398,9 @@ export default function AllIncidentsPage() {
                         <p className="truncate max-w-[250px]" title={incident.address}>
                           {userLocation ? (
                             <>
-                              📏 {calculateDistance(userLocation.lat, userLocation.lng, incident.latitude, incident.longitude).toFixed(1)} km away
+                              📏 {calculateDistance(userLocation.lat, userLocation.lng, incident.latitude, incident.longitude).toFixed(1)} {t('incidents.recent.kmAway')}
                               <br />
-                              📍 {incident.address || 'Location not specified'}
+                              📍 {incident.address || t('incidents.recent.location')}
                             </>
                           ) : (
                             <>📍 {incident.address || 'Location not specified'}</>
@@ -409,7 +409,7 @@ export default function AllIncidentsPage() {
                         <p>🕒 {formatDate(incident.created_at)}</p>
                         {incident.user_name && (
                           <p className="text-xs text-gray-400 dark:text-gray-500">
-                            👤 Reported by: {incident.user_name}
+                            👤 {t('incidents.recent.reportedBy')} {incident.user_name}
                           </p>
                         )}
                       </div>
@@ -437,9 +437,9 @@ export default function AllIncidentsPage() {
                             <span className="truncate max-w-[250px]" title={incident.address}>
                               {userLocation ? (
                                 <>
-                                  📏 {calculateDistance(userLocation.lat, userLocation.lng, incident.latitude, incident.longitude).toFixed(1)} km away
+                                  📏 {calculateDistance(userLocation.lat, userLocation.lng, incident.latitude, incident.longitude).toFixed(1)} {t('incidents.recent.kmAway')}
                                   <br />
-                                  📍 {incident.address || 'Location not specified'}
+                                  📍 {incident.address || t('incidents.recent.location')}
                                 </>
                               ) : (
                                 <>📍 {incident.address || 'Location not specified'}</>

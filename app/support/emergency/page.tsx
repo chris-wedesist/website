@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Badge } from '../../components/ui/Badge';
 import { AppDownloadCTA } from '../../components/AppDownloadCTA';
+import { useTranslation } from '../../context/TranslationContext';
 
 interface EmergencyContact {
   id: string;
@@ -17,6 +18,7 @@ interface EmergencyContact {
 }
 
 export default function EmergencyPage() {
+  const { t } = useTranslation();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   const emergencyContacts: EmergencyContact[] = [
@@ -83,11 +85,11 @@ export default function EmergencyPage() {
   ];
 
   const categories = [
-    { id: 'all', label: 'All Resources', icon: '📞' },
-    { id: 'hotline', label: 'Phone Hotlines', icon: '☎️' },
-    { id: 'text', label: 'Text Support', icon: '💬' },
-    { id: 'chat', label: 'Online Chat', icon: '💻' },
-    { id: 'local', label: 'Local Resources', icon: '📍' }
+    { id: 'all', label: t('support.emergency.categories.all'), icon: '📞' },
+    { id: 'hotline', label: t('support.emergency.categories.hotline'), icon: '☎️' },
+    { id: 'text', label: t('support.emergency.categories.text'), icon: '💬' },
+    { id: 'chat', label: t('support.emergency.categories.chat'), icon: '💻' },
+    { id: 'local', label: t('support.emergency.categories.local'), icon: '📍' }
   ];
 
   const filteredContacts = selectedCategory === 'all' 
@@ -97,23 +99,23 @@ export default function EmergencyPage() {
   const safetyTips = [
     {
       icon: '🔒',
-      title: 'Use a Safe Device',
-      description: 'Use a device that your abuser doesn\'t have access to when seeking help.'
+      title: t('support.emergency.safetyTips.safeDevice.title'),
+      description: t('support.emergency.safetyTips.safeDevice.description')
     },
     {
       icon: '🔄',
-      title: 'Clear Your History',
-      description: 'Clear your browser history and use incognito/private browsing mode.'
+      title: t('support.emergency.safetyTips.clearHistory.title'),
+      description: t('support.emergency.safetyTips.clearHistory.description')
     },
     {
       icon: '📱',
-      title: 'Have a Safety Plan',
-      description: 'Develop a safety plan for leaving dangerous situations quickly.'
+      title: t('support.emergency.safetyTips.safetyPlan.title'),
+      description: t('support.emergency.safetyTips.safetyPlan.description')
     },
     {
       icon: '👥',
-      title: 'Tell Someone You Trust',
-      description: 'Let a trusted friend or family member know about your situation.'
+      title: t('support.emergency.safetyTips.tellSomeone.title'),
+      description: t('support.emergency.safetyTips.tellSomeone.description')
     }
   ];
 
@@ -123,7 +125,7 @@ export default function EmergencyPage() {
       <div className="bg-blue-600 text-white py-3">
         <div className="container mx-auto px-4 text-center">
           <p className="font-medium">
-            If you are in immediate danger, call 911 or your local emergency services immediately
+            {t('support.emergency.alert')}
           </p>
         </div>
       </div>
@@ -139,13 +141,13 @@ export default function EmergencyPage() {
               className="mb-6"
             >
               <Badge variant="default" className="mb-4 bg-blue-600 hover:bg-blue-700 text-white">
-                Crisis Support Available
+                {t('support.emergency.hero.badge')}
               </Badge>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                Emergency Resources & Support
+                {t('support.emergency.hero.title')}
               </h1>
               <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-                Access immediate help and support. You&apos;re not alone, and help is available 24/7.
+                {t('support.emergency.hero.description')}
               </p>
             </motion.div>
           </div>
@@ -164,7 +166,7 @@ export default function EmergencyPage() {
               className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg text-center"
             >
               <div className="text-2xl mb-2">🚨</div>
-              <h3 className="font-bold text-blue-600 dark:text-blue-400">Emergency</h3>
+              <h3 className="font-bold text-blue-600 dark:text-blue-400">{t('support.emergency.quickAccess.emergency')}</h3>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">911</p>
             </motion.div>
 
@@ -176,7 +178,7 @@ export default function EmergencyPage() {
               className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg text-center"
             >
               <div className="text-2xl mb-2">☎️</div>
-              <h3 className="font-bold text-blue-600 dark:text-blue-400">Domestic Violence</h3>
+              <h3 className="font-bold text-blue-600 dark:text-blue-400">{t('support.emergency.quickAccess.domesticViolence')}</h3>
               <p className="text-lg font-bold text-gray-900 dark:text-white">1-800-799-7233</p>
             </motion.div>
 
@@ -188,7 +190,7 @@ export default function EmergencyPage() {
               className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg text-center"
             >
               <div className="text-2xl mb-2">💬</div>
-              <h3 className="font-bold text-blue-600 dark:text-blue-400">Crisis Text</h3>
+              <h3 className="font-bold text-blue-600 dark:text-blue-400">{t('support.emergency.quickAccess.crisisText')}</h3>
               <p className="text-lg font-bold text-gray-900 dark:text-white">HOME to 741741</p>
             </motion.div>
           </div>
@@ -240,7 +242,7 @@ export default function EmergencyPage() {
                       {contact.number}
                     </p>
                     <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                      Available: {contact.available}
+                      {t('support.emergency.contact.available')}: {contact.available}
                     </p>
                   </div>
 
@@ -250,7 +252,7 @@ export default function EmergencyPage() {
 
                   {contact.specialties && (
                     <div className="mb-4">
-                      <h4 className="font-medium text-gray-900 dark:text-white mb-2 text-sm">Specialties:</h4>
+                      <h4 className="font-medium text-gray-900 dark:text-white mb-2 text-sm">{t('support.emergency.contact.specialties')}:</h4>
                       <div className="flex flex-wrap gap-1">
                         {contact.specialties.map((specialty, idx) => (
                           <span 
@@ -266,7 +268,7 @@ export default function EmergencyPage() {
 
                   {contact.languages && (
                     <div className="mb-4">
-                      <h4 className="font-medium text-gray-900 dark:text-white mb-2 text-sm">Languages:</h4>
+                      <h4 className="font-medium text-gray-900 dark:text-white mb-2 text-sm">{t('support.emergency.contact.languages')}:</h4>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
                         {contact.languages.join(', ')}
                       </p>
@@ -278,14 +280,14 @@ export default function EmergencyPage() {
                       className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
                       onClick={() => window.open(`tel:${contact.number}`)}
                     >
-                      Call Now
+                      {t('support.emergency.contact.callNow')}
                     </button>
                     {contact.type === 'text' && (
                       <button 
                         className="w-full py-3 px-4 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 rounded-lg font-medium transition-colors hover:bg-gray-50 dark:hover:bg-gray-700"
                         onClick={() => window.open(`sms:${contact.number.split(' ').pop()}`)}
                       >
-                        Send Text
+                        {t('support.emergency.contact.sendText')}
                       </button>
                     )}
                   </div>
@@ -306,10 +308,10 @@ export default function EmergencyPage() {
             className="text-center mb-12"
           >
             <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
-              Digital Safety Tips
+              {t('support.emergency.safetyTips.title')}
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-              Protect yourself while seeking help online or through digital resources.
+              {t('support.emergency.safetyTips.description')}
             </p>
           </motion.div>
 
@@ -346,11 +348,10 @@ export default function EmergencyPage() {
             className="text-center"
           >
             <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">
-              Take Safety With You Everywhere
+              {t('support.emergency.appDownload.title')}
             </h2>
             <p className="text-xl mb-8 text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-              Download the DESIST app for discreet access to emergency resources, 
-              documentation tools, and safety features wherever you go.
+              {t('support.emergency.appDownload.description')}
             </p>
             <AppDownloadCTA />
           </motion.div>
@@ -364,12 +365,11 @@ export default function EmergencyPage() {
             <div className="flex items-center justify-center gap-3 mb-4">
               <span className="text-2xl">⚠️</span>
               <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-300">
-                Important: Your Safety Comes First
+                {t('support.emergency.importantNotice.title')}
               </h3>
             </div>
             <p className="text-blue-700 dark:text-blue-400">
-              If you are in immediate physical danger, call 911 immediately. If your internet activity is being monitored, 
-              consider using a safer computer or device. Clear your browser history after visiting safety resources.
+              {t('support.emergency.importantNotice.content')}
             </p>
           </div>
         </div>

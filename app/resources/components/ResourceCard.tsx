@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, Badge } from '../../components/ui';
 import { cn } from '../../../utils/cn';
+import { useTranslation } from '../../context/TranslationContext';
 
 export interface Resource {
   id: string;
@@ -61,6 +62,8 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
   className,
   compact = false,
 }) => {
+  const { t } = useTranslation();
+  
   const formatNumber = (num: number) => {
     if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
     if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
@@ -124,7 +127,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
                 {resource.title}
               </h3>
               {resource.featured && (
-                <Badge variant="default" size="sm">Featured</Badge>
+                <Badge variant="default" size="sm">{t('resources.card.featured')}</Badge>
               )}
             </div>
             <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-1">
@@ -134,7 +137,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
           
           <div className="flex-shrink-0 text-right">
             <div className="text-xs text-gray-500 dark:text-gray-400">
-              {formatNumber(resource.stats.views)} views
+              {formatNumber(resource.stats.views)} {t('resources.card.views')}
             </div>
           </div>
         </div>
@@ -188,7 +191,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
               
               {resource.featured && (
                 <Badge variant="default" size="sm">
-                  Featured
+                  {t('resources.card.featured')}
                 </Badge>
               )}
             </div>
@@ -201,7 +204,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
           <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
             {resource.author && (
               <>
-                <span>By {resource.author}</span>
+                <span>{t('resources.card.by')} {resource.author}</span>
                 <span>•</span>
               </>
             )}
@@ -211,7 +214,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
             {resource.readTime && (
               <>
                 <span>•</span>
-                <span>{resource.readTime} min read</span>
+                <span>{resource.readTime} {t('resources.card.minRead')}</span>
               </>
             )}
           </div>
@@ -267,11 +270,11 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
             <div className="flex items-center gap-2">
               {resource.downloadUrl && (
                 <button className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-sm font-medium transition-colors">
-                  Download
+                  {t('resources.card.download')}
                 </button>
               )}
               <button className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-sm font-medium transition-colors">
-                View →
+                {t('resources.card.view')} →
               </button>
             </div>
           </div>

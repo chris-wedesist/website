@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { BadgeShowcase } from '../community/components/BadgeShowcase';
 import supabase from '../../utils/supabase';
+import { useTranslation } from '../context/TranslationContext';
 
 interface UserProfile {
   id: string;
@@ -44,6 +45,7 @@ interface IncidentReport {
 }
 
 export default function AccountPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isLoading, setIsLoading] = useState(true);
@@ -368,18 +370,18 @@ export default function AccountPage() {
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading your account...</p>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">{t('account.loading')}</p>
         </div>
       </div>
     );
   }
 
   const tabs = [
-    { id: 'dashboard', label: 'Dashboard', icon: '📊' },
-    { id: 'incidents', label: 'Incident Reports', icon: '🚨' },
-    { id: 'badges', label: 'Badges & Achievements', icon: '🏆' },
-    { id: 'profile', label: 'Profile Settings', icon: '👤' },
-    { id: 'privacy', label: 'Privacy & Security', icon: '🔒' },
+    { id: 'dashboard', label: t('account.tabs.dashboard'), icon: '📊' },
+    { id: 'incidents', label: t('account.tabs.incidents'), icon: '🚨' },
+    { id: 'badges', label: t('account.tabs.badges'), icon: '🏆' },
+    { id: 'profile', label: t('account.tabs.profile'), icon: '👤' },
+    { id: 'privacy', label: t('account.tabs.privacy'), icon: '🔒' },
   ];
 
   return (
@@ -401,13 +403,13 @@ export default function AccountPage() {
                 onClick={() => router.push('/')}
                 className="hidden sm:inline-flex px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
               >
-                Back to Site
+                {t('account.header.backToSite')}
               </button>
               <button 
                 onClick={handleSignOut}
                 className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
               >
-                Sign Out
+                {t('account.header.signOut')}
               </button>
             </div>
           </div>
@@ -425,10 +427,10 @@ export default function AccountPage() {
                     {(profile?.name || user?.user_metadata?.full_name || 'U')[0].toUpperCase()}
                   </div>
                   <h3 className="font-semibold text-gray-900 dark:text-white">
-                    {profile?.name || user?.user_metadata?.full_name || 'Anonymous User'}
+                    {profile?.name || user?.user_metadata?.full_name || t('account.sidebar.anonymousUser')}
                   </h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Member since {new Date(profile?.createdAt || Date.now()).getFullYear()}
+                    {t('account.sidebar.memberSince').replace('{year}', new Date(profile?.createdAt || Date.now()).getFullYear().toString())}
                   </p>
                 </div>
 
@@ -477,7 +479,7 @@ export default function AccountPage() {
                       {stats.communityPosts}
                     </div>
                     <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                      Community Posts
+                      {t('account.dashboard.communityPosts')}
                     </div>
                   </div>
                   
@@ -486,7 +488,7 @@ export default function AccountPage() {
                       {stats.resourcesShared}
                     </div>
                     <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                      Resources Shared
+                      {t('account.dashboard.resourcesShared')}
                     </div>
                   </div>
                   
@@ -504,7 +506,7 @@ export default function AccountPage() {
                       {stats.incidentReports}
                     </div>
                     <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                      Incident Reports
+                      {t('account.dashboard.incidentReports')}
                     </div>
                   </div>
                 </div>
@@ -513,7 +515,7 @@ export default function AccountPage() {
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg">
                   <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                      Recent Activity
+                      {t('account.dashboard.recentActivity.title')}
                     </h3>
                   </div>
                   <div className="p-6">
@@ -522,10 +524,10 @@ export default function AccountPage() {
                         <div className="text-center py-8">
                           <div className="text-gray-400 text-4xl mb-4">📊</div>
                           <h4 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                            No Recent Activity
+                            {t('account.dashboard.recentActivity.none')}
                           </h4>
                           <p className="text-gray-600 dark:text-gray-400">
-                            Start engaging with the community to see your activity here.
+                            {t('account.dashboard.recentActivity.startEngaging')}
                           </p>
                         </div>
                       ) : (
@@ -568,10 +570,10 @@ export default function AccountPage() {
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg">
                   <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                      Your Incident Reports
+                      {t('account.incidents.title')}
                     </h3>
                     <p className="text-gray-600 dark:text-gray-400">
-                      Track and manage your workplace incident reports.
+                      {t('account.incidents.description')}
                     </p>
                   </div>
                   <div className="p-6">
@@ -594,22 +596,29 @@ export default function AccountPage() {
                         </div>
                       ) : (
                         incidentReports.map((report) => {
+                          const getStatusLabel = (status: string) => {
+                            const statusKey = status.toLowerCase().replace(' ', '_');
+                            return t(`account.incidents.status.${statusKey}`) || status.charAt(0).toUpperCase() + status.slice(1);
+                          };
+
                           const statusColors: { [key: string]: string } = {
                             active: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
                             investigating: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
                             resolved: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
-                            closed: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300'
+                            closed: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300',
+                            pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300',
+                            under_review: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
                           };
                           
                           return (
                             <div key={report.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow">
                               <div className="flex justify-between items-start mb-3">
                                 <h4 className="text-lg font-medium text-gray-900 dark:text-white">
-                                  {report.type || 'Incident Report'}
+                                  {report.type || t('account.incidents.title')}
                                 </h4>
                                 <div className="flex gap-2">
                                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[report.status.toLowerCase()] || statusColors.closed}`}>
-                                    {report.status.charAt(0).toUpperCase() + report.status.slice(1)}
+                                    {getStatusLabel(report.status)}
                                   </span>
                                   {/* DELETE BUTTON COMMENTED OUT FOR NOW */}
                                   {/* <button
@@ -629,7 +638,7 @@ export default function AccountPage() {
                               </p>
                               
                               <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
-                                <span>📍 {report.address || 'Location not specified'}</span>
+                                <span>📍 {report.address || t('account.incidents.locationNotSpecified')}</span>
                                 <span>📅 {new Date(report.created_at).toLocaleDateString()}</span>
                               </div>
                             </div>
@@ -651,10 +660,10 @@ export default function AccountPage() {
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg">
                   <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                      Your Badges & Achievements
+                      {t('account.badges.title')}
                     </h3>
                     <p className="text-gray-600 dark:text-gray-400">
-                      Track your progress and showcase your achievements in the DESIST community.
+                      {t('account.badges.description')}
                     </p>
                   </div>
                   <div className="p-6">
@@ -673,7 +682,7 @@ export default function AccountPage() {
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg">
                   <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                      Profile Settings
+                      {t('account.profile.title')}
                     </h3>
                     <p className="text-gray-600 dark:text-gray-400">
                       Manage your personal information and how others see you in the community.
@@ -684,7 +693,7 @@ export default function AccountPage() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Display Name
+                            {t('account.profile.name')}
                           </label>
                           <input
                             type="text"
@@ -695,7 +704,7 @@ export default function AccountPage() {
                         
                         <div>
                           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Pronouns
+                            {t('account.profile.pronouns')}
                           </label>
                           <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
                             <option value="">Select pronouns</option>
@@ -709,7 +718,7 @@ export default function AccountPage() {
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Bio
+                          {t('account.profile.bio')}
                         </label>
                         <textarea
                           rows={3}
@@ -721,7 +730,7 @@ export default function AccountPage() {
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Location
+                          {t('account.profile.location')}
                         </label>
                         <input
                           type="text"
@@ -733,7 +742,7 @@ export default function AccountPage() {
 
                       <div className="flex justify-end">
                         <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                          Save Changes
+                          {t('account.profile.save')}
                         </button>
                       </div>
                     </div>
@@ -751,7 +760,7 @@ export default function AccountPage() {
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg">
                   <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                      Privacy & Security Settings
+                      {t('account.privacy.title')}
                     </h3>
                     <p className="text-gray-600 dark:text-gray-400">
                       Control your privacy and who can see your information.
@@ -770,7 +779,7 @@ export default function AccountPage() {
                               className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                             />
                             <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                              Make my profile visible to other community members
+                              {t('account.privacy.privateProfile')}
                             </span>
                           </label>
                           
@@ -781,7 +790,7 @@ export default function AccountPage() {
                               className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                             />
                             <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                              Show my email address on my profile
+                              {t('account.privacy.showEmail')}
                             </span>
                           </label>
                           
@@ -792,7 +801,7 @@ export default function AccountPage() {
                               className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                             />
                             <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                              Show my location on my profile
+                              {t('account.privacy.showLocation')}
                             </span>
                           </label>
                           
@@ -803,7 +812,7 @@ export default function AccountPage() {
                               className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                             />
                             <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                              Allow other members to send me messages
+                              {t('account.privacy.allowMessages')}
                             </span>
                           </label>
                         </div>
@@ -822,7 +831,7 @@ export default function AccountPage() {
                             onClick={() => setShowDeleteModal(true)}
                             className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-600 rounded-lg hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 dark:bg-gray-800 dark:text-red-400 dark:border-red-400 dark:hover:bg-red-900/20 ml-4"
                           >
-                            Delete Account
+                            {t('account.privacy.deleteAccount')}
                           </button>
                         </div>
                       </div>
@@ -858,15 +867,15 @@ export default function AccountPage() {
               </div>
               
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                Delete Account Permanently
+                {t('account.privacy.deleteAccount')}
               </h3>
               
               <p className="text-gray-600 dark:text-gray-400 mb-6">
-                This action cannot be undone. This will permanently delete all of your data from our servers and sign you out. Note: Your authentication account will remain in the system but will be inaccessible.
+                {t('account.privacy.deleteDescription')}
               </p>
 
               <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
-                <h4 className="font-semibold text-red-800 dark:text-red-300 mb-2">The following data will be deleted:</h4>
+                <h4 className="font-semibold text-red-800 dark:text-red-300 mb-2">{t('account.privacy.deleteWarning')}</h4>
                 <ul className="text-sm text-red-700 dark:text-red-400 text-left space-y-1">
                   <li>• All incident reports ({stats.incidentReports})</li>
                   <li>• All community posts ({stats.communityPosts})</li>
@@ -879,13 +888,13 @@ export default function AccountPage() {
 
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Type <span className="font-bold text-red-600">DELETE</span> to confirm:
+                  {t('account.privacy.deleteConfirm')}
                 </label>
                 <input
                   type="text"
                   value={deleteConfirmation}
                   onChange={(e) => setDeleteConfirmation(e.target.value)}
-                  placeholder="Type DELETE here"
+                  placeholder={t('account.privacy.deletePlaceholder')}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 dark:bg-gray-700 dark:text-white"
                 />
               </div>
@@ -899,7 +908,7 @@ export default function AccountPage() {
                   disabled={isDeleting}
                   className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 disabled:opacity-50"
                 >
-                  Cancel
+                  {t('account.privacy.cancel')}
                 </button>
                 <button
                   onClick={handleDeleteAccount}
@@ -909,10 +918,10 @@ export default function AccountPage() {
                   {isDeleting ? (
                     <div className="flex items-center justify-center">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Deleting...
+                      {t('account.privacy.deleting')}
                     </div>
                   ) : (
-                    'Delete Account'
+                    t('account.privacy.deleteButton')
                   )}
                 </button>
               </div>
