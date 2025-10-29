@@ -27,11 +27,6 @@ const getNavigationGroups = (isLoggedIn: boolean) => ({
     items: [
       { name: "header.navigation.community", href: "/community", isMain: true },
       { name: "header.navigation.campaigns", href: "/community/campaigns" },
-      // Include Legal Help in community dropdown when logged in
-      ...(isLoggedIn 
-        ? [{ name: "header.navigation.legalHelp", href: "/legal-help" }]
-        : []
-      ),
     ]
   },
   features: {
