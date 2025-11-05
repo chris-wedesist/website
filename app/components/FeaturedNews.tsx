@@ -84,7 +84,8 @@ export default function FeaturedNews() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow"
+              className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
+              onClick={() => window.location.href = `/blog/${item.id}`}
             >
               <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-2">
                 <span>{item.source}</span>
@@ -97,14 +98,12 @@ export default function FeaturedNews() {
               <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">
                 {item.description}
               </p>
-              <a
-                href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href={`/blog/${item.id}`}
                 className="text-blue-600 dark:text-blue-400 text-sm hover:underline"
               >
                 {t('home.news.readMore')}
-              </a>
+              </Link>
             </motion.div>
           ))}
         </div>

@@ -4,6 +4,8 @@ import axios from 'axios';
 import * as fs from 'fs';
 import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { createHash } from 'crypto';
+import * as cheerio from 'cheerio';
 
 // Define article type
 // type Article = {
@@ -193,7 +195,15 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Invalid limit. Must be between 1 and 20' }, { status: 400 });
     }
 
-    const parser = new Parser();
+    const parser = new Parser({
+      customFields: {
+        item: [
+          ['media:content', 'media:content', { keepArray: true }],
+          ['media:thumbnail', 'media:thumbnail', { keepArray: true }],
+          ['itunes:image', 'itunes:image']
+        ]
+      }
+    });
     const allArticles = [];
 
     console.log(`Fetching from ${RSS_FEEDS.length} RSS feeds`);
@@ -216,22 +226,146 @@ export async function GET(request: Request) {
         const articlePromises = relevantItems.map(async (item: any) => {
           if (!item) return null;
 
-          const imageUrl = item.enclosure?.url;
+          // Try multiple sources for images
+          let imageUrl: string | null = null;
+          
+          // 1. Try enclosure (most common)
+          if (item.enclosure?.url) {
+            imageUrl = item.enclosure.url;
+          }
+          
+          // 2. Try media:content
+          if (!imageUrl && item['media:content']?.[0]?.url) {
+            imageUrl = item['media:content'][0].url;
+          }
+          
+          // 3. Try media:thumbnail
+          if (!imageUrl && item['media:thumbnail']?.[0]?.url) {
+            imageUrl = item['media:thumbnail'][0].url;
+          }
+          
+          // 4. Try itunes:image
+          if (!imageUrl && item['itunes:image']?.href) {
+            imageUrl = item['itunes:image'].href;
+          }
+          
+          // Download and save image (try to download, but don't fail if it doesn't work)
           const localImagePath = imageUrl ? await downloadAndSaveImage(imageUrl) : null;
           
+          // Create a stable, unique ID from the URL using SHA-256 hash
+          const articleUrl = item.link || '';
+          let articleId: string;
+          if (articleUrl) {
+            // Use SHA-256 hash of the URL to create a unique ID
+            const hash = createHash('sha256').update(articleUrl).digest('hex');
+            articleId = hash.substring(0, 32); // Use first 32 chars of hash
+          } else {
+            articleId = uuidv4();
+          }
+          
+          const fullContent = item.content || item.contentSnippet || item.description || '';
+          
+          // Extract images from content if available
+          const images: string[] = [];
+          
+          // Helper function to resolve relative URLs
+          const resolveImageUrl = (src: string | undefined): string | null => {
+            if (!src) return null;
+            try {
+              // Handle data URLs
+              if (src.startsWith('data:')) return null;
+              
+              // Handle absolute URLs
+              if (src.startsWith('http://') || src.startsWith('https://')) {
+                return src;
+              }
+              
+              // Handle relative URLs - resolve against article URL
+              if (articleUrl) {
+                return new URL(src, articleUrl).href;
+              }
+              
+              return null;
+            } catch {
+              return null;
+            }
+          };
+          
+          if (fullContent) {
+            try {
+              const $ = cheerio.load(fullContent);
+              $('img').each((_, el) => {
+                const src = $(el).attr('src') || $(el).attr('data-src') || $(el).attr('data-lazy-src');
+                const resolvedUrl = resolveImageUrl(src);
+                if (resolvedUrl) {
+                  images.push(resolvedUrl);
+                }
+              });
+            } catch (error) {
+              // If parsing fails, continue without images from content
+            }
+          }
+          
+          // Add original image URL if available (from enclosure/media)
+          if (imageUrl) {
+            // Always add original URL to images array (don't rely on local download)
+            images.unshift(imageUrl);
+            // Also add local path if download succeeded
+            if (localImagePath) {
+              images.unshift(localImagePath);
+            }
+          }
+          
+          // If no image found yet, try to fetch from article page (Open Graph)
+          if (!imageUrl && articleUrl && images.length === 0) {
+            try {
+              console.log(`[API] No image in RSS, trying to fetch from article: ${articleUrl}`);
+              const articleResponse = await axios.get(articleUrl, {
+                timeout: 5000,
+                headers: {
+                  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                }
+              });
+              const $ = cheerio.load(articleResponse.data);
+              
+              // Try Open Graph image first
+              const ogImage = $('meta[property="og:image"]').attr('content');
+              if (ogImage) {
+                const resolvedOgImage = resolveImageUrl(ogImage);
+                if (resolvedOgImage) {
+                  imageUrl = resolvedOgImage;
+                  images.push(resolvedOgImage);
+                  console.log(`[API] Found OG image: ${resolvedOgImage}`);
+                }
+              }
+            } catch (error) {
+              // Silently fail - this is just a fallback
+              console.log(`[API] Could not fetch image from article page`);
+            }
+          }
+          
           const processedItem = {
-            id: uuidv4(),
+            id: articleId,
             title: item.title || 'Untitled Article',
             description: truncateText(item.contentSnippet || item.content || '', MAX_DESCRIPTION_LENGTH),
-            url: item.link || '',
-            imageUrl: localImagePath,
+            content: fullContent, // Full article content
+            url: articleUrl,
+            imageUrl: imageUrl || localImagePath || null, // Prioritize original URL, fallback to local
+            images: images.length > 0 ? images : undefined,
             source: feed.name,
-            date: item.isoDate || item.pubDate || new Date().toISOString()
+            date: item.isoDate || item.pubDate || new Date().toISOString(),
+            author: item.creator || item.author || feed.name,
+            categories: item.categories || []
           };
 
           console.log('Processed relevant article:', {
+            id: processedItem.id,
             title: processedItem.title,
-            source: processedItem.source
+            source: processedItem.source,
+            url: processedItem.url,
+            imageUrl: processedItem.imageUrl,
+            imagesCount: processedItem.images?.length || 0,
+            hasImage: !!(processedItem.imageUrl || processedItem.images?.length)
           });
           
           return processedItem;
