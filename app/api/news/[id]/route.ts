@@ -4,14 +4,7 @@ import * as cheerio from 'cheerio';
 
 // Get the base URL for API calls
 const getBaseUrl = (): string => {
-  // Use environment variable if available, otherwise use production domain
-  if (process.env.NEXT_PUBLIC_SITE_URL) {
-    return process.env.NEXT_PUBLIC_SITE_URL;
-  }
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-  // Default to production domain
+  // Always use production domain
   return 'https://desistv2.vercel.app';
 };
 

@@ -78,14 +78,7 @@ const IMAGES_DIR = path.join(process.cwd(), 'public', 'images', 'news');
 
 // Get the base URL for generating full article URLs
 function getBaseUrl(): string {
-  // Use environment variable if available, otherwise use production domain
-  if (process.env.NEXT_PUBLIC_SITE_URL) {
-    return process.env.NEXT_PUBLIC_SITE_URL;
-  }
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-  // Default to production domain
+  // Always use production domain
   return 'https://desistv2.vercel.app';
 }
 
@@ -96,6 +89,7 @@ function generateSlug(title: string): string {
     .trim()
     .replace(/[^\w\s-]/g, '') // Remove special characters
     .replace(/[\s_-]+/g, '-') // Replace spaces and underscores with hyphens
+    .replace(/-+/g, '-') // Replace multiple consecutive dashes with single dash
     .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
 }
 
@@ -103,8 +97,11 @@ function generateSlug(title: string): string {
 function generateArticleId(title: string, articleUrl: string): string {
   const slug = generateSlug(title);
   const hash = createHash('sha256').update(articleUrl).digest('hex').substring(0, 8); // Short 8-char hash
-  const slugPart = slug.substring(0, 60); // Limit slug length
-  return `${slugPart}-${hash}`;
+  // Limit slug to 40 characters for cleaner URLs
+  const slugPart = slug.substring(0, 40);
+  // Remove trailing dash if slug was truncated
+  const cleanSlug = slugPart.replace(/-+$/, '');
+  return `${cleanSlug}-${hash}`;
 }
 
 // Ensure the images directory exists
