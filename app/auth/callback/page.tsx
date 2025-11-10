@@ -8,8 +8,41 @@ export default function AuthCallbackPage() {
   const router = useRouter();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('Completing authentication...');
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
+  // Check if user is already logged in before processing callback - check immediately
+  useEffect(() => {
+    const checkExistingAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          // Check if email is confirmed in our custom users table
+          const { data: userData } = await supabase
+            .from('users')
+            .select('email_confirmed')
+            .eq('id', session.user.id)
+            .single();
+
+          if (userData && userData.email_confirmed === true) {
+            // User is already logged in and confirmed, redirect immediately
+            router.replace('/account');
+            return;
+          }
+        }
+      } catch (error) {
+        console.error('Error checking existing auth:', error);
+      } finally {
+        setCheckingAuth(false);
+      }
+    };
+
+    checkExistingAuth();
+  }, [router]);
 
   useEffect(() => {
+    // Only process callback if not checking auth
+    if (checkingAuth) return;
+
     const handleAuthCallback = async () => {
       try {
         // Check if this is a custom email confirmation
@@ -176,7 +209,19 @@ export default function AuthCallbackPage() {
     };
 
     handleAuthCallback();
-  }, [router]);
+  }, [router, checkingAuth]);
+
+  // Show loading while checking auth
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
