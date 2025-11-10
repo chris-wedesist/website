@@ -610,6 +610,31 @@ export default function AccountPage() {
                             under_review: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
                           };
                           
+                          // Parse description if it's a JSON object
+                          const parseDescription = (desc: string | any): string => {
+                            if (typeof desc === 'string') {
+                              try {
+                                const parsed = JSON.parse(desc);
+                                if (typeof parsed === 'object' && parsed !== null) {
+                                  // Format as key-value pairs
+                                  return Object.entries(parsed)
+                                    .map(([key, value]) => `${key}: ${value}`)
+                                    .join('\n');
+                                }
+                              } catch {
+                                // Not JSON, return as is
+                              }
+                            } else if (typeof desc === 'object' && desc !== null) {
+                              // Already an object, format it
+                              return Object.entries(desc)
+                                .map(([key, value]) => `${key}: ${value}`)
+                                .join('\n');
+                            }
+                            return String(desc || '');
+                          };
+
+                          const formattedDescription = parseDescription(report.description);
+
                           return (
                             <div key={report.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow">
                               <div className="flex justify-between items-start mb-3">
@@ -633,9 +658,15 @@ export default function AccountPage() {
                                 </div>
                               </div>
                               
-                              <p className="text-gray-600 dark:text-gray-400 mb-3">
-                                {report.description}
-                              </p>
+                              {formattedDescription && (
+                                <div className="text-gray-600 dark:text-gray-400 mb-3 whitespace-pre-line text-sm">
+                                  {formattedDescription.split('\n').map((line, idx) => (
+                                    <div key={idx} className="mb-1">
+                                      {line}
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
                               
                               <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
                                 <span>📍 {report.address || t('account.incidents.locationNotSpecified')}</span>

@@ -1278,7 +1278,9 @@
         "pending": "Pending",
         "under_review": "Under Review",
         "resolved": "Resolved",
-        "closed": "Closed"
+        "closed": "Closed",
+        "active": "Active",
+        "investigating": "Investigating"
       },
       "locationNotSpecified": "Location not specified"
     },
