@@ -4,6 +4,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '../../context/TranslationContext';
+import enTranslations from '../../translations/en.json';
+import esTranslations from '../../translations/es.json';
 // Removed Card and Button imports - using direct styling instead
 
 interface FeedbackForm {
@@ -43,9 +45,7 @@ export default function FeedbackPage() {
 
   // Get categories directly from translations based on current language
   const getCategories = (type: string): string[] => {
-    const translations = require('../../translations/en.json');
-    const esTranslations = require('../../translations/es.json');
-    const currentTranslations = language === 'en' ? translations : esTranslations;
+    const currentTranslations = language === 'en' ? enTranslations : esTranslations;
     const key = `support.feedback.categories.${type}`;
     const keys = key.split('.');
     let value: any = currentTranslations;

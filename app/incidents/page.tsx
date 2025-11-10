@@ -32,7 +32,7 @@ interface Incident {
   user_email?: string;
 }
 
-const transformIncidentToLocation = (incident: Incident, t: any) => ({
+const transformIncidentToLocation = (incident: Incident, t: (key: string) => string) => ({
   id: incident.id,
   title: incident.type || t('incidents.recent.unknownType'),
   description: incident.description,

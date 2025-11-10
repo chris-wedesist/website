@@ -20,7 +20,7 @@ const getCoreNavigation = (isLoggedIn: boolean): Array<{ name: string; href: str
 ];
 
 // Navigation groups with dropdowns
-const getNavigationGroups = (isLoggedIn: boolean) => ({
+const getNavigationGroups = () => ({
   community: {
     label: "header.navigation.community",
     href: "/community",
@@ -746,7 +746,7 @@ export const Header = () => {
   // Get navigation based on user authentication status
   const isLoggedIn = !!user;
   const coreNavigation = getCoreNavigation(isLoggedIn);
-  const navigationGroups = getNavigationGroups(isLoggedIn);
+  const navigationGroups = getNavigationGroups();
 
   const mobileMenuAnimations = {
     overlay: {

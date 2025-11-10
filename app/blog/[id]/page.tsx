@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { HeroSection } from "../../components/HeroSection";
 import Link from "next/link";
 
@@ -21,7 +21,6 @@ interface NewsArticle {
 
 export default function NewsDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const articleId = params.id as string;
   const [article, setArticle] = useState<NewsArticle | null>(null);
   const [loading, setLoading] = useState(true);
@@ -97,16 +96,6 @@ export default function NewsDetailPage() {
       console.error('[News Detail Page] No article ID provided!');
     }
   }, [articleId]);
-
-  // Clean HTML content (basic sanitization)
-  const cleanHtmlContent = (html: string): string => {
-    if (!html) return '';
-    // Remove script tags and their content
-    let cleaned = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-    // Remove style tags
-    cleaned = cleaned.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '');
-    return cleaned;
-  };
 
   if (loading) {
     return (

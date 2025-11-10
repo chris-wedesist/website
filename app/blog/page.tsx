@@ -12,7 +12,8 @@ interface NewsItem {
   title: string;
   description: string;
   content?: string;
-  url: string;
+  url: string; // Internal link to our detailed article page
+  originalUrl?: string; // Original external URL for fetching full content
   imageUrl?: string | null;
   images?: string[];
   source: string;
@@ -281,11 +282,12 @@ export default function BlogPage() {
                       itemScope
                       itemType="https://schema.org/BlogPosting"
                       onClick={() => {
-                        const linkUrl = `/blog/${item.id}${item.url ? `?url=${encodeURIComponent(item.url)}` : ''}`;
+                        const linkUrl = `/blog/${item.id}${item.originalUrl ? `?url=${encodeURIComponent(item.originalUrl)}` : ''}`;
                         console.log(`[Blog Page] Clicked article:`, {
                           id: item.id,
                           title: item.title,
                           url: item.url,
+                          originalUrl: item.originalUrl,
                           navigatingTo: linkUrl
                         });
                         window.location.href = linkUrl;
@@ -348,15 +350,16 @@ export default function BlogPage() {
                         </div>
                         <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                         <Link 
-                          href={`/blog/${item.id}${item.url ? `?url=${encodeURIComponent(item.url)}` : ''}`}
+                          href={`/blog/${item.id}${item.originalUrl ? `?url=${encodeURIComponent(item.originalUrl)}` : ''}`}
                           itemProp="headline"
                           className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer"
-                          onClick={(e) => {
+                          onClick={() => {
                             console.log(`[Blog Page] Link clicked:`, {
                               id: item.id,
                               title: item.title,
                               url: item.url,
-                              href: `/blog/${item.id}${item.url ? `?url=${encodeURIComponent(item.url)}` : ''}`
+                              originalUrl: item.originalUrl,
+                              href: `/blog/${item.id}${item.originalUrl ? `?url=${encodeURIComponent(item.originalUrl)}` : ''}`
                             });
                           }}
                         >
@@ -367,15 +370,16 @@ export default function BlogPage() {
                         {item.description}
                       </p>
                       <Link
-                        href={`/blog/${item.id}${item.url ? `?url=${encodeURIComponent(item.url)}` : ''}`}
+                        href={`/blog/${item.id}${item.originalUrl ? `?url=${encodeURIComponent(item.originalUrl)}` : ''}`}
                         className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
                         itemProp="url"
-                        onClick={(e) => {
+                        onClick={() => {
                           console.log(`[Blog Page] Read More clicked:`, {
                             id: item.id,
                             title: item.title,
                             url: item.url,
-                            href: `/blog/${item.id}${item.url ? `?url=${encodeURIComponent(item.url)}` : ''}`
+                            originalUrl: item.originalUrl,
+                            href: `/blog/${item.id}${item.originalUrl ? `?url=${encodeURIComponent(item.originalUrl)}` : ''}`
                           });
                         }}
                       >

@@ -2,16 +2,18 @@ import { NextResponse } from 'next/server';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 
-// Helper function to decode article ID to URL
-function decodeArticleId(articleId: string): string | null {
-  try {
-    // The ID is base64 encoded URL, but we removed non-alphanumeric chars
-    // So we need to find it from the main API instead
-    return null;
-  } catch {
-    return null;
+// Get the base URL for API calls
+const getBaseUrl = (): string => {
+  // Use environment variable if available, otherwise use production domain
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL;
   }
-}
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  // Default to production domain
+  return 'https://desistv2.vercel.app';
+};
 
 // Fetch full article content from URL using cheerio
 async function fetchFullArticleContent(url: string): Promise<{ content: string; title?: string; author?: string; source?: string; date?: string; description?: string; images?: string[] }> {
@@ -45,7 +47,7 @@ async function fetchFullArticleContent(url: string): Promise<{ content: string; 
     }
     
     // Extract author
-    let author = $('meta[name="author"]').attr('content') ||
+    const author = $('meta[name="author"]').attr('content') ||
                  $('.author').first().text().trim() ||
                  $('[rel="author"]').first().text().trim() ||
                  $('span[itemprop="author"]').first().text().trim() ||
@@ -55,14 +57,14 @@ async function fetchFullArticleContent(url: string): Promise<{ content: string; 
                  '';
     
     // Extract date
-    let date = $('meta[property="article:published_time"]').attr('content') ||
+    const date = $('meta[property="article:published_time"]').attr('content') ||
                $('time[datetime]').attr('datetime') ||
                $('time').attr('datetime') ||
                $('meta[name="publish-date"]').attr('content') ||
                '';
     
     // Extract description
-    let description = $('meta[property="og:description"]').attr('content') ||
+    const description = $('meta[property="og:description"]').attr('content') ||
                      $('meta[name="description"]').attr('content') ||
                      $('.article-summary').first().text().trim() ||
                      '';
@@ -284,39 +286,67 @@ export async function GET(
     
     console.log(`[API] Looking up article with ID: ${articleId}`);
     
-    // Get URL from query parameter
+    // Get URL from query parameter (optional - for faster lookup)
     const url = new URL(request.url);
     const articleUrl = url.searchParams.get('url');
     
-    console.log(`[API] Article URL from query: ${articleUrl || 'not provided'}`);
+    console.log(`[API] Original URL from query: ${articleUrl || 'not provided'}`);
     
-    // If we have the URL directly, use it to fetch content immediately
+    interface Article {
+      id: string;
+      title: string;
+      description: string;
+      content?: string;
+      url: string;
+      originalUrl?: string;
+      imageUrl?: string | null;
+      images?: string[];
+      source: string;
+      date: string;
+      author?: string;
+      categories?: string[];
+    }
+    
+    // If we have the originalUrl from query parameter, use it directly
+    // This is faster and more reliable than searching through pages
     if (articleUrl) {
-      console.log(`[API] Using URL directly: ${articleUrl}`);
+      console.log(`[API] Using originalUrl from query parameter: ${articleUrl}`);
       
-      // Try to get article info from main API for metadata (quick lookup)
-      let article: any = null;
+      // Try to find article metadata from API (optional - for better metadata)
+      let article: Article | null = null;
       try {
-        const mainApiResponse = await fetch(`${url.origin}/api/news?limit=100`);
-        const mainData = await mainApiResponse.json();
-        
-        if (mainData.articles) {
-          article = mainData.articles.find((a: any) => a.id === articleId || a.url === articleUrl);
-          if (article) {
-            console.log(`[API] Found article metadata: ${article.title}`);
+        const baseUrl = getBaseUrl();
+        // Search a few pages to find metadata
+        for (let page = 1; page <= 5; page++) {
+          const mainApiResponse = await fetch(`${baseUrl}/api/news?page=${page}&limit=50`);
+          const mainData = await mainApiResponse.json();
+          
+          if (mainData.articles && mainData.articles.length > 0) {
+            article = mainData.articles.find((a: Article) => 
+              a.id === articleId || a.originalUrl === articleUrl
+            );
+            
+            if (article) {
+              console.log(`[API] Found article metadata from API`);
+              break;
+            }
+            
+            if (!mainData.pagination?.hasMore) break;
+          } else {
+            break;
           }
         }
       } catch (error) {
-        console.error('[API] Error fetching from main API:', error);
+        console.error('[API] Error searching for metadata:', error);
       }
       
-      // Fetch full content
+      // Fetch full content from original URL
       console.log(`[API] Fetching full content from: ${articleUrl}`);
       const fullContentData = await fetchFullArticleContent(articleUrl);
       
-      // Return article with full content
+      // If we found article metadata, merge it with fetched content
       if (article) {
-        console.log(`[API] ✓ Returning article with full content`);
+        console.log(`[API] ✓ Returning article with metadata and full content`);
         return NextResponse.json({
           ...article,
           content: fullContentData.content || article.content || article.description,
@@ -326,17 +356,19 @@ export async function GET(
           source: fullContentData.source || article.source,
           date: fullContentData.date || article.date,
           images: fullContentData.images || article.images || [],
-          url: articleUrl
+          url: `/blog/${articleId}`,
+          originalUrl: articleUrl
         });
       } else {
-        // Fallback: return basic structure with fetched content
-        console.log(`[API] Returning fallback article (no metadata found)`);
+        // Fallback: return article constructed from fetched content
+        console.log(`[API] ✓ Returning article from fetched content (no metadata found)`);
         return NextResponse.json({
           id: articleId,
           title: fullContentData.title || 'Article',
           description: fullContentData.description || '',
           content: fullContentData.content,
-          url: articleUrl,
+          url: `/blog/${articleId}`,
+          originalUrl: articleUrl,
           imageUrl: fullContentData.images?.[0] || null,
           images: fullContentData.images || [],
           source: fullContentData.source || 'Unknown',
@@ -347,51 +379,51 @@ export async function GET(
       }
     }
     
-    // If no URL provided, search through API pages
-    let article: any = null;
+    // If no URL provided, search through API pages to find the article by ID
+    let article: Article | null = null;
     try {
       // Fetch all pages to find the article
       let page = 1;
       let found = false;
       
-      while (!found && page <= 10) { // Max 10 pages
+      while (!found && page <= 20) {
         console.log(`[API] Searching page ${page} for article ID: ${articleId}`);
-        const mainApiResponse = await fetch(`${url.origin}/api/news?page=${page}&limit=50`);
-        const mainData = await mainApiResponse.json();
-        
-        if (mainData.articles && mainData.articles.length > 0) {
-          console.log(`[API] Page ${page} has ${mainData.articles.length} articles`);
-          console.log(`[API] Article IDs on this page:`, mainData.articles.map((a: any) => ({
-            id: a.id,
-            title: a.title.substring(0, 50)
-          })));
+        try {
+          const baseUrl = getBaseUrl();
+          const mainApiResponse = await fetch(`${baseUrl}/api/news?page=${page}&limit=50`);
+          const mainData = await mainApiResponse.json();
           
-          const foundArticle = mainData.articles.find((a: any) => {
-            const matches = a.id === articleId;
-            if (matches) {
-              console.log(`[API] Found matching article:`, {
-                id: a.id,
-                title: a.title,
-                url: a.url
+          if (mainData.articles && mainData.articles.length > 0) {
+            console.log(`[API] Page ${page} has ${mainData.articles.length} articles`);
+            
+            // Try to find by ID first
+            const foundArticle = mainData.articles.find((a: Article) => {
+              const matches = a.id === articleId || a.id.trim() === articleId.trim();
+              return matches;
+            });
+            
+            if (foundArticle) {
+              console.log(`[API] ✓ Found article by ID:`, {
+                id: foundArticle.id,
+                title: foundArticle.title.substring(0, 60),
+                originalUrl: foundArticle.originalUrl
               });
+              article = foundArticle;
+              found = true;
+              break;
             }
-            return matches;
-          });
-          
-          if (foundArticle) {
-            console.log(`[API] ✓ Found article: ${foundArticle.title}`);
-            article = foundArticle;
-            found = true;
+            
+            // If no more pages, stop
+            if (!mainData.pagination?.hasMore) {
+              console.log(`[API] No more pages available`);
+              break;
+            }
+          } else {
+            console.log(`[API] Page ${page} has no articles`);
             break;
           }
-          
-          // If no more pages, stop
-          if (!mainData.pagination?.hasMore) {
-            console.log(`[API] No more pages available`);
-            break;
-          }
-        } else {
-          console.log(`[API] Page ${page} has no articles`);
+        } catch (pageError) {
+          console.error(`[API] Error fetching page ${page}:`, pageError);
           break;
         }
         
@@ -401,8 +433,6 @@ export async function GET(
       if (!found) {
         console.log(`[API] ✗ Article not found after searching ${page - 1} pages`);
         console.log(`[API] Looking for ID: "${articleId}"`);
-        console.log(`[API] ID length: ${articleId.length}`);
-        console.log(`[API] ID type: ${typeof articleId}`);
       }
     } catch (error) {
       console.error('Error fetching from main API:', error);
@@ -417,18 +447,20 @@ export async function GET(
       );
     }
     
-    // Use the article URL from the found article
-    const finalUrl = articleUrl || article.url;
+    // Use the original external URL from the found article for fetching content
+    const finalUrl = article.originalUrl;
     
     if (!finalUrl) {
-      console.log(`[API] ✗ No URL found for article`);
-      return NextResponse.json(
-        { error: 'Article URL not found' },
-        { status: 404 }
-      );
+      console.log(`[API] ✗ No original URL found for article`);
+      // Return article without full content if we can't fetch it
+      return NextResponse.json({
+        ...article,
+        url: `/blog/${articleId}`,
+        content: article.content || article.description || 'Content not available'
+      });
     }
     
-    // Fetch the full article content from the original URL
+    // Fetch the full article content from the original external URL
     console.log(`[API] Fetching full content from: ${finalUrl}`);
     const fullContentData = await fetchFullArticleContent(finalUrl);
     
@@ -443,7 +475,8 @@ export async function GET(
       source: fullContentData.source || article.source,
       date: fullContentData.date || article.date,
       images: fullContentData.images || article.images || [],
-      url: finalUrl
+      url: `/blog/${articleId}`,
+      originalUrl: article.originalUrl || finalUrl
     });
   } catch (error) {
     console.error('Error fetching article:', error);

@@ -9,7 +9,8 @@ interface NewsItem {
   id: string;
   title: string;
   description: string;
-  url: string;
+  url: string; // Internal link to our detailed article page
+  originalUrl?: string; // Original external URL for fetching full content
   imageUrl?: string | null;
   images?: string[];
   source: string;
@@ -87,7 +88,7 @@ export default function FeaturedNews() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
-              onClick={() => window.location.href = `/blog/${item.id}${item.url ? `?url=${encodeURIComponent(item.url)}` : ''}`}
+              onClick={() => window.location.href = `/blog/${item.id}${item.originalUrl ? `?url=${encodeURIComponent(item.originalUrl)}` : ''}`}
             >
               {/* Article Image */}
               {(item.imageUrl || item.images?.[0]) ? (
@@ -132,7 +133,7 @@ export default function FeaturedNews() {
                   {item.description}
                 </p>
                 <Link
-                  href={`/blog/${item.id}${item.url ? `?url=${encodeURIComponent(item.url)}` : ''}`}
+                  href={`/blog/${item.id}${item.originalUrl ? `?url=${encodeURIComponent(item.originalUrl)}` : ''}`}
                   className="text-blue-600 dark:text-blue-400 text-sm hover:underline"
                 >
                   {t('home.news.readMore')}

@@ -76,6 +76,24 @@ const ARTICLES_PER_PAGE = 10; // Number of articles per page
 const MAX_DESCRIPTION_LENGTH = 150;
 const IMAGES_DIR = path.join(process.cwd(), 'public', 'images', 'news');
 
+// Generate URL-friendly slug from title
+function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '') // Remove special characters
+    .replace(/[\s_-]+/g, '-') // Replace spaces and underscores with hyphens
+    .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+}
+
+// Generate professional article ID: slug + short hash
+function generateArticleId(title: string, articleUrl: string): string {
+  const slug = generateSlug(title);
+  const hash = createHash('sha256').update(articleUrl).digest('hex').substring(0, 8); // Short 8-char hash
+  const slugPart = slug.substring(0, 60); // Limit slug length
+  return `${slugPart}-${hash}`;
+}
+
 // Ensure the images directory exists
 try {
   if (!fs.existsSync(IMAGES_DIR)) {
@@ -252,15 +270,19 @@ export async function GET(request: Request) {
           // Download and save image (try to download, but don't fail if it doesn't work)
           const localImagePath = imageUrl ? await downloadAndSaveImage(imageUrl) : null;
           
-          // Create a stable, unique ID from the URL using SHA-256 hash
+          // Create a professional article ID: slug from title + short hash
           const articleUrl = item.link || '';
+          const articleTitle = item.title || 'Untitled Article';
           let articleId: string;
-          if (articleUrl) {
-            // Use SHA-256 hash of the URL to create a unique ID
+          if (articleUrl && articleTitle) {
+            // Generate professional slug-based ID
+            articleId = generateArticleId(articleTitle, articleUrl);
+          } else if (articleUrl) {
+            // Fallback: use hash if no title
             const hash = createHash('sha256').update(articleUrl).digest('hex');
-            articleId = hash.substring(0, 32); // Use first 32 chars of hash
+            articleId = `article-${hash.substring(0, 8)}`;
           } else {
-            articleId = uuidv4();
+            articleId = `article-${uuidv4().substring(0, 8)}`;
           }
           
           const fullContent = item.content || item.contentSnippet || item.description || '';
@@ -301,7 +323,7 @@ export async function GET(request: Request) {
                   images.push(resolvedUrl);
                 }
               });
-            } catch (error) {
+            } catch {
               // If parsing fails, continue without images from content
             }
           }
@@ -338,7 +360,7 @@ export async function GET(request: Request) {
                   console.log(`[API] Found OG image: ${resolvedOgImage}`);
                 }
               }
-            } catch (error) {
+            } catch {
               // Silently fail - this is just a fallback
               console.log(`[API] Could not fetch image from article page`);
             }
@@ -349,7 +371,8 @@ export async function GET(request: Request) {
             title: item.title || 'Untitled Article',
             description: truncateText(item.contentSnippet || item.content || '', MAX_DESCRIPTION_LENGTH),
             content: fullContent, // Full article content
-            url: articleUrl,
+            url: `/blog/${articleId}`, // Internal link to our detailed article page
+            originalUrl: articleUrl, // Original external URL for fetching full content
             imageUrl: imageUrl || localImagePath || null, // Prioritize original URL, fallback to local
             images: images.length > 0 ? images : undefined,
             source: feed.name,
