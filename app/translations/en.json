@@ -589,7 +589,7 @@
         "title": "Details",
         "category": "Category",
         "categoryPlaceholder": "Select a category",
-        "title": "Title",
+        "incidentTitle": "Title",
         "titlePlaceholder": "Brief description of your {type}",
         "description": "Description",
         "descriptionPlaceholders": {
