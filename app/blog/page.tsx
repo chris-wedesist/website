@@ -1,7 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { HeroSection } from "../components/HeroSection";
 import { getNews } from "../services/newsService";
@@ -14,6 +13,7 @@ interface NewsItem {
   description: string;
   content?: string;
   url: string; // Internal link to our detailed article page
+  fullUrl?: string; // Full URL with originalUrl query parameter
   originalUrl?: string; // Original external URL for fetching full content
   imageUrl?: string | null;
   images?: string[];
@@ -24,7 +24,6 @@ interface NewsItem {
 }
 
 export default function BlogPage() {
-  const router = useRouter();
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -284,11 +283,15 @@ export default function BlogPage() {
                       itemScope
                       itemType="https://schema.org/BlogPosting"
                       onClick={() => {
-                        // Store originalUrl in sessionStorage for the detail page to use
-                        if (item.originalUrl) {
-                          sessionStorage.setItem(`article_${item.id}`, item.originalUrl);
-                        }
-                        router.push(`/blog/${item.id}`);
+                        const linkUrl = `/blog/${item.id}${item.originalUrl ? `?url=${encodeURIComponent(item.originalUrl)}` : ''}`;
+                        console.log(`[Blog Page] Clicked article:`, {
+                          id: item.id,
+                          title: item.title,
+                          url: item.url,
+                          originalUrl: item.originalUrl,
+                          navigatingTo: linkUrl
+                        });
+                        window.location.href = linkUrl;
                       }}
                     >
                       <meta itemProp="datePublished" content={item.date} />
@@ -348,15 +351,17 @@ export default function BlogPage() {
                         </div>
                         <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                         <Link 
-                          href={`/blog/${item.id}`}
+                          href={`/blog/${item.id}${item.originalUrl ? `?url=${encodeURIComponent(item.originalUrl)}` : ''}`}
                           itemProp="headline"
                           className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            if (item.originalUrl) {
-                              sessionStorage.setItem(`article_${item.id}`, item.originalUrl);
-                            }
-                            router.push(`/blog/${item.id}`);
+                          onClick={() => {
+                            console.log(`[Blog Page] Link clicked:`, {
+                              id: item.id,
+                              title: item.title,
+                              url: item.url,
+                              originalUrl: item.originalUrl,
+                              href: `/blog/${item.id}${item.originalUrl ? `?url=${encodeURIComponent(item.originalUrl)}` : ''}`
+                            });
                           }}
                         >
                           {item.title}
@@ -366,15 +371,17 @@ export default function BlogPage() {
                         {item.description}
                       </p>
                       <Link
-                        href={`/blog/${item.id}`}
+                        href={`/blog/${item.id}${item.originalUrl ? `?url=${encodeURIComponent(item.originalUrl)}` : ''}`}
                         className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
                         itemProp="url"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (item.originalUrl) {
-                            sessionStorage.setItem(`article_${item.id}`, item.originalUrl);
-                          }
-                          router.push(`/blog/${item.id}`);
+                        onClick={() => {
+                          console.log(`[Blog Page] Read More clicked:`, {
+                            id: item.id,
+                            title: item.title,
+                            url: item.url,
+                            originalUrl: item.originalUrl,
+                            href: `/blog/${item.id}${item.originalUrl ? `?url=${encodeURIComponent(item.originalUrl)}` : ''}`
+                          });
                         }}
                       >
                         Read More

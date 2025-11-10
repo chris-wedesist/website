@@ -376,12 +376,18 @@ export async function GET(request: Request) {
             }
           }
           
+          const internalUrl = `${getBaseUrl()}/blog/${articleId}`;
+          const fullUrlWithQuery = articleUrl 
+            ? `${internalUrl}?url=${encodeURIComponent(articleUrl)}`
+            : internalUrl;
+
           const processedItem = {
             id: articleId,
             title: item.title || 'Untitled Article',
             description: truncateText(item.contentSnippet || item.content || '', MAX_DESCRIPTION_LENGTH),
             content: fullContent, // Full article content
-            url: `${getBaseUrl()}/blog/${articleId}`, // Full domain URL to our detailed article page
+            url: internalUrl, // Full domain URL to our detailed article page
+            fullUrl: fullUrlWithQuery, // Full URL with originalUrl query parameter
             originalUrl: articleUrl, // Original external URL for fetching full content
             imageUrl: imageUrl || localImagePath || null, // Prioritize original URL, fallback to local
             images: images.length > 0 ? images : undefined,

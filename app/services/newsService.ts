@@ -6,6 +6,7 @@ interface NewsItem {
   description: string;
   content?: string;
   url: string; // Internal link to our detailed article page
+  fullUrl?: string; // Full URL with originalUrl query parameter
   originalUrl?: string; // Original external URL for fetching full content
   imageUrl?: string | null;
   images?: string[];
