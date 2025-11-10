@@ -19,14 +19,11 @@ const practiceAreas = [
   "Asylum & Refugee Law",
   "First Amendment Rights",
   "Employment Discrimination",
-  "Housing Discrimination",
-  "Education Law",
   "Disability Rights",
   "LGBTQ+ Rights",
   "Women's Rights",
   "Racial Justice",
   "Criminal Justice Reform",
-  "Environmental Justice",
 ];
 
 const MAX_NAME_LENGTH = 25;

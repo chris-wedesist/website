@@ -150,14 +150,6 @@ class CivilRightsAttorneyEnrichmentService {
       specializations.push('Employment Discrimination');
     }
     
-    if (combinedText.includes('housing') && combinedText.includes('discrimination')) {
-      specializations.push('Housing Discrimination');
-    }
-    
-    if (combinedText.includes('education') && combinedText.includes('law')) {
-      specializations.push('Education Law');
-    }
-    
     if (combinedText.includes('disability') || combinedText.includes('accessibility')) {
       specializations.push('Disability Rights');
     }
@@ -180,10 +172,6 @@ class CivilRightsAttorneyEnrichmentService {
     
     if (combinedText.includes('prisoner') || combinedText.includes('prison')) {
       specializations.push('Prisoners\' Rights');
-    }
-    
-    if (combinedText.includes('environmental') && combinedText.includes('justice')) {
-      specializations.push('Environmental Justice');
     }
     
     // Pakistani specific civil rights issues

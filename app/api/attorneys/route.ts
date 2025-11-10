@@ -175,14 +175,6 @@ function enhanceSpecializationForCivilRights(currentSpecialization: string[], at
     civilRightsSpecializations.push('Employment Discrimination');
   }
   
-  if (combinedText.includes('housing') && combinedText.includes('discrimination')) {
-    civilRightsSpecializations.push('Housing Discrimination');
-  }
-  
-  if (combinedText.includes('education') && combinedText.includes('law')) {
-    civilRightsSpecializations.push('Education Law');
-  }
-  
   if (combinedText.includes('disability') || combinedText.includes('accessibility')) {
     civilRightsSpecializations.push('Disability Rights');
   }
@@ -207,10 +199,6 @@ function enhanceSpecializationForCivilRights(currentSpecialization: string[], at
   
   if (combinedText.includes('criminal') && combinedText.includes('justice')) {
     civilRightsSpecializations.push('Criminal Justice Reform');
-  }
-  
-  if (combinedText.includes('environmental') && combinedText.includes('justice')) {
-    civilRightsSpecializations.push('Environmental Justice');
   }
   
   // Pakistani specific civil rights issues
@@ -363,13 +351,10 @@ async function searchAttorneys(lat: number, lng: number, radius: number): Promis
              nameLower.includes('asylum') ||
              nameLower.includes('refugee') ||
              nameLower.includes('employment') ||
-             nameLower.includes('housing') ||
-             nameLower.includes('education') ||
              nameLower.includes('disability') ||
              nameLower.includes('lgbt') ||
              nameLower.includes('racial') ||
              nameLower.includes('criminal') ||
-             nameLower.includes('environmental') ||
              nameLower.includes('marriage') ||
              nameLower.includes('divorce') ||
              nameLower.includes('family') ||
@@ -381,13 +366,10 @@ async function searchAttorneys(lat: number, lng: number, radius: number): Promis
              specializationLower.includes('asylum') ||
              specializationLower.includes('refugee') ||
              specializationLower.includes('employment') ||
-             specializationLower.includes('housing') ||
-             specializationLower.includes('education') ||
              specializationLower.includes('disability') ||
              specializationLower.includes('lgbt') ||
              specializationLower.includes('racial') ||
-             specializationLower.includes('criminal') ||
-             specializationLower.includes('environmental');
+             specializationLower.includes('criminal');
     }).map(attorney => {
       const enhancedSpecialization = enhanceSpecializationForCivilRights(attorney.specialization, attorney.name);
       return {
@@ -438,11 +420,33 @@ export async function GET(request: Request) {
       );
     }
 
-    const attorneys = await searchAttorneys(
+    let attorneys = await searchAttorneys(
       parseFloat(lat),
       parseFloat(lng),
       parseFloat(radius)
     );
+
+    // Filter out attorneys with excluded practice areas
+    const excludedPracticeAreas = [
+      'Housing Discrimination', 
+      'Education Law',
+      'Environmental Justice'
+    ];
+    attorneys = attorneys.filter(attorney => {
+      const specializations = Array.isArray(attorney.specialization) 
+        ? attorney.specialization 
+        : [attorney.specialization];
+      const practiceAreas = attorney.practiceAreas || [];
+      
+      // Check if attorney has any excluded practice areas
+      const hasExcludedArea = specializations.some(spec => 
+        excludedPracticeAreas.includes(spec)
+      ) || practiceAreas.some(area => 
+        excludedPracticeAreas.includes(area)
+      );
+      
+      return !hasExcludedArea;
+    });
 
     // Always return a successful response with attorneys data
     return NextResponse.json(

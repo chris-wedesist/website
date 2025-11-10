@@ -80,14 +80,11 @@ class MultiSourceCivilRightsSearch {
     'Asylum & Refugee Law',
     'First Amendment Rights',
     'Employment Discrimination',
-    'Housing Discrimination',
-    'Education Law',
     'Disability Rights',
     'LGBTQ+ Rights',
     'Women\'s Rights',
     'Racial Justice',
-    'Criminal Justice Reform',
-    'Environmental Justice'
+    'Criminal Justice Reform'
   ];
 
   constructor() {
@@ -321,16 +318,6 @@ class MultiSourceCivilRightsSearch {
       specializations.push('Employment Discrimination');
     }
 
-    if (nameLower.includes('housing') || nameLower.includes('tenant') ||
-        nameLower.includes('property') || nameLower.includes('eviction')) {
-      specializations.push('Housing Discrimination');
-    }
-
-    if (nameLower.includes('education') || nameLower.includes('student') ||
-        nameLower.includes('university') || nameLower.includes('school')) {
-      specializations.push('Education Law');
-    }
-
     if (nameLower.includes('disability') || nameLower.includes('accessibility') ||
         nameLower.includes('handicap')) {
       specializations.push('Disability Rights');
@@ -346,11 +333,6 @@ class MultiSourceCivilRightsSearch {
       specializations.push('Racial Justice');
     }
 
-    if (nameLower.includes('environmental') || nameLower.includes('environment') ||
-        nameLower.includes('climate')) {
-      specializations.push('Environmental Justice');
-    }
-
     // Intelligent categorization based on attorney names and context
     if (specializations.length === 0) {
       // Create diverse specializations based on attorney characteristics
@@ -361,23 +343,17 @@ class MultiSourceCivilRightsSearch {
         ['Constitutional Law', 'First Amendment Rights'],
         ['Police Misconduct', 'Criminal Justice Reform'],
         ['Discrimination Law', 'Employment Discrimination'],
-        ['Housing Discrimination'],
-        ['Education Law'],
         ['Disability Rights'],
         ['LGBTQ+ Rights'],
         ['Racial Justice'],
-        ['Environmental Justice'],
         ['Civil Rights Law', 'Constitutional Law'],
         ['Criminal Justice Reform', 'Police Misconduct'],
         ['Women\'s Rights', 'Discrimination Law'],
         ['Immigration Law', 'Constitutional Law'],
         ['Employment Discrimination', 'Workplace Rights'],
-        ['Housing Discrimination', 'Tenant Rights'],
-        ['Education Law', 'Student Rights'],
         ['Disability Rights', 'Accessibility Law'],
         ['LGBTQ+ Rights', 'Discrimination Law'],
         ['Racial Justice', 'Civil Rights Law'],
-        ['Environmental Justice', 'Public Interest Law'],
         ['Civil Rights Law', 'Human Rights'],
         ['Constitutional Law', 'Civil Rights Law'],
         ['Criminal Justice Reform', 'Civil Rights Law']
