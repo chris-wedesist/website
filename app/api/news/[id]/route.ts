@@ -356,7 +356,7 @@ export async function GET(
           source: fullContentData.source || article.source,
           date: fullContentData.date || article.date,
           images: fullContentData.images || article.images || [],
-          url: `/blog/${articleId}`,
+          url: `${getBaseUrl()}/blog/${articleId}`,
           originalUrl: articleUrl
         });
       } else {
@@ -367,7 +367,7 @@ export async function GET(
           title: fullContentData.title || 'Article',
           description: fullContentData.description || '',
           content: fullContentData.content,
-          url: `/blog/${articleId}`,
+          url: `${getBaseUrl()}/blog/${articleId}`,
           originalUrl: articleUrl,
           imageUrl: fullContentData.images?.[0] || null,
           images: fullContentData.images || [],
@@ -455,7 +455,7 @@ export async function GET(
       // Return article without full content if we can't fetch it
       return NextResponse.json({
         ...article,
-        url: `/blog/${articleId}`,
+        url: `${getBaseUrl()}/blog/${articleId}`,
         content: article.content || article.description || 'Content not available'
       });
     }
@@ -475,7 +475,7 @@ export async function GET(
       source: fullContentData.source || article.source,
       date: fullContentData.date || article.date,
       images: fullContentData.images || article.images || [],
-      url: `/blog/${articleId}`,
+      url: `${getBaseUrl()}/blog/${articleId}`,
       originalUrl: article.originalUrl || finalUrl
     });
   } catch (error) {

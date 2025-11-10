@@ -76,6 +76,19 @@ const ARTICLES_PER_PAGE = 10; // Number of articles per page
 const MAX_DESCRIPTION_LENGTH = 150;
 const IMAGES_DIR = path.join(process.cwd(), 'public', 'images', 'news');
 
+// Get the base URL for generating full article URLs
+function getBaseUrl(): string {
+  // Use environment variable if available, otherwise use production domain
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL;
+  }
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  // Default to production domain
+  return 'https://desistv2.vercel.app';
+}
+
 // Generate URL-friendly slug from title
 function generateSlug(title: string): string {
   return title
@@ -371,7 +384,7 @@ export async function GET(request: Request) {
             title: item.title || 'Untitled Article',
             description: truncateText(item.contentSnippet || item.content || '', MAX_DESCRIPTION_LENGTH),
             content: fullContent, // Full article content
-            url: `/blog/${articleId}`, // Internal link to our detailed article page
+            url: `${getBaseUrl()}/blog/${articleId}`, // Full domain URL to our detailed article page
             originalUrl: articleUrl, // Original external URL for fetching full content
             imageUrl: imageUrl || localImagePath || null, // Prioritize original URL, fallback to local
             images: images.length > 0 ? images : undefined,
