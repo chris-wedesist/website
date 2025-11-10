@@ -378,28 +378,40 @@ export async function GET(
       // Fetch all pages to find the article
       let page = 1;
       let found = false;
+      const maxPages = 50; // Increased from 20 to 50 for better coverage
       
-      while (!found && page <= 20) {
+      while (!found && page <= maxPages) {
         console.log(`[API] Searching page ${page} for article ID: ${articleId}`);
         try {
           const baseUrl = getBaseUrl();
-          const mainApiResponse = await fetch(`${baseUrl}/api/news?page=${page}&limit=50`);
+          const mainApiResponse = await fetch(`${baseUrl}/api/news?page=${page}&limit=50`, {
+            // Add timeout to prevent hanging
+            signal: AbortSignal.timeout(10000) // 10 second timeout per page
+          });
+          
+          if (!mainApiResponse.ok) {
+            console.error(`[API] Error response from page ${page}: ${mainApiResponse.status}`);
+            break;
+          }
+          
           const mainData = await mainApiResponse.json();
           
           if (mainData.articles && mainData.articles.length > 0) {
             console.log(`[API] Page ${page} has ${mainData.articles.length} articles`);
             
-            // Try to find by ID first
+            // Try to find by ID - check exact match and trimmed match
             const foundArticle = mainData.articles.find((a: Article) => {
-              const matches = a.id === articleId || a.id.trim() === articleId.trim();
-              return matches;
+              if (!a || !a.id) return false;
+              const normalizedId = articleId.trim().toLowerCase();
+              const normalizedArticleId = a.id.trim().toLowerCase();
+              return normalizedId === normalizedArticleId || a.id === articleId;
             });
             
             if (foundArticle) {
               console.log(`[API] ✓ Found article by ID:`, {
                 id: foundArticle.id,
-                title: foundArticle.title.substring(0, 60),
-                originalUrl: foundArticle.originalUrl
+                title: foundArticle.title?.substring(0, 60) || 'No title',
+                originalUrl: foundArticle.originalUrl || 'No originalUrl'
               });
               article = foundArticle;
               found = true;
@@ -413,11 +425,18 @@ export async function GET(
             }
           } else {
             console.log(`[API] Page ${page} has no articles`);
-            break;
+            // If we get an empty page, check if there are more pages
+            if (!mainData.pagination?.hasMore) {
+              break;
+            }
           }
         } catch (pageError) {
           console.error(`[API] Error fetching page ${page}:`, pageError);
-          break;
+          // Continue to next page instead of breaking
+          // Only break if it's a critical error
+          if (pageError instanceof Error && pageError.name === 'AbortError') {
+            console.log(`[API] Timeout on page ${page}, continuing...`);
+          }
         }
         
         page++;
@@ -426,6 +445,21 @@ export async function GET(
       if (!found) {
         console.log(`[API] ✗ Article not found after searching ${page - 1} pages`);
         console.log(`[API] Looking for ID: "${articleId}"`);
+        // Log some sample IDs from the last page to help debug
+        if (page > 1) {
+          try {
+            const baseUrl = getBaseUrl();
+            const sampleResponse = await fetch(`${baseUrl}/api/news?page=1&limit=5`);
+            const sampleData = await sampleResponse.json();
+            if (sampleData.articles && sampleData.articles.length > 0) {
+              console.log(`[API] Sample article IDs from page 1:`, 
+                sampleData.articles.slice(0, 3).map((a: Article) => a.id)
+              );
+            }
+          } catch {
+            // Ignore sample fetch errors
+          }
+        }
       }
     } catch (error) {
       console.error('Error fetching from main API:', error);

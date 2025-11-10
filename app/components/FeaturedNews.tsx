@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getNews } from '../services/newsService';
 import { useTranslation } from '../context/TranslationContext';
@@ -18,6 +19,7 @@ interface NewsItem {
 }
 
 export default function FeaturedNews() {
+  const router = useRouter();
   const [featuredNews, setFeaturedNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
@@ -88,7 +90,12 @@ export default function FeaturedNews() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
-              onClick={() => window.location.href = `/blog/${item.id}${item.originalUrl ? `?url=${encodeURIComponent(item.originalUrl)}` : ''}`}
+              onClick={() => {
+                if (item.originalUrl) {
+                  sessionStorage.setItem(`article_${item.id}`, item.originalUrl);
+                }
+                router.push(`/blog/${item.id}`);
+              }}
             >
               {/* Article Image */}
               {(item.imageUrl || item.images?.[0]) ? (
@@ -133,8 +140,15 @@ export default function FeaturedNews() {
                   {item.description}
                 </p>
                 <Link
-                  href={`/blog/${item.id}${item.originalUrl ? `?url=${encodeURIComponent(item.originalUrl)}` : ''}`}
+                  href={`/blog/${item.id}`}
                   className="text-blue-600 dark:text-blue-400 text-sm hover:underline"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (item.originalUrl) {
+                      sessionStorage.setItem(`article_${item.id}`, item.originalUrl);
+                    }
+                    router.push(`/blog/${item.id}`);
+                  }}
                 >
                   {t('home.news.readMore')}
                 </Link>

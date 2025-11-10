@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { HeroSection } from "../../components/HeroSection";
 import Link from "next/link";
 
@@ -21,21 +21,37 @@ interface NewsArticle {
 
 export default function NewsDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const articleId = params.id as string;
   const [article, setArticle] = useState<NewsArticle | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Clean up URL if it has query parameters
+    if (typeof window !== 'undefined' && window.location.search) {
+      const cleanUrl = `/blog/${articleId}`;
+      router.replace(cleanUrl, { scroll: false });
+    }
+  }, [articleId, router]);
+
+  useEffect(() => {
     const fetchArticle = async () => {
-      // Get URL from query params if available
-      const urlParams = new URLSearchParams(window.location.search);
-      const articleUrl = urlParams.get('url');
+      // Try to get originalUrl from sessionStorage first
+      let originalUrl: string | null = null;
+      if (typeof window !== 'undefined') {
+        originalUrl = sessionStorage.getItem(`article_${articleId}`);
+      }
+      
+      // Build API URL with originalUrl if available
+      const apiUrl = originalUrl 
+        ? `/api/news/${articleId}?url=${encodeURIComponent(originalUrl)}`
+        : `/api/news/${articleId}`;
       
       console.log('[News Detail Page] Starting to fetch article:', {
         articleId,
-        articleUrl,
-        apiUrl: `/api/news/${articleId}${articleUrl ? `?url=${encodeURIComponent(articleUrl)}` : ''}`,
+        originalUrl: originalUrl || 'not in sessionStorage',
+        apiUrl,
         timestamp: new Date().toISOString()
       });
       
@@ -43,10 +59,14 @@ export default function NewsDetailPage() {
         setLoading(true);
         console.log('[News Detail Page] Fetching from API...');
         
-        const apiUrl = `/api/news/${articleId}${articleUrl ? `?url=${encodeURIComponent(articleUrl)}` : ''}`;
         console.log('[News Detail Page] Full API URL:', apiUrl);
         
         const response = await fetch(apiUrl);
+        
+        // Clean up sessionStorage after successful fetch
+        if (typeof window !== 'undefined' && originalUrl) {
+          sessionStorage.removeItem(`article_${articleId}`);
+        }
         
         console.log('[News Detail Page] API Response:', {
           status: response.status,
