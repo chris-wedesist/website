@@ -115,7 +115,13 @@ export default function FeaturedNews() {
               
               <div className="p-6">
                 <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-2">
-                  <span>{item.source}</span>
+                  <Link 
+                    href="/blog"
+                    className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {item.source}
+                  </Link>
                   <span>•</span>
                   <time dateTime={item.date}>{new Date(item.date).toLocaleDateString()}</time>
                 </div>

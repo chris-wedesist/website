@@ -4,10 +4,14 @@ interface NewsItem {
   id: string;
   title: string;
   description: string;
+  content?: string;
   url: string;
-  imageUrl: string;
+  imageUrl?: string | null;
+  images?: string[];
   source: string;
   date: string;
+  author?: string;
+  categories?: string[];
 }
 
 interface ApiResponse {
@@ -15,7 +19,9 @@ interface ApiResponse {
   pagination: {
     currentPage: number;
     totalPages: number;
-    totalItems: number;
+    totalArticles: number;
+    articlesPerPage: number;
+    hasMore: boolean;
   };
 }
 
@@ -40,8 +46,10 @@ const fallbackNews: NewsItem[] = [
     description: "Join us for our monthly community safety meeting to discuss local concerns and solutions.",
     url: "#",
     imageUrl: DEFAULT_IMAGES.community,
+    images: [DEFAULT_IMAGES.community],
     source: "Community News",
-    date: new Date().toISOString()
+    date: new Date().toISOString(),
+    author: "Community News"
   },
   {
     id: "2",
@@ -49,8 +57,10 @@ const fallbackNews: NewsItem[] = [
     description: "Free workshop on understanding your rights and how to protect them in various situations.",
     url: "#",
     imageUrl: DEFAULT_IMAGES.community,
+    images: [DEFAULT_IMAGES.community],
     source: "Community Updates",
-    date: new Date().toISOString()
+    date: new Date().toISOString(),
+    author: "Community Updates"
   },
   {
     id: "3",
@@ -58,8 +68,10 @@ const fallbackNews: NewsItem[] = [
     description: "Local organizations come together to create a stronger support network for our community.",
     url: "#",
     imageUrl: DEFAULT_IMAGES.community,
+    images: [DEFAULT_IMAGES.community],
     source: "Community Updates",
-    date: new Date().toISOString()
+    date: new Date().toISOString(),
+    author: "Community Updates"
   }
 ];
 

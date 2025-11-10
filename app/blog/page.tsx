@@ -333,9 +333,16 @@ export default function BlogPage() {
                       
                       <div className="p-6">
                         <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-2">
-                          <span itemProp="publisher" itemScope itemType="https://schema.org/Organization">
+                          <Link 
+                            href="/blog"
+                            itemProp="publisher" 
+                            itemScope 
+                            itemType="https://schema.org/Organization"
+                            className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <span itemProp="name">{item.source}</span>
-                          </span>
+                          </Link>
                           <span>•</span>
                           <time dateTime={item.date}>{new Date(item.date).toLocaleDateString()}</time>
                         </div>
