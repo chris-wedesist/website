@@ -15,7 +15,7 @@ interface FeatureGridProps {
   description?: string;
   features: Feature[];
   columns?: 2 | 3 | 4;
-  variant?: 'default' | 'bordered' | 'minimal';
+  variant?: 'default' | 'bordered' | 'minimal' | 'news';
 }
 
 export const FeatureGrid = ({
@@ -31,8 +31,19 @@ export const FeatureGrid = ({
         return 'border-t-4 border-blue-900 bg-gray-50 dark:bg-gray-800';
       case 'minimal':
         return 'bg-transparent';
+      case 'news':
+        return 'bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl';
       default:
         return 'bg-white dark:bg-gray-800';
+    }
+  };
+
+  const getPaddingStyles = () => {
+    switch (variant) {
+      case 'news':
+        return 'p-6';
+      default:
+        return 'p-8';
     }
   };
 
@@ -65,7 +76,7 @@ export const FeatureGrid = ({
           </div>
         )}
 
-        <div className={`grid md:grid-cols-${columns} gap-8`}>
+        <div className={`grid md:grid-cols-${columns} gap-6`}>
           {features.map((feature, index) => (
             <motion.div
               key={feature.title}
@@ -73,36 +84,38 @@ export const FeatureGrid = ({
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className={`rounded-xl p-8 shadow-lg hover:shadow-xl transition-all ${getVariantStyles()}`}
+              className={`rounded-xl transition-all ${getVariantStyles()} ${getPaddingStyles()}`}
             >
-              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4">
-                <span className="text-2xl">{feature.icon}</span>
+              <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-3">
+                <span className="text-xl">{feature.icon}</span>
               </div>
-              <h3 className="text-xl font-semibold mb-4 text-blue-900 dark:text-blue-100">
+              <h3 className={`${variant === 'news' ? 'text-lg' : 'text-xl'} font-semibold mb-2 text-gray-900 dark:text-white`}>
                 {feature.title}
               </h3>
-              <p className="text-gray-700 dark:text-gray-300 mb-6">
+              <p className={`${variant === 'news' ? 'text-sm' : ''} text-gray-700 dark:text-gray-300 mb-4`}>
                 {feature.description}
               </p>
               {feature.link && (
                 <a
                   href={feature.link.href}
-                  className="inline-flex items-center text-blue-900 dark:text-blue-100 hover:underline"
+                  className={`${variant === 'news' ? 'text-blue-600 dark:text-blue-400 text-sm hover:underline' : 'inline-flex items-center text-blue-900 dark:text-blue-100 hover:underline'}`}
                 >
                   <span>{feature.link.label}</span>
-                  <svg
-                    className="w-5 h-5 ml-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
+                  {variant !== 'news' && (
+                    <svg
+                      className="w-5 h-5 ml-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  )}
                 </a>
               )}
             </motion.div>

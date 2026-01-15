@@ -80,7 +80,7 @@ const AuthModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }
           },
         });
         if (error) throw error;
-        alert("Registration successful! Please check your email to verify your account.");
+        // alert("Registration successful! Please check your email to verify your account.");
       }
       onClose();
     } catch (error) {

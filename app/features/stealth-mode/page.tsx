@@ -1,99 +1,99 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Card, CardContent, CardHeader } from '../../components/ui/Card';
-import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { AppDownloadCTA } from '../../components/AppDownloadCTA';
-import Link from 'next/link';
+import { useTranslation } from '../../context/TranslationContext';
 
 export default function StealthModePage() {
+  const { t } = useTranslation();
   const features = [
     {
       icon: '🔒',
-      title: 'Hidden App Icon',
-      description: 'Disguise the DESIST app to look like a calculator, weather app, or other innocuous utility.'
+      title: t('stealthMode.features.hiddenIcon.title'),
+      description: t('stealthMode.features.hiddenIcon.description')
     },
     {
       icon: '🛡️',
-      title: 'Secure PIN Access',
-      description: 'Access your safety tools and resources through a secret PIN that only you know.'
+      title: t('stealthMode.features.securePin.title'),
+      description: t('stealthMode.features.securePin.description')
     },
     {
       icon: '📱',
-      title: 'Panic Mode',
-      description: 'Quickly exit to a decoy screen if someone unexpectedly looks at your phone.'
+      title: t('stealthMode.features.panicMode.title'),
+      description: t('stealthMode.features.panicMode.description')
     },
     {
       icon: '🔄',
-      title: 'Quick Switch',
-      description: 'Instantly switch between stealth mode and normal mode based on your safety needs.'
+      title: t('stealthMode.features.quickSwitch.title'),
+           description: t('stealthMode.features.quickSwitch.description')
     },
     {
       icon: '📞',
-      title: 'Emergency Contacts',
-      description: 'Access emergency contacts and safety resources even in stealth mode.'
+      title: t('stealthMode.features.emergencyContacts.title'),
+      description: t('stealthMode.features.emergencyContacts.description')
     },
     {
       icon: '🤐',
-      title: 'No Notifications',
-      description: 'All notifications are disabled in stealth mode to maintain your privacy and safety.'
+      title: t('stealthMode.features.noNotifications.title'),
+      description: t('stealthMode.features.noNotifications.description')
     }
   ];
 
   const scenarios = [
     {
-      title: 'Workplace Harassment',
-      description: 'Document incidents discreetly while maintaining professional appearances.',
+      title: t('stealthMode.scenarios.workplace.title'),
+      description: t('stealthMode.scenarios.workplace.description'),
       icon: '🏢'
     },
     {
-      title: 'Domestic Situations',
-      description: 'Access safety resources without raising suspicion in your living environment.',
+      title: t('stealthMode.scenarios.domestic.title'),
+      description: t('stealthMode.scenarios.domestic.description'),
       icon: '🏠'
     },
     {
-      title: 'Public Transportation',
-      description: 'Report incidents and access help while appearing to use a normal app.',
+      title: t('stealthMode.scenarios.transportation.title'),
+      description: t('stealthMode.scenarios.transportation.description'),
       icon: '🚌'
     },
     {
-      title: 'Social Settings',
-      description: 'Get support and document experiences without drawing unwanted attention.',
+      title: t('stealthMode.scenarios.social.title'),
+      description: t('stealthMode.scenarios.social.description'),
       icon: '👥'
     }
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <>
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-900 via-purple-800 to-indigo-900 text-white py-20">
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="relative container mx-auto px-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <Badge className="mb-6 bg-yellow-500/20 text-yellow-300 border-yellow-500/30">
-              🔒 Privacy & Safety Feature
-            </Badge>
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Stealth Mode
-            </h1>
-            <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto opacity-90">
-              Protect yourself with discretion. DESIST&apos;s Stealth Mode lets you access support 
-              and document incidents without anyone knowing you&apos;re using a safety app.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/support/emergency">
-                <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white">
-                  🚨 Emergency Resources
-                </Button>
-              </Link>
-              <AppDownloadCTA />
-            </div>
-          </motion.div>
+      <section className="py-16 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-12">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-6"
+            >
+              <Badge variant="default" className="mb-4 bg-blue-600 hover:bg-blue-700 text-white">
+                {t('stealthMode.hero.badge')}
+              </Badge>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                {t('stealthMode.hero.title')}
+              </h1>
+              <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                {t('stealthMode.hero.description')}
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+                {/* <Link href="/support/emergency">
+                  <button className="py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
+                    Emergency Resources
+                  </button>
+                </Link> */}
+                <AppDownloadCTA />
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -102,38 +102,35 @@ export default function StealthModePage() {
         <div className="container mx-auto max-w-6xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             className="text-center mb-12"
           >
             <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
-              How Stealth Mode Protects You
+              {t('stealthMode.features.title')}
             </h2>
-            <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
-              Your safety is our priority. Stealth Mode ensures you can access help and document incidents 
-              without putting yourself at additional risk.
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+              {t('stealthMode.features.description')}
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 * index }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.1 * index }}
+                className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg text-center hover:shadow-xl transition-shadow"
               >
-                <Card className="h-full hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6 text-center">
-                    <div className="text-4xl mb-4">{feature.icon}</div>
-                    <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
-                      {feature.title}
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-400">
-                      {feature.description}
-                    </p>
-                  </CardContent>
-                </Card>
+                <div className="text-4xl mb-4">{feature.icon}</div>
+                <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {feature.description}
+                </p>
               </motion.div>
             ))}
           </div>
@@ -141,45 +138,43 @@ export default function StealthModePage() {
       </section>
 
       {/* When to Use Stealth Mode */}
-      <section className="py-16 px-4 bg-white dark:bg-gray-800">
+      <section className="py-16 px-4">
         <div className="container mx-auto max-w-6xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             className="text-center mb-12"
           >
             <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
-              When to Use Stealth Mode
+              {t('stealthMode.scenarios.title')}
             </h2>
-            <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
-              Stealth Mode is designed for situations where using an obvious safety app could put you at risk.
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+              {t('stealthMode.scenarios.description')}
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {scenarios.map((scenario, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 * index }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.1 * index }}
+                className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow"
               >
-                <Card className="h-full">
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="text-3xl">{scenario.icon}</div>
-                      <div>
-                        <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
-                          {scenario.title}
-                        </h3>
-                        <p className="text-gray-600 dark:text-gray-400">
-                          {scenario.description}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <div className="flex items-start gap-4">
+                  <div className="text-3xl">{scenario.icon}</div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
+                      {scenario.title}
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      {scenario.description}
+                    </p>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -187,55 +182,54 @@ export default function StealthModePage() {
       </section>
 
       {/* Setup Instructions */}
-      <section className="py-16 px-4 bg-gray-50 dark:bg-gray-900">
+      <section className="py-16 px-4">
         <div className="container mx-auto max-w-4xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             className="text-center mb-12"
           >
             <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
-              Setting Up Stealth Mode
+              {t('stealthMode.setup.title')}
             </h2>
-            <p className="text-xl text-gray-700 dark:text-gray-300">
-              Follow these simple steps to enable and configure Stealth Mode on your device.
+            <p className="text-xl text-gray-600 dark:text-gray-400">
+              {t('stealthMode.setup.description')}
             </p>
           </motion.div>
 
-          <Card>
-            <CardContent className="p-8">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
               <div className="space-y-6">
                 {[
                   {
                     step: 1,
-                    title: 'Download the DESIST App',
-                    description: 'Install the DESIST app on your smartphone from the App Store or Google Play.'
+                    title: t('stealthMode.setup.steps.download.title'),
+                    description: t('stealthMode.setup.steps.download.description')
                   },
                   {
                     step: 2,
-                    title: 'Complete Initial Setup',
-                    description: 'Create your account and complete the safety assessment to personalize your experience.'
+                    title: t('stealthMode.setup.steps.setup.title'),
+                    description: t('stealthMode.setup.steps.setup.description')
                   },
                   {
                     step: 3,
-                    title: 'Enable Stealth Mode',
-                    description: 'Go to Settings > Privacy & Safety > Stealth Mode and toggle it on.'
+                    title: t('stealthMode.setup.steps.enable.title'),
+                    description: t('stealthMode.setup.steps.enable.description')
                   },
                   {
                     step: 4,
-                    title: 'Choose Your Disguise',
-                    description: 'Select what type of app you want DESIST to appear as (calculator, weather, etc.).'
+                    title: t('stealthMode.setup.steps.disguise.title'),
+                    description: t('stealthMode.setup.steps.disguise.description')
                   },
                   {
                     step: 5,
-                    title: 'Set Your PIN',
-                    description: 'Create a secure PIN that will be used to access DESIST features in stealth mode.'
+                    title: t('stealthMode.setup.steps.pin.title'),
+                    description: t('stealthMode.setup.steps.pin.description')
                   },
                   {
                     step: 6,
-                    title: 'Test the Feature',
-                    description: 'Practice switching in and out of stealth mode to ensure you\'re comfortable with the process.'
+                    title: t('stealthMode.setup.steps.test.title'),
+                    description: t('stealthMode.setup.steps.test.description')
                   }
                 ].map((instruction, index) => (
                   <div key={index} className="flex items-start gap-4">
@@ -253,81 +247,74 @@ export default function StealthModePage() {
                   </div>
                 ))}
               </div>
-            </CardContent>
-          </Card>
+          </div>
         </div>
       </section>
 
       {/* Important Safety Notice */}
-      <section className="py-16 px-4 bg-amber-50 dark:bg-amber-900/20 border-y border-amber-200 dark:border-amber-800">
+      <section className="py-16 px-4">
         <div className="container mx-auto max-w-4xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-8"
           >
-            <Card className="border-amber-200 dark:border-amber-800">
-              <CardHeader className="bg-amber-100 dark:bg-amber-900/30">
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">⚠️</span>
-                  <h3 className="text-lg font-semibold text-amber-800 dark:text-amber-300">
-                    Important Safety Considerations
-                  </h3>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6 space-y-4">
-                <div className="space-y-3 text-gray-700 dark:text-gray-300">
-                  <p>
-                    <strong>Trust Your Instincts:</strong> If you feel unsafe using any technology, prioritize your immediate safety over documentation.
-                  </p>
-                  <p>
-                    <strong>Practice First:</strong> Familiarize yourself with stealth mode features before you need them in a real situation.
-                  </p>
-                  <p>
-                    <strong>Have Backup Plans:</strong> Stealth mode is one tool among many. Always have multiple safety strategies.
-                  </p>
-                  <p>
-                    <strong>Stay Updated:</strong> Keep the app updated to ensure you have the latest security and privacy features.
-                  </p>
-                </div>
-                
-                <div className="mt-6 pt-4 border-t border-amber-200 dark:border-amber-700">
-                  <p className="text-sm text-amber-700 dark:text-amber-400">
-                    If you are in immediate danger, call 911 or your local emergency services. 
-                    Technology tools should supplement, not replace, traditional safety measures.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="flex items-center gap-3 mb-6">
+              <span className="text-2xl">⚠️</span>
+              <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-300">
+                {t('stealthMode.safety.title')}
+              </h3>
+            </div>
+            <div className="space-y-3 text-gray-700 dark:text-gray-300 mb-6">
+              <p>
+                <strong>{t('stealthMode.safety.trustInstincts').split(':')[0]}:</strong> {t('stealthMode.safety.trustInstincts').split(':').slice(1).join(':')}
+              </p>
+              <p>
+                <strong>{t('stealthMode.safety.practiceFirst').split(':')[0]}:</strong> {t('stealthMode.safety.practiceFirst').split(':').slice(1).join(':')}
+              </p>
+              <p>
+                <strong>{t('stealthMode.safety.backupPlans').split(':')[0]}:</strong> {t('stealthMode.safety.backupPlans').split(':').slice(1).join(':')}
+              </p>
+              <p>
+                <strong>{t('stealthMode.safety.stayUpdated').split(':')[0]}:</strong> {t('stealthMode.safety.stayUpdated').split(':').slice(1).join(':')}
+              </p>
+            </div>
+            
+            <div className="mt-6 pt-4 border-t border-blue-200 dark:border-blue-700">
+              <p className="text-sm text-blue-700 dark:text-blue-400">
+                {t('stealthMode.safety.notice')}
+              </p>
+            </div>
           </motion.div>
         </div>
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+      <section className="py-16 px-4">
         <div className="container mx-auto max-w-4xl text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
           >
-            <h2 className="text-3xl font-bold mb-6">
-              Ready to Get Protected?
+            <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">
+              {t('stealthMode.cta.title')}
             </h2>
-            <p className="text-xl mb-8 opacity-90">
-              Download the DESIST app today and take control of your safety with discretion and confidence.
+            <p className="text-xl mb-8 text-gray-600 dark:text-gray-400">
+              {t('stealthMode.cta.description')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <AppDownloadCTA />
-              <Link href="/support/emergency">
-                <Button variant="outline" size="lg" className="bg-white/10 border-white/30 text-white hover:bg-white/20">
-                  🆘 Emergency Resources
-                </Button>
-              </Link>
+              {/* <Link href="/support/emergency">
+                <button className="py-3 px-6 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 rounded-lg font-medium transition-colors hover:bg-gray-50 dark:hover:bg-gray-700">
+                  Emergency Resources
+                </button>
+              </Link> */}
             </div>
           </motion.div>
         </div>
       </section>
-    </div>
+    </>
   );
 }

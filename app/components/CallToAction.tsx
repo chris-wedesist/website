@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useTranslation } from "../context/TranslationContext";
 
 interface CallToActionProps {
   title: string;
@@ -22,6 +23,8 @@ export const CallToAction = ({
   secondaryAction,
   pageType = 'default',
 }: CallToActionProps) => {
+  const { t } = useTranslation();
+  
   const renderVisualElement = () => {
     switch (pageType) {
       case 'incidents':
@@ -329,7 +332,7 @@ export const CallToAction = ({
                 className="inline-block"
               >
                 <span className="text-blue-400 font-semibold tracking-wider uppercase text-sm">
-                  Ready to Get Started?
+                  {t('cta.readyToStart')}
                 </span>
               </motion.div>
 

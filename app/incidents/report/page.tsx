@@ -1,9 +1,10 @@
 "use client";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import dynamic from 'next/dynamic';
 import Link from "next/link";
 import supabase from "../../../utils/supabase";
+import { validateIncidentReport } from "../../../utils/incidentValidation";
 
 const LocationPicker = dynamic(() => import("../../components/LocationPicker"), {
   ssr: false,
@@ -69,6 +70,9 @@ const INCIDENT_DESCRIPTIONS = {
 
 export default function ReportIncidentPage() {
   const [currentStep, setCurrentStep] = useState(1);
+  const [user, setUser] = useState<{id: string, email: string, name: string} | null>(null);
+  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
+  const [locationPermissionGranted, setLocationPermissionGranted] = useState(false);
   const [formData, setFormData] = useState({
     type: "",
     description: {} as Record<string, string>,
@@ -81,6 +85,101 @@ export default function ReportIncidentPage() {
     attachment: null as File | null,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationError, setValidationError] = useState("");
+  const [monthlyIncidentCount, setMonthlyIncidentCount] = useState(0);
+
+  // Get user's current location
+  const getUserLocation = useCallback(() => {
+    if (!navigator.geolocation) {
+      console.log('Geolocation is not supported by this browser.');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        });
+        setLocationPermissionGranted(true);
+      },
+      (error) => {
+        console.log('Error getting location:', error);
+        setLocationPermissionGranted(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 300000 // 5 minutes
+      }
+    );
+  }, []);
+
+  // Get monthly incident count for current user
+  const getMonthlyIncidentCount = async (userId: string) => {
+    try {
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      
+      const { data: incidents, error } = await supabase
+        .from('incidents')
+        .select('id')
+        .eq('user_id', userId)
+        .gte('created_at', startOfMonth.toISOString());
+
+      if (error) {
+        console.error('Error fetching monthly incidents:', error);
+        return 0;
+      }
+
+      return incidents?.length || 0;
+    } catch (error) {
+      console.error('Error getting monthly incident count:', error);
+      return 0;
+    }
+  };
+
+  // Get current user on component mount
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          setUser({
+            id: user.id,
+            email: user.email || '',
+            name: user.user_metadata?.full_name || user.email || 'Anonymous User'
+          });
+          // Get user's location after user is set
+          getUserLocation();
+          // Get monthly incident count
+          const count = await getMonthlyIncidentCount(user.id);
+          setMonthlyIncidentCount(count);
+        }
+      } catch (error) {
+        console.error('Error getting user:', error);
+      }
+    };
+
+    getUser();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        setUser({
+          id: session.user.id,
+          email: session.user.email || '',
+          name: session.user.user_metadata?.full_name || session.user.email || 'Anonymous User'
+        });
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [getUserLocation]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -89,14 +188,77 @@ export default function ReportIncidentPage() {
     }
     
     setIsSubmitting(true);
+    setValidationError("");
     
     try {
       const lat = parseFloat(formData.location.lat.toString()) || 0;
       const lng = parseFloat(formData.location.lng.toString()) || 0;
 
       if (isNaN(lat) || isNaN(lng)) {
-        alert("Invalid coordinates. Please select a valid location.");
+        setValidationError("Invalid coordinates. Please select a valid location.");
+        setIsSubmitting(false);
         return;
+      }
+
+      // Check if user is logged in
+      if (!user) {
+        setValidationError("You must be logged in to report incidents.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Debug: Log coordinates for troubleshooting
+      console.log('Debug - Incident coordinates:', { lat, lng });
+      console.log('Debug - User GPS coordinates:', userLocation);
+      console.log('Debug - Selected location address:', formData.location.address);
+
+      // Calculate distance for debugging
+      if (userLocation) {
+        const distance = Math.sqrt(
+          Math.pow(lat - userLocation.lat, 2) + Math.pow(lng - userLocation.lng, 2)
+        ) * 111; // Rough conversion to km
+        console.log('Debug - Simple distance calculation:', distance, 'km');
+      }
+
+      // Comprehensive validation using new system
+      const validation = await validateIncidentReport(
+        user.id,
+        lat,
+        lng,
+        userLocation?.lat,
+        userLocation?.lng
+      );
+      
+      if (!validation.isValid) {
+        console.log('Debug - Validation failed:', validation);
+        
+        // Check if this is a monthly limit error - don't bypass this
+        if (validation.message.includes('monthly limit')) {
+          setValidationError(validation.message);
+          setIsSubmitting(false);
+          return;
+        }
+        
+        // Check if coordinates are very close (within ~11km) - likely same location with minor GPS differences
+        // Only bypass location distance validation, not other validations like monthly limit
+        if (user && userLocation && validation.message.includes('distance')) {
+          const latDiff = Math.abs(lat - userLocation.lat);
+          const lngDiff = Math.abs(lng - userLocation.lng);
+          const roughDistance = Math.sqrt(latDiff * latDiff + lngDiff * lngDiff) * 111; // Rough km conversion
+          
+          if (roughDistance < 11) { // Within ~11km, likely same location
+            console.log('Debug - Coordinates are very close, likely same location. Bypassing distance validation only.');
+            console.log('Debug - Rough distance:', roughDistance, 'km');
+          } else {
+            setValidationError(validation.message);
+            setIsSubmitting(false);
+            return;
+          }
+        } else {
+          setValidationError(validation.message);
+          setIsSubmitting(false);
+          return;
+        }
       }
 
       const formattedDescription = Object.entries(formData.description)
@@ -108,15 +270,15 @@ export default function ReportIncidentPage() {
         description: formattedDescription,
         latitude: lat,
         longitude: lng,
-        location_json: {
-          lat: lat,
-          lng: lng,
-          address: formData.location.address || "No address provided"
-        },
-        location_text: `POINT(${lng} ${lat})`,
         address: formData.location.address || "No address provided",
         created_at: new Date().toISOString(),
-        status: 'active'
+        status: 'active',
+        // Include user information if available
+        ...(user && {
+          user_id: user.id,
+          user_name: user.name,
+          user_email: user.email
+        })
       };
 
       let insertResult = await supabase
@@ -127,6 +289,13 @@ export default function ReportIncidentPage() {
       if (insertResult.error) {
         console.error("Error inserting data:", insertResult.error);
         
+        // Check if it's a duplicate prevention error from database
+        if (insertResult.error.message && insertResult.error.message.includes("Many reports already in this area")) {
+          setValidationError(insertResult.error.message);
+          setIsSubmitting(false);
+          return;
+        }
+        
         const simplifiedData = {
           type: formData.type,
           description: formattedDescription,
@@ -134,7 +303,13 @@ export default function ReportIncidentPage() {
           longitude: lng,
           address: formData.location.address || "No address provided",
           created_at: new Date().toISOString(),
-          status: 'active'
+          status: 'active',
+          // Include user information if available
+          ...(user && {
+            user_id: user.id,
+            user_name: user.name,
+            user_email: user.email
+          })
         };
 
         insertResult = await supabase
@@ -144,7 +319,14 @@ export default function ReportIncidentPage() {
 
         if (insertResult.error) {
           console.error("Fallback error:", insertResult.error);
-          alert("Failed to submit report. Please try again.");
+          
+          // Check if fallback also has duplicate prevention error
+          if (insertResult.error.message && insertResult.error.message.includes("Many reports already in this area")) {
+            setValidationError(insertResult.error.message);
+          } else {
+            setValidationError("Failed to submit report. Please try again.");
+          }
+          setIsSubmitting(false);
           return;
         }
       }
@@ -178,7 +360,7 @@ export default function ReportIncidentPage() {
       window.location.href = "/incidents";
     } catch (error) {
       console.error("Unexpected error:", error);
-      alert("An unexpected error occurred. Please try again.");
+      setValidationError("An unexpected error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -203,12 +385,12 @@ export default function ReportIncidentPage() {
     }
   };
 
-  const handleLocationSelect = (location: { lat: number; lng: number; address: string }) => {
+  const handleLocationSelect = useCallback((location: { lat: number; lng: number; address: string }) => {
     setFormData(prev => ({
       ...prev,
       location
     }));
-  };
+  }, []);
 
   const nextStep = () => {
     if (currentStep === 1 && !formData.type) {
@@ -264,6 +446,100 @@ export default function ReportIncidentPage() {
             <p className="text-lg text-gray-600 dark:text-gray-400">
               Help keep our community informed and safe by reporting incidents in your area.
             </p>
+          </motion.div>
+
+          {/* Incident Reporting Requirements */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-8"
+          >
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">
+                  Incident Reporting Requirements
+                </h3>
+                <div className="space-y-2 text-sm text-blue-800 dark:text-blue-200">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${user ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                    <span>
+                      <strong>Account Required:</strong> {user ? '✓ You are logged in' : '✗ You must be logged in'}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${locationPermissionGranted ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
+                    <span>
+                      <strong>Location Access:</strong> {locationPermissionGranted ? '✓ Location detected' : '⚠ Location permission needed for distance validation'}
+                    </span>
+                  </div>
+                  {userLocation && (
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                      <span>
+                        <strong>Your GPS Location:</strong> {userLocation.lat.toFixed(6)}, {userLocation.lng.toFixed(6)}
+                      </span>
+                    </div>
+                  )}
+                  {formData.location.lat !== 0 && formData.location.lng !== 0 && (
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-purple-500"></div>
+                      <span>
+                        <strong>Selected Location:</strong> {formData.location.lat.toFixed(6)}, {formData.location.lng.toFixed(6)}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                    <span>
+                      <strong>Distance Limit:</strong> You can only report incidents near your current location
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${monthlyIncidentCount >= 3 ? 'bg-red-500' : monthlyIncidentCount >= 2 ? 'bg-yellow-500' : 'bg-green-500'}`}></div>
+                    <span>
+                      <strong>Monthly Limit:</strong> {monthlyIncidentCount}/3 incident reports used this month
+                    </span>
+                  </div>
+                </div>
+                {monthlyIncidentCount >= 3 && (
+                  <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                    <p className="text-sm text-red-800 dark:text-red-200">
+                      <strong>Monthly Limit Reached:</strong> You have already submitted 3 incident reports this month. You can report again next month.
+                    </p>
+                  </div>
+                )}
+                {monthlyIncidentCount === 2 && (
+                  <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                    <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                      <strong>Monthly Limit Warning:</strong> You have submitted 2 incident reports this month. You can submit 1 more report this month.
+                    </p>
+                  </div>
+                )}
+                {user && !locationPermissionGranted && (
+                  <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                        <strong>Location Permission:</strong> Allow location access to validate incident distance from your current location.
+                      </p>
+                      <button
+                        onClick={getUserLocation}
+                        className="ml-4 px-3 py-1 bg-yellow-600 hover:bg-yellow-700 text-white text-xs rounded-md transition-colors"
+                      >
+                        Allow Location
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </motion.div>
 
           {/* Progress Steps */}
@@ -368,11 +644,14 @@ export default function ReportIncidentPage() {
                     <label className="block text-lg font-medium text-gray-900 dark:text-white mb-4">
                       Where did this incident occur?
                     </label>
-                    <LocationPicker onLocationSelect={handleLocationSelect} />
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                      Click on the map to select the incident location, or use the 📍 button to center on your current location.
+                    </p>
+                    <LocationPicker onLocationSelect={handleLocationSelect} userLocation={userLocation} />
                   </div>
 
                   <div>
-                    <label className="block text-lg font-medium text-gray-900 dark:text-white mb-4">
+                    <label className="block text-lg font-medium text-gray-900 dark:text-white mt-16 mb-2">
                       Add supporting media (optional)
                     </label>
                     <input
@@ -381,6 +660,39 @@ export default function ReportIncidentPage() {
                       onChange={handleVideoChange}
                       className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                     />
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Validation Error Message */}
+              {validationError && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4"
+                >
+                  <div className="flex items-start">
+                    <svg
+                      className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 mr-3 flex-shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <div>
+                      <h3 className="text-sm font-medium text-red-800 dark:text-red-200">
+                        Unable to Submit Report
+                      </h3>
+                      <p className="mt-1 text-sm text-red-700 dark:text-red-300">
+                        {validationError}
+                      </p>
+                    </div>
                   </div>
                 </motion.div>
               )}
@@ -407,10 +719,10 @@ export default function ReportIncidentPage() {
                 ) : (
                   <button
                     type="submit"
-                    disabled={isSubmitting || !formData.location.lat || !formData.location.lng}
+                    disabled={isSubmitting || !formData.location.lat || !formData.location.lng || monthlyIncidentCount >= 3}
                     className="ml-auto px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {isSubmitting ? "Submitting..." : "Submit Report"}
+                    {isSubmitting ? "Submitting..." : monthlyIncidentCount >= 3 ? "Monthly Limit Reached" : "Submit Report"}
                   </button>
                 )}
               </div>

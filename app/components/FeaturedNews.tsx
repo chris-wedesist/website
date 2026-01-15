@@ -9,7 +9,11 @@ interface NewsItem {
   id: string;
   title: string;
   description: string;
-  url: string;
+  url: string; // Internal link to our detailed article page
+  fullUrl?: string; // Full URL with originalUrl query parameter
+  originalUrl?: string; // Original external URL for fetching full content
+  imageUrl?: string | null;
+  images?: string[];
   source: string;
   date: string;
 }
@@ -84,27 +88,58 @@ export default function FeaturedNews() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow"
+              className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
+              onClick={() => window.location.href = `/blog/${item.id}${item.originalUrl ? `?url=${encodeURIComponent(item.originalUrl)}` : ''}`}
             >
-              <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-2">
-                <span>{item.source}</span>
-                <span>•</span>
-                <time dateTime={item.date}>{new Date(item.date).toLocaleDateString()}</time>
+              {/* Article Image */}
+              {(item.imageUrl || item.images?.[0]) ? (
+                <div className="relative w-full h-48 overflow-hidden bg-gray-200 dark:bg-gray-700">
+                  <img
+                    src={item.imageUrl || item.images?.[0] || ''}
+                    alt={item.title}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = '/images/blog/default-news.jpg';
+                      target.onerror = null; // Prevent infinite loop
+                    }}
+                  />
+                </div>
+              ) : (
+                // Default placeholder image
+                <div className="relative w-full h-48 overflow-hidden bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center">
+                  <svg className="w-16 h-16 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+              )}
+              
+              <div className="p-6">
+                <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-2">
+                  <Link 
+                    href="/blog"
+                    className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {item.source}
+                  </Link>
+                  <span>•</span>
+                  <time dateTime={item.date}>{new Date(item.date).toLocaleDateString()}</time>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
+                  {item.title}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">
+                  {item.description}
+                </p>
+                <Link
+                  href={`/blog/${item.id}${item.originalUrl ? `?url=${encodeURIComponent(item.originalUrl)}` : ''}`}
+                  className="text-blue-600 dark:text-blue-400 text-sm hover:underline"
+                >
+                  {t('home.news.readMore')}
+                </Link>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
-                {item.title}
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">
-                {item.description}
-              </p>
-              <a
-                href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 dark:text-blue-400 text-sm hover:underline"
-              >
-                {t('home.news.readMore')}
-              </a>
             </motion.div>
           ))}
         </div>

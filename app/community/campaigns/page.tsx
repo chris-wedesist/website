@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
+import { useTranslation } from '../../context/TranslationContext';
 
 interface Campaign {
   id: string;
@@ -41,6 +41,7 @@ interface Challenge {
 }
 
 export default function CampaignsPage() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'campaigns' | 'challenges'>('campaigns');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
@@ -213,17 +214,10 @@ export default function CampaignsPage() {
     ? campaigns 
     : campaigns.filter(campaign => campaign.category === selectedCategory);
 
-  const categoryColors = {
-    awareness: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300',
-    fundraising: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300',
-    action: 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300',
-    education: 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-300'
-  };
-
   const difficultyColors = {
-    easy: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300',
-    medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300',
-    hard: 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300'
+    easy: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300',
+    medium: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300',
+    hard: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300'
   };
 
   const handleJoinCampaign = (campaignId: string) => {
@@ -237,44 +231,50 @@ export default function CampaignsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="container mx-auto px-4 py-8">
+    <section className="py-16 px-4">
+      <div className="container mx-auto max-w-6xl">
         {/* Header */}
         <div className="text-center mb-12">
-          <Badge className="mb-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-            🚀 Community Action
-          </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-            Campaigns & Challenges
-          </h1>
-          <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
-            Join our community-driven campaigns and daily challenges to create a safer, 
-            more supportive digital world for everyone.
-          </p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-6"
+          >
+            {/* <Badge variant="default" className="mb-4 bg-blue-600 hover:bg-blue-700 text-white">
+              Community Action
+            </Badge> */}
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+              {t('campaigns.hero.title')}
+            </h1>
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+              {t('campaigns.hero.description')}
+            </p>
+          </motion.div>
         </div>
 
         {/* Tabs */}
         <div className="flex justify-center mb-8">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-1 flex">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-1 flex shadow-sm border border-gray-200 dark:border-gray-700">
             <button
               onClick={() => setActiveTab('campaigns')}
-              className={`px-6 py-3 rounded-md transition-all ${
+              className={`px-6 py-3 rounded-md transition-all duration-200 ${
                 activeTab === 'campaigns'
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-blue-600 text-white shadow-sm'
                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
               }`}
             >
-              🎯 Campaigns
+              {t('campaigns.tabs.campaigns')}
             </button>
             <button
               onClick={() => setActiveTab('challenges')}
-              className={`px-6 py-3 rounded-md transition-all ${
+              className={`px-6 py-3 rounded-md transition-all duration-200 ${
                 activeTab === 'challenges'
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-blue-600 text-white shadow-sm'
                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
               }`}
             >
-              ⚡ Challenges
+              {t('campaigns.tabs.challenges')}
             </button>
           </div>
         </div>
@@ -287,129 +287,126 @@ export default function CampaignsPage() {
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-full transition-all ${
+                  className={`px-4 py-2 rounded-full transition-all duration-200 border ${
                     selectedCategory === category
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-blue-50 dark:hover:bg-gray-700'
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                      : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-blue-50 dark:hover:bg-gray-700 border-gray-200 dark:border-gray-700'
                   }`}
                 >
-                  {category === 'all' ? 'All Categories' : category.charAt(0).toUpperCase() + category.slice(1)}
+                  {t(`campaigns.filters.${category === 'all' ? 'all' : category}`)}
                 </button>
               ))}
             </div>
 
             {/* Campaigns Grid */}
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {filteredCampaigns.map((campaign, index) => (
                 <motion.div
                   key={campaign.id}
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow"
                 >
-                  <Card className="h-full">
-                    <CardHeader>
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex items-center gap-2">
-                          <Badge className={categoryColors[campaign.category]}>
-                            {campaign.category}
-                          </Badge>
-                          <Badge 
-                            variant={campaign.status === 'active' ? 'default' : 'outline'}
-                            className={campaign.status === 'active' ? 'bg-green-600' : ''}
-                          >
-                            {campaign.status}
-                          </Badge>
-                        </div>
-                        {campaign.userParticipating && (
-                          <Badge className="bg-blue-600">
-                            ✓ Participating
-                          </Badge>
-                        )}
-                      </div>
-                      <CardTitle className="text-xl mb-2">{campaign.title}</CardTitle>
-                      <p className="text-gray-600 dark:text-gray-400">
-                        {campaign.description}
-                      </p>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      {/* Progress */}
-                      <div>
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            {campaign.impact.metric}
-                          </span>
-                          <span className="text-sm text-gray-600 dark:text-gray-400">
-                            {campaign.progress}%
-                          </span>
-                        </div>
-                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                          <div 
-                            className="bg-blue-600 h-2 rounded-full transition-all duration-500"
-                            style={{ width: `${campaign.progress}%` }}
-                          />
-                        </div>
-                        <div className="flex justify-between items-center mt-2 text-sm text-gray-600 dark:text-gray-400">
-                          <span>{campaign.impact.current.toLocaleString()}</span>
-                          <span>Goal: {campaign.impact.target.toLocaleString()}</span>
-                        </div>
-                      </div>
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-full">
+                        {t(`campaigns.filters.${campaign.category}`)}
+                      </span>
+                      <span className={`text-xs px-2 py-1 rounded-full ${
+                        campaign.status === 'active' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                      }`}>
+                        {t(`campaigns.status.${campaign.status}`)}
+                      </span>
+                    </div>
+                    {campaign.userParticipating && (
+                      <span className="text-xs px-2 py-1 bg-blue-600 text-white rounded-full">
+                        {t('campaigns.campaign.participating')}
+                      </span>
+                    )}
+                  </div>
+                  
+                  <h3 className="text-xl mb-2 font-semibold text-gray-900 dark:text-white">{campaign.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">
+                    {campaign.description}
+                  </p>
 
-                      {/* Participants */}
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
-                          🤝 {campaign.totalParticipants.toLocaleString()} participants
+                  {/* Progress */}
+                  <div className="mb-6">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        {campaign.impact.metric}
+                      </span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">
+                        {campaign.progress}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                      <div 
+                        className="bg-blue-600 h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${campaign.progress}%` }}
+                      />
+                    </div>
+                    <div className="flex justify-between items-center mt-2 text-sm text-gray-600 dark:text-gray-400">
+                      <span>{campaign.impact.current.toLocaleString()}</span>
+                      <span>{t('campaigns.campaign.goal')} {campaign.impact.target.toLocaleString()}</span>
+                    </div>
+                  </div>
+
+                  {/* Participants */}
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      {campaign.totalParticipants.toLocaleString()} {t('campaigns.campaign.participants')}
+                    </span>
+                  </div>
+
+                  {/* Steps */}
+                  <div className="mb-4">
+                    <h4 className="font-medium text-gray-900 dark:text-white mb-2 text-sm">
+                      {t('campaigns.campaign.howToParticipate')}
+                    </h4>
+                    <ul className="space-y-1">
+                      {campaign.steps.map((step, stepIndex) => (
+                        <li key={stepIndex} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-2">
+                          <span className="text-blue-600 dark:text-blue-400 mt-0.5">•</span>
+                          {step}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Rewards */}
+                  <div className="mb-6">
+                    <h4 className="font-medium text-gray-900 dark:text-white mb-2 text-sm">
+                      {t('campaigns.campaign.rewards')}
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {campaign.rewards.map((reward, rewardIndex) => (
+                        <span key={rewardIndex} className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full border border-gray-200 dark:border-gray-600">
+                          {reward}
                         </span>
-                      </div>
+                      ))}
+                    </div>
+                  </div>
 
-                      {/* Steps */}
-                      <div>
-                        <h4 className="font-medium text-gray-900 dark:text-white mb-2">
-                          How to participate:
-                        </h4>
-                        <ul className="space-y-1">
-                          {campaign.steps.map((step, stepIndex) => (
-                            <li key={stepIndex} className="text-sm text-gray-600 dark:text-gray-400 flex items-start gap-2">
-                              <span className="text-blue-600 dark:text-blue-400 mt-0.5">•</span>
-                              {step}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                  {/* Action Button */}
+                  <button
+                    className={`w-full py-3 px-4 rounded-lg font-medium transition-colors ${
+                      campaign.userParticipating
+                        ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                        : 'bg-blue-600 hover:bg-blue-700 text-white'
+                    } ${campaign.status !== 'active' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    onClick={() => handleJoinCampaign(campaign.id)}
+                    disabled={campaign.status !== 'active'}
+                  >
+                    {campaign.userParticipating ? t('campaigns.campaign.continue') : t('campaigns.campaign.join')}
+                  </button>
 
-                      {/* Rewards */}
-                      <div>
-                        <h4 className="font-medium text-gray-900 dark:text-white mb-2">
-                          Rewards:
-                        </h4>
-                        <div className="flex flex-wrap gap-2">
-                          {campaign.rewards.map((reward, rewardIndex) => (
-                            <Badge key={rewardIndex} variant="outline" className="text-xs">
-                              🏆 {reward}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Action Button */}
-                      <Button
-                        className={`w-full ${
-                          campaign.userParticipating
-                            ? 'bg-green-600 hover:bg-green-700'
-                            : 'bg-blue-600 hover:bg-blue-700'
-                        }`}
-                        onClick={() => handleJoinCampaign(campaign.id)}
-                        disabled={campaign.status !== 'active'}
-                      >
-                        {campaign.userParticipating ? '✓ Continue Campaign' : '🚀 Join Campaign'}
-                      </Button>
-
-                      {/* Timeline */}
-                      <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
-                        {new Date(campaign.startDate).toLocaleDateString()} - {new Date(campaign.endDate).toLocaleDateString()}
-                      </div>
-                    </CardContent>
-                  </Card>
+                  {/* Timeline */}
+                  <div className="text-xs text-gray-500 dark:text-gray-400 text-center mt-3">
+                    {new Date(campaign.startDate).toLocaleDateString()} - {new Date(campaign.endDate).toLocaleDateString()}
+                  </div>
                 </motion.div>
               ))}
             </div>
@@ -418,45 +415,54 @@ export default function CampaignsPage() {
 
         {activeTab === 'challenges' && (
           <div>
-            <div className="text-center mb-8">
+            <motion.div 
+              className="text-center mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
               <p className="text-gray-600 dark:text-gray-400">
-                Complete daily, weekly, and monthly challenges to earn points and badges while 
-                making a positive impact in the community.
+                {t('campaigns.challenges.description')}
               </p>
-            </div>
+            </motion.div>
 
             {/* Challenge Categories */}
-            <div className="grid md:grid-cols-3 gap-4 mb-8">
-              {['daily', 'weekly', 'monthly'].map((type) => (
-                <Card key={type} className="text-center">
-                  <CardContent className="p-6">
-                    <div className="text-2xl mb-2">
-                      {type === 'daily' && '☀️'}
-                      {type === 'weekly' && '📅'}
-                      {type === 'monthly' && '🗓️'}
-                    </div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
-                      {type.charAt(0).toUpperCase() + type.slice(1)} Challenges
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {challenges.filter(c => c.type === type).length} available
-                    </p>
-                  </CardContent>
-                </Card>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {['daily', 'weekly', 'monthly'].map((type, index) => (
+                <motion.div
+                  key={type}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg text-center"
+                >
+                  <div className="text-2xl mb-2">
+                    {type === 'daily' && '☀️'}
+                    {type === 'weekly' && '📅'}
+                    {type === 'monthly' && '🗓️'}
+                  </div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
+                    {t(`campaigns.challenges.${type}`)}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {challenges.filter(c => c.type === type).length} {t('campaigns.challenges.available')}
+                  </p>
+                </motion.div>
               ))}
             </div>
 
             {/* Challenges List */}
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-4">
               {challenges.map((challenge, index) => (
                 <motion.div
                   key={challenge.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className={`bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg transition-all duration-200 hover:shadow-xl ${challenge.completed ? 'opacity-75 border border-blue-200 dark:border-blue-800' : ''}`}
                 >
-                  <Card className={`${challenge.completed ? 'opacity-60' : ''}`}>
-                    <CardContent className="p-6">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4 flex-1">
                           <div className="text-3xl">
@@ -468,7 +474,7 @@ export default function CampaignsPage() {
                                 {challenge.title}
                               </h3>
                               <Badge className={difficultyColors[challenge.difficulty]}>
-                                {challenge.difficulty}
+                                {t(`campaigns.challenges.difficulty.${challenge.difficulty}`)}
                               </Badge>
                               <Badge variant="outline" className="text-xs">
                                 {challenge.type}
@@ -478,8 +484,8 @@ export default function CampaignsPage() {
                               {challenge.description}
                             </p>
                             <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-                              <span>🏆 {challenge.points} points</span>
-                              <span>⏰ Due: {new Date(challenge.deadline).toLocaleDateString()}</span>
+                            <span>{challenge.points} {t('campaigns.challenges.points')}</span>
+                            <span>⏰ {t('campaigns.challenges.due')} {new Date(challenge.deadline).toLocaleDateString()}</span>
                             </div>
                           </div>
                         </div>
@@ -491,63 +497,60 @@ export default function CampaignsPage() {
                             disabled={challenge.completed}
                             className={challenge.completed ? '' : 'bg-blue-600 hover:bg-blue-700'}
                           >
-                            {challenge.completed ? '✓ Completed' : 'Start Challenge'}
+                            {challenge.completed ? t('campaigns.challenges.completed') : t('campaigns.challenges.start')}
                           </Button>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
                 </motion.div>
               ))}
             </div>
 
             {/* Challenge Stats */}
-            <div className="mt-12">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Your Challenge Progress</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid md:grid-cols-4 gap-6">
+            <motion.div 
+              className="mt-12 bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">{t('campaigns.challenges.progressTitle')}</h3>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
                         {challenges.filter(c => c.completed).length}
                       </div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">
-                        Completed
+                        {t('campaigns.challenges.completedLabel')}
                       </div>
                     </div>
-                    <div className="text-center">
-                      <div className="text-3xl font-bold text-green-600 dark:text-green-400">
-                        {challenges.filter(c => c.completed).reduce((sum, c) => sum + c.points, 0)}
-                      </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
-                        Points Earned
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
-                        7
-                      </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
-                        Day Streak
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-3xl font-bold text-orange-600 dark:text-orange-400">
-                        #42
-                      </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
-                        Global Rank
-                      </div>
-                    </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                    {challenges.filter(c => c.completed).reduce((sum, c) => sum + c.points, 0)}
                   </div>
-                </CardContent>
-              </Card>
-            </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    {t('campaigns.challenges.pointsEarned')}
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                    7
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    {t('campaigns.challenges.dayStreak')}
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                    #42
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    {t('campaigns.challenges.globalRank')}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </div>
         )}
       </div>
-    </div>
+    </section>
   );
 }

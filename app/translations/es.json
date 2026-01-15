@@ -66,6 +66,16 @@
           "description": "Conéctate y apoya a los miembros de la comunidad que lo necesitan.",
           "link": "Saber Más"
         },
+        "education": {
+          "title": "Educación y Capacitación",
+          "description": "Ayuda a educar a los miembros de la comunidad sobre seguridad y empoderamiento.",
+          "link": "Participar"
+        },
+        "advocacy": {
+          "title": "Defensa y Apoyo",
+          "description": "Defiende los derechos de la comunidad y proporciona servicios de apoyo.",
+          "link": "Unirse a la Defensa"
+        },
         "events": {
           "title": "Apoyo a Eventos",
           "description": "Ayuda a organizar y ejecutar eventos y talleres comunitarios.",
@@ -86,6 +96,11 @@
           "title": "Alianzas con Organizaciones",
           "description": "Únete a organizaciones afines para amplificar el impacto.",
           "link": "Asociarse con Nosotros"
+        },
+        "institutions": {
+          "title": "Alianzas Institucionales",
+          "description": "Asóciate con instituciones educativas y comunitarias.",
+          "link": "Saber Más"
         },
         "sharing": {
           "title": "Compartir Recursos",
@@ -111,6 +126,21 @@
       "viewAll": "Ver Todas las Noticias",
       "readMore": "Leer Más →"
     }
+  },
+  "launchCountdown": {
+    "launchIn": "Lanzamiento en:",
+    "launchingIn": "Se lanzará en:",
+    "title": "Cuenta Regresiva de Lanzamiento",
+    "live": "¡Estamos en Vivo!",
+    "liveShort": "¡En Vivo!",
+    "days": "d",
+    "hours": "h",
+    "minutes": "m",
+    "seconds": "s",
+    "daysLabel": "Días",
+    "hoursLabel": "Horas",
+    "minutesLabel": "Minutos",
+    "secondsLabel": "Segundos"
   },
   "community": {
     "hero": {
@@ -143,6 +173,10 @@
         "stories": "Historias de Éxito",
         "updates": "Actualizaciones de la Comunidad"
       }
+    },
+    "posts": {
+      "featuredTitle": "Publicaciones Destacadas de la Comunidad",
+      "viewAll": "Ver todas las publicaciones →"
     },
     "events": {
       "title": "Eventos y Encuentros Locales",
@@ -306,7 +340,10 @@
         "list": "Lista",
         "map": "Mapa"
       },
-      "location": "Ubicación no especificada"
+      "location": "Ubicación no especificada",
+      "unknownType": "Tipo de Incidente Desconocido",
+      "kmAway": "km de distancia",
+      "reportedBy": "Reportado por:"
     },
     "cta": {
       "title": "Descarga Nuestra Aplicación Móvil",
@@ -372,6 +409,38 @@
         "button": "Acceder a Documentos"
       }
     },
+    "featured": {
+      "title": "Recursos Destacados",
+      "description": "Recursos seleccionados a mano para ayudarte a comenzar"
+    },
+    "library": {
+      "title": "Biblioteca de Recursos",
+      "description": "Explora nuestra colección completa de guías, herramientas y materiales educativos",
+      "allResources": "Todos los Recursos ({count})",
+      "noResults": "No se encontraron recursos que coincidan con tus criterios",
+      "clearFilters": "Limpiar todos los filtros"
+    },
+    "card": {
+      "featured": "Destacado",
+      "views": "vistas",
+      "by": "Por",
+      "minRead": "min de lectura",
+      "download": "Descargar",
+      "view": "Ver"
+    },
+    "filters": {
+      "searchPlaceholder": "Buscar recursos...",
+      "activeFilters": "Filtros activos:",
+      "type": "Tipo:",
+      "category": "Categoría:",
+      "level": "Nivel:",
+      "language": "Idioma:",
+      "clearAll": "Limpiar todo",
+      "resourceType": "Tipo de Recurso",
+      "categoryLabel": "Categoría",
+      "difficultyLevel": "Nivel de Dificultad",
+      "languageLabel": "Idioma"
+    },
     "mobile": {
       "title": "Accede a Recursos en Cualquier Lugar",
       "description": "Descarga nuestra aplicación para acceder a todos los recursos y herramientas en tu dispositivo móvil."
@@ -404,7 +473,10 @@
         "all": "Todos los Abogados",
         "featured": "Destacados"
       },
-      "noResults": "No se encontraron abogados que coincidan con tus criterios."
+      "noResults": "No se encontraron abogados que coincidan con tus criterios.",
+      "loading": "Buscando abogados cerca de ti...",
+      "tryAgain": "Intentar de Nuevo",
+      "error": "Error al obtener la ubicación. Por favor, intenta de nuevo."
     },
     "cta": {
       "title": "¿Eres un Abogado?",
@@ -421,14 +493,150 @@
       "callButton": "Llamar Soporte"
     },
     "emergency": {
-      "title": "Contactos de Emergencia",
-      "services": {
-        "title": "Servicios de Emergencia",
-        "number": "911"
+      "alert": "Si estás en peligro inmediato, llama al 911 o a tus servicios de emergencia locales de inmediato",
+      "hero": {
+        "badge": "Soporte de Crisis Disponible",
+        "title": "Recursos y Soporte de Emergencia",
+        "description": "Accede a ayuda y soporte inmediatos. No estás solo, y la ayuda está disponible 24/7."
       },
-      "crisis": {
-        "title": "Línea de Crisis",
-        "number": "1-800-555-0000"
+      "quickAccess": {
+        "emergency": "Emergencia",
+        "domesticViolence": "Violencia Doméstica",
+        "crisisText": "Crisis por Texto"
+      },
+      "categories": {
+        "all": "Todos los Recursos",
+        "hotline": "Líneas Telefónicas",
+        "text": "Soporte por Texto",
+        "chat": "Chat en Línea",
+        "local": "Recursos Locales"
+      },
+      "contact": {
+        "available": "Disponible",
+        "specialties": "Especialidades",
+        "languages": "Idiomas",
+        "callNow": "Llamar Ahora",
+        "sendText": "Enviar Texto"
+      },
+      "safetyTips": {
+        "title": "Consejos de Seguridad Digital",
+        "description": "Protégete mientras buscas ayuda en línea o a través de recursos digitales.",
+        "safeDevice": {
+          "title": "Usa un Dispositivo Seguro",
+          "description": "Usa un dispositivo al que tu agresor no tenga acceso cuando busques ayuda."
+        },
+        "clearHistory": {
+          "title": "Borra tu Historial",
+          "description": "Borra tu historial del navegador y usa el modo de incógnito/navegación privada."
+        },
+        "safetyPlan": {
+          "title": "Ten un Plan de Seguridad",
+          "description": "Desarrolla un plan de seguridad para salir rápidamente de situaciones peligrosas."
+        },
+        "tellSomeone": {
+          "title": "Dile a Alguien de Confianza",
+          "description": "Hazle saber a un amigo o familiar de confianza sobre tu situación."
+        }
+      },
+      "appDownload": {
+        "title": "Lleva la Seguridad Contigo a Todas Partes",
+        "description": "Descarga la aplicación DESIST para acceso discreto a recursos de emergencia, herramientas de documentación y características de seguridad dondequiera que vayas."
+      },
+      "importantNotice": {
+        "title": "Importante: Tu Seguridad es lo Primero",
+        "content": "Si estás en peligro físico inmediato, llama al 911 de inmediato. Si tu actividad en internet está siendo monitoreada, considera usar una computadora o dispositivo más seguro. Borra tu historial del navegador después de visitar recursos de seguridad."
+      }
+    },
+    "feedback": {
+      "title": "Comentarios e Informes de Errores",
+      "description": "Ayúdanos a mejorar DESIST compartiendo tus comentarios, informando errores o sugiriendo nuevas características. Tu opinión nos ayuda a construir mejores herramientas de seguridad para todos.",
+      "types": {
+        "question": "¿Qué tipo de comentario estás compartiendo?",
+        "general": {
+          "label": "Comentario General",
+          "description": "Comparte tus opiniones sobre nuestro sitio web o servicios"
+        },
+        "bug": {
+          "label": "Informe de Error",
+          "description": "Informa un problema técnico o algo que no está funcionando"
+        },
+        "feature": {
+          "label": "Solicitud de Característica",
+          "description": "Sugiere una nueva característica o mejora"
+        },
+        "safety": {
+          "label": "Preocupación de Seguridad",
+          "description": "Informa un problema de seguridad o protección"
+        }
+      },
+      "priority": {
+        "title": "Nivel de Prioridad",
+        "low": {
+          "label": "Baja",
+          "description": "Problema menor, sin urgencia"
+        },
+        "medium": {
+          "label": "Media",
+          "description": "Impacto moderado, debe ser abordado"
+        },
+        "high": {
+          "label": "Alta",
+          "description": "Problema significativo que afecta la usabilidad"
+        },
+        "critical": {
+          "label": "Crítica",
+          "description": "Preocupación urgente de seguridad o protección"
+        }
+      },
+      "details": {
+        "title": "Detalles",
+        "category": "Categoría",
+        "categoryPlaceholder": "Selecciona una categoría",
+        "title": "Título",
+        "titlePlaceholder": "Breve descripción de tu {type}",
+        "description": "Descripción",
+        "descriptionPlaceholders": {
+          "bug": "Por favor describe el error, incluyendo pasos para reproducirlo, lo que esperabas que sucediera y lo que realmente sucedió.",
+          "feature": "Describe la característica que te gustaría ver y cómo ayudaría a ti o a otros.",
+          "safety": "Por favor describe la preocupación de seguridad en detalle. Tu informe será manejado con prioridad y confidencialidad.",
+          "general": "Comparte tus pensamientos, sugerencias o comentarios generales sobre nuestro sitio web o servicios."
+        },
+        "email": {
+          "label": "Dirección de Correo Electrónico (Opcional)",
+          "placeholder": "tu@correo.com",
+          "helper": "Proporciona tu correo electrónico si quieres que te contactemos sobre este {type}."
+        },
+        "attachments": {
+          "label": "Adjuntos (Opcional)",
+          "helper": "Sube capturas de pantalla, documentos u otros archivos que puedan ayudarnos a entender tu {type}.",
+          "filesSelected": "Archivos seleccionados"
+        },
+        "technical": {
+          "title": "Información Técnica",
+          "description": "Esta información nos ayuda a reproducir y corregir problemas técnicos.",
+          "url": "URL de la Página Actual",
+          "browser": "Información del Navegador"
+        },
+        "privacy": {
+          "title": "Privacidad y Seguridad",
+          "content": "Tus comentarios son importantes para nosotros. Manejamos todos los informes de manera confidencial y de acuerdo con nuestra política de privacidad. Para preocupaciones de seguridad, nuestro equipo revisará y responderá con la prioridad apropiada. Si estás en peligro inmediato, por favor contacta a los servicios de emergencia directamente."
+        },
+        "submit": {
+          "button": "Enviar {type}",
+          "submitting": "Enviando..."
+        }
+      },
+      "success": {
+        "title": "¡Gracias!",
+        "message": "Tu {type} ha sido enviado exitosamente. Apreciamos tus comentarios y lo revisaremos cuidadosamente.",
+        "another": "Enviar Otro Informe",
+        "home": "Volver al Inicio"
+      },
+      "categories": {
+        "feedback": ["Experiencia del Sitio Web", "Calidad de Recursos", "Características de la Comunidad", "Accesibilidad", "Otro"],
+        "bug": ["Funcionalidad del Sitio Web", "Diseño Responsivo", "Problemas de Cuenta", "Problemas de Búsqueda", "Otro"],
+        "feature-request": ["Interfaz de Usuario", "Nuevos Recursos", "Herramientas de la Comunidad", "Aplicación Móvil", "Otro"],
+        "safety-concern": ["Seguridad del Contenido", "Problema de Privacidad", "Vulnerabilidad de Seguridad", "Acoso", "Otro"]
       }
     },
     "immediate": {
@@ -576,6 +784,9 @@
       }
     }
   },
+  "cta": {
+    "readyToStart": "¿Listo para Comenzar?"
+  },
   "testimonials": {
     "title": "Confiado por Comunidades en Todo el País",
     "description": "Mira cómo DESIST está marcando la diferencia en vecindarios de todo el país",
@@ -684,10 +895,15 @@
     "navigation": {
       "about": "Acerca de",
       "community": "Comunidad",
+      "campaigns": "Campañas",
       "incidents": "Incidentes",
       "legalHelp": "Ayuda Legal",
       "resources": "Recursos",
       "support": "Soporte",
+      "emergency": "Emergencia",
+      "features": "Características",
+      "stealthMode": "Modo Sigilo",
+      "press": "Kit de Prensa",
       "download": "Descargar",
       "contact": "Contacto",
       "menu": "Menú"
@@ -736,6 +952,320 @@
       "description": "Sé parte de nuestra misión para proteger y empoderar a las comunidades marginadas a través de la unidad y el apoyo.",
       "primaryAction": "Únete a Nosotros",
       "secondaryAction": "Saber Más"
+    }
+  },
+  "campaigns": {
+    "hero": {
+      "title": "Campañas y Desafíos",
+      "description": "Únete a nuestras campañas impulsadas por la comunidad y desafíos diarios para crear un mundo digital más seguro y solidario para todos."
+    },
+    "tabs": {
+      "campaigns": "Campañas",
+      "challenges": "Desafíos"
+    },
+    "filters": {
+      "all": "Todas las Categorías",
+      "awareness": "Concienciación",
+      "fundraising": "Recaudación de Fondos",
+      "action": "Acción",
+      "education": "Educación"
+    },
+    "status": {
+      "active": "Activo",
+      "upcoming": "Próximamente",
+      "completed": "Completado"
+    },
+    "campaign": {
+      "participating": "✓ Participando",
+      "goal": "Objetivo:",
+      "participants": "participantes",
+      "howToParticipate": "Cómo participar:",
+      "rewards": "Recompensas:",
+      "continue": "Continuar Campaña",
+      "join": "Unirse a la Campaña"
+    },
+    "challenges": {
+      "description": "Completa desafíos diarios, semanales y mensuales para ganar puntos e insignias mientras haces un impacto positivo en la comunidad.",
+      "daily": "Desafíos Diarios",
+      "weekly": "Desafíos Semanales",
+      "monthly": "Desafíos Mensuales",
+      "available": "disponibles",
+      "points": "puntos",
+      "due": "Fecha límite:",
+      "completed": "✓ Completado",
+      "start": "Iniciar Desafío",
+      "progressTitle": "Tu Progreso en Desafíos",
+      "completedLabel": "Completados",
+      "pointsEarned": "Puntos Ganados",
+      "dayStreak": "Racha de Días",
+      "globalRank": "Ranking Global",
+      "difficulty": {
+        "easy": "Fácil",
+        "medium": "Medio",
+        "hard": "Difícil"
+      }
+    }
+  },
+  "stealthMode": {
+    "hero": {
+      "badge": "Característica de Privacidad y Seguridad",
+      "title": "Modo Sigilo",
+      "description": "Protégete con discreción. El Modo Sigilo de DESIST te permite acceder a soporte y documentar eventos sin que nadie sepa que estás usando una aplicación de seguridad."
+    },
+    "features": {
+      "title": "Cómo te Protege el Modo Sigilo",
+      "description": "Tu seguridad es nuestra prioridad. El Modo Sigilo garantiza que puedas acceder a ayuda y documentar incidentes sin ponerte en riesgo adicional.",
+      "hiddenIcon": {
+        "title": "Icono de Aplicación Oculto",
+        "description": "Disimula la aplicación DESIST para que parezca una calculadora, aplicación del tiempo u otra utilidad inocua."
+      },
+      "securePin": {
+        "title": "Acceso Seguro con PIN",
+        "description": "Accede a tus herramientas y recursos de seguridad a través de un PIN secreto que solo tú conoces."
+      },
+      "panicMode": {
+        "title": "Modo Pánico",
+        "description": "Sale rápidamente a una pantalla de señuelo si alguien mira tu teléfono inesperadamente."
+      },
+      "quickSwitch": {
+        "title": "Cambio Rápido",
+        "description": "Cambia instantáneamente entre modo sigilo y modo normal según tus necesidades de seguridad."
+      },
+      "emergencyContacts": {
+        "title": "Contactos de Emergencia",
+        "description": "Accede a contactos de emergencia y recursos de seguridad incluso en modo sigilo."
+      },
+      "noNotifications": {
+        "title": "Sin Notificaciones",
+        "description": "Todas las notificaciones están deshabilitadas en modo sigilo para mantener tu privacidad y seguridad."
+      }
+    },
+    "scenarios": {
+      "title": "Cuándo Usar el Modo Sigilo",
+      "description": "El Modo Sigilo está diseñado para situaciones en las que usar una aplicación de seguridad obvia podría ponerte en riesgo.",
+      "workplace": {
+        "title": "Acoso en el Lugar de Trabajo",
+        "description": "Documenta incidentes discretamente mientras mantienes apariencias profesionales."
+      },
+      "domestic": {
+        "title": "Situaciones Domésticas",
+        "description": "Accede a recursos de seguridad sin levantar sospechas en tu entorno de vida."
+      },
+      "transportation": {
+        "title": "Transporte Público",
+        "description": "Reporta incidentes y accede a ayuda mientras pareces usar una aplicación normal."
+      },
+      "social": {
+        "title": "Ajustes Sociales",
+        "description": "Obtén apoyo y documenta experiencias sin atraer atención no deseada."
+      }
+    },
+    "setup": {
+      "title": "Configurar el Modo Sigilo",
+      "description": "Sigue estos simples pasos para habilitar y configurar el Modo Sigilo en tu dispositivo.",
+      "steps": {
+        "download": {
+          "title": "Descarga la Aplicación DESIST",
+          "description": "Instala la aplicación DESIST en tu smartphone desde la App Store o Google Play."
+        },
+        "setup": {
+          "title": "Completa la Configuración Inicial",
+          "description": "Crea tu cuenta y completa la evaluación de seguridad para personalizar tu experiencia."
+        },
+        "enable": {
+          "title": "Habilita el Modo Sigilo",
+          "description": "Ve a Configuración > Privacidad y Seguridad > Modo Sigilo y actívalo."
+        },
+        "disguise": {
+          "title": "Elige tu Disfraz",
+          "description": "Selecciona qué tipo de aplicación quieres que parezca DESIST (calculadora, clima, etc.)."
+        },
+        "pin": {
+          "title": "Configura tu PIN",
+          "description": "Crea un PIN seguro que se usará para acceder a las características de DESIST en modo sigilo."
+        },
+        "test": {
+          "title": "Prueba la Característica",
+          "description": "Practica cambiar entre modo sigilo y modo normal para asegurarte de que te sientas cómodo con el proceso."
+        }
+      }
+    },
+    "safety": {
+      "title": "Consideraciones Importantes de Seguridad",
+      "trustInstincts": "Confía en tus Instintos: Si te sientes inseguro usando cualquier tecnología, prioriza tu seguridad inmediata sobre la documentación.",
+      "practiceFirst": "Practica Primero: Familiarízate con las características del modo sigilo antes de necesitarlas en una situación real.",
+      "backupPlans": "Ten Planes de Respaldo: El modo sigilo es una herramienta entre muchas. Siempre ten múltiples estrategias de seguridad.",
+      "stayUpdated": "Mantente Actualizado: Mantén la aplicación actualizada para asegurarte de tener las últimas características de seguridad y privacidad.",
+      "notice": "Si estás en peligro inmediato, llama al 911 o a tus servicios de emergencia locales. Las herramientas tecnológicas deben complementar, no reemplazar, las medidas de seguridad tradicionales."
+    },
+    "cta": {
+      "title": "¿Listo para Protegerse?",
+      "description": "Descarga la aplicación DESIST hoy y toma control de tu seguridad con discreción y confianza."
+    }
+  },
+  "press": {
+    "hero": {
+      "badge": "Kit de Prensa",
+      "title": "Kit de Prensa de DESIST",
+      "description": "Recursos para medios, información de la empresa y activos de marca para periodistas, socios y creadores de contenido que cubren DESIST."
+    },
+    "companyOverview": {
+      "title": "Resumen de la Empresa",
+      "description": "DESIST es una plataforma integral contra el acoso que combina tecnología de IA de vanguardia con apoyo impulsado por la comunidad para crear espacios digitales más seguros. Fundada en 2025, tenemos la misión de eliminar el acoso en línea a través de protección en tiempo real, recursos educativos y apoyo en crisis.",
+      "facts": {
+        "founded": "Fundada",
+        "mission": "Misión",
+        "userBase": "Base de Usuarios",
+        "platforms": "Plataformas",
+        "languages": "Idiomas",
+        "headquarters": "Sede",
+        "funding": "Financiamiento"
+      }
+    },
+    "keyFeatures": {
+      "title": "Características y Capacidades Clave",
+      "realTimeProtection": {
+        "title": "🛡️ Protección en Tiempo Real",
+        "description": "Detección y bloqueo de acoso impulsado por IA en todas las plataformas"
+      },
+      "communitySupport": {
+        "title": "🤝 Apoyo Comunitario",
+        "description": "Redes de apoyo entre pares y recursos de asesoramiento profesional"
+      },
+      "educationalResources": {
+        "title": "📚 Recursos Educativos",
+        "description": "Guías completas sobre seguridad digital y prevención del acoso"
+      },
+      "emergencyResponse": {
+        "title": "🚨 Respuesta de Emergencia",
+        "description": "Apoyo inmediato en crisis y conexión con recursos locales"
+      },
+      "privacyFirst": {
+        "title": "🔒 Privacidad Primero",
+        "description": "Cifrado de extremo a extremo y privacidad de datos controlada por el usuario"
+      },
+      "crossPlatform": {
+        "title": "📱 Multiplataforma",
+        "description": "Protección perfecta en web, móvil y plataformas sociales"
+      }
+    },
+    "pressReleases": {
+      "title": "Comunicados de Prensa Recientes",
+      "pressRelease": "Comunicado de Prensa",
+      "download": "Descargar",
+      "releases": {
+        "betaLaunch": {
+          "date": "1 de Septiembre de 2025",
+          "title": "DESIST Lanza Beta Pública con más de 50,000 Usuarios",
+          "summary": "La plataforma contra el acoso se abre al público después de pruebas beta cerradas exitosas."
+        },
+        "funding": {
+          "date": "15 de Agosto de 2025",
+          "title": "DESIST Completa Ronda Semilla de $5M Liderada por Social Impact Ventures",
+          "summary": "El financiamiento acelerará el desarrollo de la plataforma y expandirá los programas de apoyo comunitario."
+        },
+        "crisisPartnership": {
+          "date": "30 de Julio de 2025",
+          "title": "DESIST se Asocia con Líneas de Crisis Nacionales para Apoyo de Emergencia",
+          "summary": "La plataforma integra acceso directo a servicios profesionales de intervención en crisis."
+        }
+      }
+    },
+    "mediaContact": {
+      "title": "Contacto para Medios",
+      "scheduleInterview": "📞 Programar Entrevista"
+    },
+    "quickFacts": {
+      "title": "Datos Rápidos",
+      "launchStatus": {
+        "title": "Estado de Lanzamiento",
+        "value": "Beta Pública • Lanzamiento Completo 15 de Sept"
+      },
+      "userSafety": {
+        "title": "Seguridad del Usuario",
+        "value": "99.2% de tasa de detección de acoso"
+      },
+      "communityImpact": {
+        "title": "Impacto Comunitario",
+        "value": "85% de reducción en reportes de acoso"
+      }
+    },
+    "socialMedia": {
+      "title": "Sigue a DESIST"
+    }
+  },
+  "account": {
+    "loading": "Cargando tu cuenta...",
+    "header": {
+      "title": "Mi Cuenta",
+      "welcome": "Bienvenido de nuevo, {name}",
+      "backToSite": "Volver al Sitio",
+      "signOut": "Cerrar Sesión"
+    },
+    "tabs": {
+      "dashboard": "Panel",
+      "incidents": "Informes de Incidentes",
+      "badges": "Insignias y Logros",
+      "profile": "Configuración de Perfil",
+      "privacy": "Privacidad y Seguridad"
+    },
+    "sidebar": {
+      "anonymousUser": "Usuario Anónimo",
+      "memberSince": "Miembro desde {year}"
+    },
+    "dashboard": {
+      "badgesEarned": "Insignias Ganadas",
+      "communityPosts": "Publicaciones de la Comunidad",
+      "resourcesShared": "Recursos Compartidos",
+      "helpfulVotes": "Votos Útiles",
+      "incidentReports": "Informes de Incidentes",
+      "recentActivity": {
+        "title": "Actividad Reciente",
+        "none": "Sin Actividad Reciente",
+        "startEngaging": "Comienza a interactuar con la comunidad para ver tu actividad aquí."
+      }
+    },
+    "incidents": {
+      "title": "Tus Informes de Incidentes",
+      "description": "Rastrea y gestiona tus incidentes reportados.",
+      "none": "Aún No Hay Informes de Incidentes",
+      "noDescription": "Aún no has enviado ningún informe de incidentes. Usa el formulario de informe para documentar incidentes en tu área.",
+      "reportButton": "Reportar un Incidente",
+      "status": {
+        "pending": "Pendiente",
+        "under_review": "En Revisión",
+        "resolved": "Resuelto",
+        "closed": "Cerrado"
+      },
+      "locationNotSpecified": "Ubicación no especificada"
+    },
+    "badges": {
+      "title": "Insignias y Logros",
+      "none": "Aún no has ganado insignias. ¡Continúa participando en la comunidad para desbloquear logros!",
+      "description": "Tus contribuciones son valoradas. Gana insignias mientras interactúas con la comunidad."
+    },
+    "profile": {
+      "title": "Configuración de Perfil",
+      "name": "Nombre para Mostrar",
+      "bio": "Biografía",
+      "location": "Ubicación",
+      "pronouns": "Pronombres",
+      "save": "Guardar Cambios"
+    },
+    "privacy": {
+      "title": "Configuración de Privacidad y Seguridad",
+      "privateProfile": "Perfil Privado",
+      "showEmail": "Mostrar Correo Electrónico",
+      "showLocation": "Mostrar Ubicación",
+      "allowMessages": "Permitir Mensajes",
+      "deleteAccount": "Eliminar Cuenta Permanentemente",
+      "deleteDescription": "Esta acción no se puede deshacer. Esto eliminará permanentemente todos tus datos de nuestros servidores y te cerrará la sesión. Nota: Tu cuenta de autenticación permanecerá en el sistema pero será inaccesible.",
+      "deleteWarning": "Los siguientes datos serán eliminados:",
+      "deleteConfirm": "Escribe DELETE para confirmar:",
+      "deletePlaceholder": "Escribe DELETE aquí",
+      "deleteButton": "Eliminar Cuenta",
+      "deleting": "Eliminando...",
+      "cancel": "Cancelar"
     }
   }
 } 

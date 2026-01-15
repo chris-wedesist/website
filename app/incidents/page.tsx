@@ -27,11 +27,14 @@ interface Incident {
   address: string;
   created_at: string;
   status: string;
+  user_id?: string;
+  user_name?: string;
+  user_email?: string;
 }
 
-const transformIncidentToLocation = (incident: Incident) => ({
+const transformIncidentToLocation = (incident: Incident, t: (key: string) => string) => ({
   id: incident.id,
-  title: incident.type || 'Unknown Incident Type',
+  title: incident.type || t('incidents.recent.unknownType'),
   description: incident.description,
   latitude: incident.latitude,
   longitude: incident.longitude,
@@ -47,13 +50,71 @@ export default function IncidentsPage() {
   const [filter, setFilter] = useState("all");
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
   const [listLayout, setListLayout] = useState<'list' | 'grid'>('grid');
+  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
+  // const [user, setUser] = useState<{id: string, email: string, name: string} | null>(null);
   const { t } = useTranslation();
   const showAll = false;
-  const INITIAL_DISPLAY_COUNT = 3;
+  const INITIAL_DISPLAY_COUNT = 6;
 
   useEffect(() => {
     fetchIncidents();
+    getUserLocation();
+    // getCurrentUser();
   }, []);
+
+  // Calculate distance between two points using Haversine formula
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+    const R = 6371; // Earth's radius in kilometers
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  };
+
+  // Get user's current location
+  const getUserLocation = () => {
+    if (!navigator.geolocation) {
+      console.log('Geolocation is not supported by this browser.');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        });
+      },
+      (error) => {
+        console.log('Error getting location:', error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 300000 // 5 minutes
+      }
+    );
+  };
+
+  // Get current user
+  // const getCurrentUser = async () => {
+  //   try {
+  //     const { data: { user } } = await supabase.auth.getUser();
+  //     if (user) {
+  //       setUser({
+  //         id: user.id,
+  //         email: user.email || '',
+  //         name: user.user_metadata?.full_name || user.email || 'Anonymous User'
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error('Error getting user:', error);
+  //   }
+  // };
 
   const fetchIncidents = async () => {
     try {
@@ -93,6 +154,39 @@ export default function IncidentsPage() {
       minute: "2-digit",
     });
   };
+
+  // Delete incident function - COMMENTED OUT FOR NOW
+  // const deleteIncident = async (incidentId: number) => {
+  //   if (!user) {
+  //     alert('You must be logged in to delete incidents.');
+  //     return;
+  //   }
+
+  //   if (!confirm('Are you sure you want to delete this incident? This action cannot be undone.')) {
+  //     return;
+  //   }
+
+  //   try {
+  //     const { error } = await supabase
+  //       .from("incidents")
+  //       .delete()
+  //       .eq("id", incidentId)
+  //       .eq("user_id", user.id); // Only allow deletion of own incidents
+
+  //     if (error) {
+  //       console.error("Error deleting incident:", error);
+  //       alert('Failed to delete incident. You can only delete your own incidents.');
+  //       return;
+  //     }
+
+  //     // Refresh the incidents list
+  //     fetchIncidents();
+  //     alert('Incident deleted successfully.');
+  //   } catch (error) {
+  //     console.error("Unexpected error:", error);
+  //     alert('An unexpected error occurred. Please try again.');
+  //   }
+  // };
 
   const filteredIncidents = incidents.filter(
     incident => filter === "all" || incident.status === filter
@@ -280,7 +374,7 @@ export default function IncidentsPage() {
                 </div>
               ) : viewMode === 'map' ? (
                 <div className="h-[600px] rounded-lg overflow-hidden">
-                  <DynamicMap locations={displayedIncidents.map(transformIncidentToLocation)} />
+                  <DynamicMap locations={displayedIncidents.map(incident => transformIncidentToLocation(incident, t))} />
                 </div>
               ) : listLayout === 'grid' ? (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -295,18 +389,45 @@ export default function IncidentsPage() {
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                           {incident.type}
                         </h3>
-                        <span className={`px-3 py-1 rounded-full text-sm ${getStatusColor(incident.status)}`}>
-                          {incident.status}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className={`px-3 py-1 rounded-full text-sm ${getStatusColor(incident.status)}`}>
+                            {incident.status}
+                          </span>
+                          {/* DELETE BUTTON COMMENTED OUT FOR NOW */}
+                          {/* {user && incident.user_id === user.id && (
+                            <button
+                              onClick={() => deleteIncident(incident.id)}
+                              className="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors"
+                              title="Delete incident"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          )} */}
+                        </div>
                       </div>
                       <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3" title={incident.description}>
                         {incident.description}
                       </p>
                       <div className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
                         <p className="truncate max-w-[250px]" title={incident.address}>
-                          📍 {incident.address || t('incidents.recent.location')}
+                          {userLocation ? (
+                            <>
+                              📏 {calculateDistance(userLocation.lat, userLocation.lng, incident.latitude, incident.longitude).toFixed(1)} {t('incidents.recent.kmAway')}
+                              <br />
+                              📍 {incident.address || t('incidents.recent.location')}
+                            </>
+                          ) : (
+                            <>📍 {incident.address || t('incidents.recent.location')}</>
+                          )}
                         </p>
                         <p>🕒 {formatDate(incident.created_at)}</p>
+                        {incident.user_name && (
+                          <p className="text-xs text-gray-400 dark:text-gray-500">
+                            👤 {t('incidents.recent.reportedBy')} {incident.user_name}
+                          </p>
+                        )}
                       </div>
                     </motion.div>
                   ))}
@@ -330,14 +451,41 @@ export default function IncidentsPage() {
                           </p>
                           <div className="flex items-center gap-4 mt-2 text-sm text-gray-500 dark:text-gray-400">
                             <span className="truncate max-w-[250px]" title={incident.address}>
-                              📍 {incident.address || t('incidents.recent.location')}
+                              {userLocation ? (
+                                <>
+                                  📏 {calculateDistance(userLocation.lat, userLocation.lng, incident.latitude, incident.longitude).toFixed(1)} {t('incidents.recent.kmAway')}
+                                  <br />
+                                  📍 {incident.address || t('incidents.recent.location')}
+                                </>
+                              ) : (
+                                <>📍 {incident.address || t('incidents.recent.location')}</>
+                              )}
                             </span>
                             <span>🕒 {formatDate(incident.created_at)}</span>
+                            {incident.user_name && (
+                              <span className="text-xs text-gray-400 dark:text-gray-500">
+                                👤 {incident.user_name}
+                              </span>
+                            )}
                           </div>
                         </div>
-                        <span className={`px-3 py-1 rounded-full text-sm ${getStatusColor(incident.status)}`}>
-                          {incident.status}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className={`px-3 py-1 rounded-full text-sm ${getStatusColor(incident.status)}`}>
+                            {incident.status}
+                          </span>
+                          {/* DELETE BUTTON COMMENTED OUT FOR NOW */}
+                          {/* {user && incident.user_id === user.id && (
+                            <button
+                              onClick={() => deleteIncident(incident.id)}
+                              className="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors"
+                              title="Delete incident"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          )} */}
+                        </div>
                       </div>
                     </motion.div>
                   ))}

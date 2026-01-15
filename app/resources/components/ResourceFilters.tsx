@@ -1,6 +1,7 @@
 import React from 'react';
 import { Badge } from '../../components/ui';
 import { cn } from '../../../utils/cn';
+import { useTranslation } from '../../context/TranslationContext';
 
 export interface FilterOptions {
   types: string[];
@@ -30,6 +31,8 @@ export const ResourceFilters: React.FC<ResourceFiltersProps> = ({
   onSearchChange,
   className,
 }) => {
+  const { t } = useTranslation();
+  
   const clearAllFilters = () => {
     onFilterChange('type', null);
     onFilterChange('category', null);
@@ -53,7 +56,7 @@ export const ResourceFilters: React.FC<ResourceFiltersProps> = ({
           type="text"
           value={activeFilters.searchQuery || ''}
           onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Search resources..."
+          placeholder={t('resources.filters.searchPlaceholder')}
           className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
         />
       </div>
@@ -61,9 +64,9 @@ export const ResourceFilters: React.FC<ResourceFiltersProps> = ({
       {/* Active Filters Display */}
       {hasActiveFilters && (
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            Active filters:
-          </span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              {t('resources.filters.activeFilters')}
+            </span>
           
           {activeFilters.type && (
             <Badge 
@@ -71,7 +74,7 @@ export const ResourceFilters: React.FC<ResourceFiltersProps> = ({
               className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700"
               onClick={() => onFilterChange('type', null)}
             >
-              Type: {activeFilters.type}
+              {t('resources.filters.type')} {activeFilters.type}
               <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -84,7 +87,7 @@ export const ResourceFilters: React.FC<ResourceFiltersProps> = ({
               className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700"
               onClick={() => onFilterChange('category', null)}
             >
-              Category: {activeFilters.category}
+              {t('resources.filters.category')} {activeFilters.category}
               <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -97,7 +100,7 @@ export const ResourceFilters: React.FC<ResourceFiltersProps> = ({
               className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700"
               onClick={() => onFilterChange('difficulty', null)}
             >
-              Level: {activeFilters.difficulty}
+              {t('resources.filters.level')} {activeFilters.difficulty}
               <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -110,7 +113,7 @@ export const ResourceFilters: React.FC<ResourceFiltersProps> = ({
               className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700"
               onClick={() => onFilterChange('language', null)}
             >
-              Language: {activeFilters.language}
+              {t('resources.filters.language')} {activeFilters.language}
               <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -121,7 +124,7 @@ export const ResourceFilters: React.FC<ResourceFiltersProps> = ({
             onClick={clearAllFilters}
             className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
           >
-            Clear all
+            {t('resources.filters.clearAll')}
           </button>
         </div>
       )}
@@ -131,7 +134,7 @@ export const ResourceFilters: React.FC<ResourceFiltersProps> = ({
         {/* Resource Type Filter */}
         <div>
           <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">
-            Resource Type
+            {t('resources.filters.resourceType')}
           </h3>
           <div className="space-y-2">
             {filters.types.map((type) => (
@@ -142,7 +145,7 @@ export const ResourceFilters: React.FC<ResourceFiltersProps> = ({
                   'block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors',
                   activeFilters.type === type
                     ? 'bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300'
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    : 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800'
                 )}
               >
                 {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -154,7 +157,7 @@ export const ResourceFilters: React.FC<ResourceFiltersProps> = ({
         {/* Category Filter */}
         <div>
           <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">
-            Category
+            {t('resources.filters.categoryLabel')}
           </h3>
           <div className="space-y-2">
             {filters.categories.map((category) => (
@@ -165,7 +168,7 @@ export const ResourceFilters: React.FC<ResourceFiltersProps> = ({
                   'block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors',
                   activeFilters.category === category
                     ? 'bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300'
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    : 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800'
                 )}
               >
                 {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -177,7 +180,7 @@ export const ResourceFilters: React.FC<ResourceFiltersProps> = ({
         {/* Difficulty Filter */}
         <div>
           <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">
-            Difficulty Level
+            {t('resources.filters.difficultyLevel')}
           </h3>
           <div className="space-y-2">
             {filters.difficulties.map((difficulty) => (
@@ -188,7 +191,7 @@ export const ResourceFilters: React.FC<ResourceFiltersProps> = ({
                   'block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors',
                   activeFilters.difficulty === difficulty
                     ? 'bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300'
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    : 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800'
                 )}
               >
                 {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
@@ -200,7 +203,7 @@ export const ResourceFilters: React.FC<ResourceFiltersProps> = ({
         {/* Language Filter */}
         <div>
           <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">
-            Language
+            {t('resources.filters.languageLabel')}
           </h3>
           <div className="space-y-2">
             {filters.languages.map((language) => (
@@ -211,7 +214,7 @@ export const ResourceFilters: React.FC<ResourceFiltersProps> = ({
                   'block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors',
                   activeFilters.language === language
                     ? 'bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300'
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    : 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800'
                 )}
               >
                 {language === 'en' ? 'English' : language === 'es' ? 'Español' : language}

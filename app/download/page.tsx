@@ -3,7 +3,6 @@ import { NewHero } from "../components/NewHero";
 import { AppFeatures } from "../components/AppFeatures";
 import { NotificationDemo } from "../components/NotificationDemo";
 import { AppStats } from "../components/AppStats";
-import { Testimonials } from "../components/Testimonials";
 import { AppDownloadCTA } from "../components/AppDownloadCTA";
 
 export default function Home() {
@@ -19,7 +18,7 @@ export default function Home() {
         <AppFeatures />
         <NotificationDemo />
         <AppStats />
-        <Testimonials />
+        {/* <Testimonials /> */}
         <section className="container mx-auto py-12 ">
           <AppDownloadCTA />
         </section>

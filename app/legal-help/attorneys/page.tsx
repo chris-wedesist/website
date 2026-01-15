@@ -5,10 +5,18 @@ import { HeroSection } from "../../components/HeroSection";
 import { useAttorneys } from "../../context/AttorneysContext";
 
 const practiceAreas = [
-  "Immigration Law",
-  "Family Law",
+  "General Practice",
   "Criminal Law",
+  "Family Law", 
   "Corporate Law",
+  "Property Law",
+  "Immigration Law",
+  "Tax Law",
+  "Labor Law",
+  "Banking Law",
+  "Constitutional Law",
+  "Civil Law",
+  "Commercial Law",
   "Real Estate Law",
   "Personal Injury",
   "Estate Planning",
@@ -41,9 +49,20 @@ export default function AllAttorneysPage() {
   const locations = Array.from(new Set(attorneys.map(a => a.location)));
 
   const filteredAttorneys = attorneys.filter(attorney => {
+    // Handle specialization as array
+    const specializationText = Array.isArray(attorney.specialization) 
+      ? attorney.specialization.join(' ') 
+      : attorney.specialization || '';
+    
     const matchesSearch = attorney.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         attorney.specialization.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesSpecialization = !selectedSpecialization || attorney.specialization === selectedSpecialization;
+                         specializationText.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         (attorney.practiceAreas && attorney.practiceAreas.join(' ').toLowerCase().includes(searchQuery.toLowerCase()));
+    
+    const matchesSpecialization = !selectedSpecialization || 
+      (Array.isArray(attorney.specialization) 
+        ? attorney.specialization.includes(selectedSpecialization)
+        : attorney.specialization === selectedSpecialization);
+    
     const matchesLocation = !selectedLocation || attorney.location === selectedLocation;
     
     return matchesSearch && matchesSpecialization && matchesLocation;
@@ -215,7 +234,9 @@ export default function AllAttorneysPage() {
                             ? 'text-blue-700 dark:text-blue-300' 
                             : 'text-gray-600 dark:text-gray-400'
                         }`}>
-                          {attorney.specialization}
+                          {Array.isArray(attorney.specialization) 
+                            ? attorney.specialization.join(', ') 
+                            : attorney.specialization}
                         </p>
                       </div>
                     </div>
@@ -309,7 +330,9 @@ export default function AllAttorneysPage() {
                             ? 'text-blue-700 dark:text-blue-300' 
                             : 'text-gray-600 dark:text-gray-400'
                         }`}>
-                          {attorney.specialization}
+                          {Array.isArray(attorney.specialization) 
+                            ? attorney.specialization.join(', ') 
+                            : attorney.specialization}
                         </p>
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-yellow-400">★</span>

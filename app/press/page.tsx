@@ -1,88 +1,71 @@
-import { Metadata } from 'next';
-import { LaunchCountdown } from '../components/LaunchCountdown';
-import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
-import { Button } from '../components/ui/Button';
-import { Badge } from '../components/ui/Badge';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'Press Kit - DESIST',
-  description: 'Media resources, company information, and press materials for DESIST - the anti-harassment platform.',
-  openGraph: {
-    title: 'DESIST Press Kit',
-    description: 'Media resources and press materials for DESIST - building safer digital communities.',
-    images: ['/press/desist-logo-social.jpg'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'DESIST Press Kit',
-    description: 'Media resources and press materials for DESIST.',
-    images: ['/press/desist-logo-social.jpg'],
-  },
-};
+import { useTranslation } from '../context/TranslationContext';
 
 export default function PressPage() {
-  const pressAssets = {
-    logos: [
-      {
-        name: 'Primary Logo (PNG)',
-        description: 'High-resolution logo with transparent background',
-        size: '2048x512px',
-        downloadUrl: '/press/logo-primary.png',
-      },
-      {
-        name: 'Logo Mark (SVG)',
-        description: 'Scalable vector logo mark',
-        size: 'Vector',
-        downloadUrl: '/press/logo-mark.svg',
-      },
-      {
-        name: 'Logo White (PNG)',
-        description: 'Logo optimized for dark backgrounds',
-        size: '2048x512px',
-        downloadUrl: '/press/logo-white.png',
-      },
-      {
-        name: 'Favicon Package',
-        description: 'Complete favicon set for web use',
-        size: 'Multiple sizes',
-        downloadUrl: '/press/favicon-package.zip',
-      },
-    ],
-    screenshots: [
-      {
-        name: 'Dashboard Overview',
-        description: 'Main user dashboard interface',
-        downloadUrl: '/press/screenshot-dashboard.jpg',
-      },
-      {
-        name: 'Community Features',
-        description: 'Community forum and interaction tools',
-        downloadUrl: '/press/screenshot-community.jpg',
-      },
-      {
-        name: 'Emergency Resources',
-        description: 'Crisis support and safety features',
-        downloadUrl: '/press/screenshot-emergency.jpg',
-      },
-      {
-        name: 'Mobile App Interface',
-        description: 'iOS and Android app screenshots',
-        downloadUrl: '/press/screenshot-mobile.jpg',
-      },
-    ],
-    brandColors: [
-      { name: 'Primary Blue', hex: '#3B82F6', rgb: 'rgb(59, 130, 246)' },
-      { name: 'Secondary Purple', hex: '#8B5CF6', rgb: 'rgb(139, 92, 246)' },
-      { name: 'Success Green', hex: '#10B981', rgb: 'rgb(16, 185, 129)' },
-      { name: 'Warning Orange', hex: '#F59E0B', rgb: 'rgb(245, 158, 11)' },
-      { name: 'Error Red', hex: '#EF4444', rgb: 'rgb(239, 68, 68)' },
-      { name: 'Neutral Gray', hex: '#6B7280', rgb: 'rgb(107, 114, 128)' },
-    ],
-  };
+  const { t } = useTranslation();
+  // const pressAssets = {
+  //   logos: [
+  //     {
+  //       name: 'Primary Logo (PNG)',
+  //       description: 'High-resolution logo with transparent background',
+  //       size: '2048x512px',
+  //       downloadUrl: '/press/logo-primary.png',
+  //     },
+  //     {
+  //       name: 'Logo Mark (SVG)',
+  //       description: 'Scalable vector logo mark',
+  //       size: 'Vector',
+  //       downloadUrl: '/press/logo-mark.svg',
+  //     },
+  //     {
+  //       name: 'Logo White (PNG)',
+  //       description: 'Logo optimized for dark backgrounds',
+  //       size: '2048x512px',
+  //       downloadUrl: '/press/logo-white.png',
+  //     },
+  //     {
+  //       name: 'Favicon Package',
+  //       description: 'Complete favicon set for web use',
+  //       size: 'Multiple sizes',
+  //       downloadUrl: '/press/favicon-package.zip',
+  //     },
+  //   ],
+  //   screenshots: [
+  //     {
+  //       name: 'Dashboard Overview',
+  //       description: 'Main user dashboard interface',
+  //       downloadUrl: '/press/screenshot-dashboard.jpg',
+  //     },
+  //     {
+  //       name: 'Community Features',
+  //       description: 'Community forum and interaction tools',
+  //       downloadUrl: '/press/screenshot-community.jpg',
+  //     },
+  //     {
+  //       name: 'Emergency Resources',
+  //       description: 'Crisis support and safety features',
+  //       downloadUrl: '/press/screenshot-emergency.jpg',
+  //     },
+  //     {
+  //       name: 'Mobile App Interface',
+  //       description: 'iOS and Android app screenshots',
+  //       downloadUrl: '/press/screenshot-mobile.jpg',
+  //     },
+  //   ],
+  //   brandColors: [
+  //     { name: 'Primary Blue', hex: '#3B82F6', rgb: 'rgb(59, 130, 246)' },
+  //     { name: 'Secondary Purple', hex: '#8B5CF6', rgb: 'rgb(139, 92, 246)' },
+  //     { name: 'Success Green', hex: '#10B981', rgb: 'rgb(16, 185, 129)' },
+  //     { name: 'Warning Orange', hex: '#F59E0B', rgb: 'rgb(245, 158, 11)' },
+  //     { name: 'Error Red', hex: '#EF4444', rgb: 'rgb(239, 68, 68)' },
+  //     { name: 'Neutral Gray', hex: '#6B7280', rgb: 'rgb(107, 114, 128)' },
+  //   ],
+  // };
 
   const companyFacts = {
     founded: '2025',
-    mission: 'To eliminate digital harassment and build safer online communities through technology, education, and community support.',
+    mission: t('press.companyOverview.description'),
     userBase: '50,000+ beta users',
     platforms: ['Web App', 'iOS', 'Android', 'Browser Extension'],
     languages: '12 languages supported',
@@ -92,28 +75,28 @@ export default function PressPage() {
 
   const keyFeatures = [
     {
-      title: '🛡️ Real-time Protection',
-      description: 'AI-powered detection and blocking of harassment across platforms',
+      title: t('press.keyFeatures.realTimeProtection.title'),
+      description: t('press.keyFeatures.realTimeProtection.description'),
     },
     {
-      title: '🤝 Community Support',
-      description: 'Peer-to-peer support networks and professional counseling resources',
+      title: t('press.keyFeatures.communitySupport.title'),
+      description: t('press.keyFeatures.communitySupport.description'),
     },
     {
-      title: '📚 Educational Resources',
-      description: 'Comprehensive guides on digital safety and harassment prevention',
+      title: t('press.keyFeatures.educationalResources.title'),
+      description: t('press.keyFeatures.educationalResources.description'),
     },
     {
-      title: '🚨 Emergency Response',
-      description: 'Immediate crisis support and connection to local resources',
+      title: t('press.keyFeatures.emergencyResponse.title'),
+      description: t('press.keyFeatures.emergencyResponse.description'),
     },
     {
-      title: '🔒 Privacy First',
-      description: 'End-to-end encryption and user-controlled data privacy',
+      title: t('press.keyFeatures.privacyFirst.title'),
+      description: t('press.keyFeatures.privacyFirst.description'),
     },
     {
-      title: '📱 Cross-Platform',
-      description: 'Seamless protection across web, mobile, and social platforms',
+      title: t('press.keyFeatures.crossPlatform.title'),
+      description: t('press.keyFeatures.crossPlatform.description'),
     },
   ];
 
@@ -127,90 +110,78 @@ export default function PressPage() {
 
   const pressReleases = [
     {
-      date: 'September 1, 2025',
-      title: 'DESIST Launches Public Beta with 50,000+ Users',
-      summary: 'Anti-harassment platform opens to public after successful closed beta testing.',
+      date: t('press.pressReleases.releases.betaLaunch.date'),
+      title: t('press.pressReleases.releases.betaLaunch.title'),
+      summary: t('press.pressReleases.releases.betaLaunch.summary'),
       downloadUrl: '/press/release-beta-launch.pdf',
     },
     {
-      date: 'August 15, 2025',
-      title: 'DESIST Completes $5M Seed Round Led by Social Impact Ventures',
-      summary: 'Funding will accelerate platform development and expand community support programs.',
+      date: t('press.pressReleases.releases.funding.date'),
+      title: t('press.pressReleases.releases.funding.title'),
+      summary: t('press.pressReleases.releases.funding.summary'),
       downloadUrl: '/press/release-funding.pdf',
     },
     {
-      date: 'July 30, 2025',
-      title: 'DESIST Partners with National Crisis Hotlines for Emergency Support',
-      summary: 'Platform integrates direct access to professional crisis intervention services.',
+      date: t('press.pressReleases.releases.crisisPartnership.date'),
+      title: t('press.pressReleases.releases.crisisPartnership.title'),
+      summary: t('press.pressReleases.releases.crisisPartnership.summary'),
       downloadUrl: '/press/release-crisis-partnership.pdf',
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="container mx-auto px-4 py-16">
         {/* Header */}
         <div className="text-center mb-12">
-          <Badge className="mb-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-            📰 Press Kit
-          </Badge>
+          <div className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-sm font-medium rounded-full mb-4 shadow-sm">
+            📰 {t('press.hero.badge')}
+          </div>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-            DESIST Press Kit
+            {t('press.hero.title')}
           </h1>
           <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-8">
-            Media resources, company information, and brand assets for journalists, 
-            partners, and content creators covering DESIST.
+            {t('press.hero.description')}
           </p>
-          <Button className="bg-blue-600 hover:bg-blue-700">
+          {/* <button 
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 shadow-lg hover:shadow-xl"
+            onClick={() => window.open('/press/complete-press-kit.zip', '_blank')}
+          >
             📥 Download Complete Press Kit (ZIP)
-          </Button>
-        </div>
-
-        {/* Launch Countdown */}
-        <div className="mb-16">
-          <LaunchCountdown 
-            launchDate="2025-09-15T09:00:00Z"
-            title="DESIST Official Launch"
-            description="The comprehensive anti-harassment platform goes live"
-          />
+          </button> */}
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Company Overview */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Company Overview</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('press.companyOverview.title')}</h2>
+              </div>
+              <div className="space-y-4">
                 <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                  DESIST is a comprehensive anti-harassment platform that combines cutting-edge 
-                  AI technology with community-driven support to create safer digital spaces. 
-                  Founded in 2025, we&apos;re on a mission to eliminate online harassment through 
-                  real-time protection, educational resources, and crisis support.
+                  {t('press.companyOverview.description')}
                 </p>
                 <div className="grid md:grid-cols-2 gap-4">
                   {Object.entries(companyFacts).map(([key, value]) => (
-                    <div key={key} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <div key={key} className="flex p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                       <span className="font-medium text-gray-600 dark:text-gray-400 capitalize">
-                        {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:
+                        {t(`press.companyOverview.facts.${key}`)}:
                       </span>
-                      <span className="text-gray-900 dark:text-white font-semibold">
-                        {value}
-                      </span>
+                      <span className="text-gray-900 dark:text-white font-semibold ml-1">{typeof value === 'string' ? value : Array.isArray(value) ? value.join(', ') : value}</span>
                     </div>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Key Features */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Key Features & Capabilities</CardTitle>
-              </CardHeader>
-              <CardContent>
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('press.keyFeatures.title')}</h2>
+              </div>
+              <div>
                 <div className="grid md:grid-cols-2 gap-4">
                   {keyFeatures.map((feature, index) => (
                     <div key={index} className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
@@ -223,15 +194,15 @@ export default function PressPage() {
                     </div>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Press Releases */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Press Releases</CardTitle>
-              </CardHeader>
-              <CardContent>
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('press.pressReleases.title')}</h2>
+              </div>
+              <div>
                 <div className="space-y-4">
                   {pressReleases.map((release, index) => (
                     <div key={index} className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
@@ -240,9 +211,9 @@ export default function PressPage() {
                           <span className="text-sm text-gray-500 dark:text-gray-400">
                             {release.date}
                           </span>
-                          <Badge variant="outline" className="text-xs">
-                            Press Release
-                          </Badge>
+                          <span className="inline-flex items-center px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-medium rounded-full border border-gray-200 dark:border-gray-600">
+                            {t('press.pressReleases.pressRelease')}
+                          </span>
                         </div>
                         <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
                           {release.title}
@@ -251,26 +222,24 @@ export default function PressPage() {
                           {release.summary}
                         </p>
                       </div>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
+                      <button 
+                        className="px-3 py-1 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
                         onClick={() => window.open(release.downloadUrl, '_blank')}
                       >
-                        📄 Download
-                      </Button>
+                        📄 {t('press.pressReleases.download')}
+                      </button>
                     </div>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Brand Assets */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Brand Assets</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Logos */}
+            {/* <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Brand Assets</h2>
+              </div>
+              <div className="space-y-6">
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Logos</h3>
                   <div className="grid md:grid-cols-2 gap-4">
@@ -288,20 +257,18 @@ export default function PressPage() {
                               {logo.size}
                             </span>
                           </div>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
+                          <button 
+                            className="px-3 py-1 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
                             onClick={() => window.open(logo.downloadUrl, '_blank')}
                           >
                             ⬇️
-                          </Button>
+                          </button>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* Brand Colors */}
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Brand Colors</h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -324,7 +291,6 @@ export default function PressPage() {
                   </div>
                 </div>
 
-                {/* Screenshots */}
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Screenshots</h3>
                   <div className="grid md:grid-cols-2 gap-4">
@@ -339,30 +305,29 @@ export default function PressPage() {
                               {screenshot.description}
                             </p>
                           </div>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
+                          <button 
+                            className="px-3 py-1 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
                             onClick={() => window.open(screenshot.downloadUrl, '_blank')}
                           >
                             🖼️ View
-                          </Button>
+                          </button>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div> */}
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Media Contact */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Media Contact</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('press.mediaContact.title')}</h2>
+              </div>
+              <div className="space-y-3">
                 <div>
                   <div className="font-semibold text-gray-900 dark:text-white">
                     {mediaContact.name}
@@ -394,78 +359,75 @@ export default function PressPage() {
                     </span>
                   </div>
                 </div>
-                <Button className="w-full bg-green-600 hover:bg-green-700 mt-4">
-                  📞 Schedule Interview
-                </Button>
-              </CardContent>
-            </Card>
+                <button className="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 mt-4">
+                  {t('press.mediaContact.scheduleInterview')}
+                </button>
+              </div>
+            </div>
 
             {/* Quick Facts */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Quick Facts</CardTitle>
-              </CardHeader>
-              <CardContent>
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('press.quickFacts.title')}</h2>
+              </div>
+              <div>
                 <div className="space-y-3">
                   <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                     <div className="font-semibold text-blue-900 dark:text-blue-300">
-                      Launch Status
+                      {t('press.quickFacts.launchStatus.title')}
                     </div>
                     <div className="text-sm text-blue-700 dark:text-blue-400">
-                      Public Beta • Full Launch Sept 15
+                      {t('press.quickFacts.launchStatus.value')}
                     </div>
                   </div>
                   <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
                     <div className="font-semibold text-green-900 dark:text-green-300">
-                      User Safety
+                      {t('press.quickFacts.userSafety.title')}
                     </div>
                     <div className="text-sm text-green-700 dark:text-green-400">
-                      99.2% harassment detection rate
+                      {t('press.quickFacts.userSafety.value')}
                     </div>
                   </div>
                   <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
                     <div className="font-semibold text-purple-900 dark:text-purple-300">
-                      Community Impact
+                      {t('press.quickFacts.communityImpact.title')}
                     </div>
                     <div className="text-sm text-purple-700 dark:text-purple-400">
-                      85% reduction in harassment reports
+                      {t('press.quickFacts.communityImpact.value')}
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Social Media */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Follow DESIST</CardTitle>
-              </CardHeader>
-              <CardContent>
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('press.socialMedia.title')}</h2>
+              </div>
+              <div>
                 <div className="space-y-3">
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start"
+                  <button 
+                    className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 text-left"
                     onClick={() => window.open('https://twitter.com/desistorg', '_blank')}
                   >
                     🐦 @desistorg
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start"
+                  </button>
+                  <button 
+                    className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 text-left"
                     onClick={() => window.open('https://linkedin.com/company/desist', '_blank')}
                   >
                     💼 DESIST Inc.
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start"
+                  </button>
+                  <button 
+                    className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 text-left"
                     onClick={() => window.open('https://github.com/desistorg', '_blank')}
                   >
                     💻 github.com/desistorg
-                  </Button>
+                  </button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
         </div>
       </div>

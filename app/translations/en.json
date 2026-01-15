@@ -71,15 +71,15 @@
           "description": "Connect with and support community members in need.",
           "link": "Learn More"
         },
-        "events": {
-          "title": "Event Support",
-          "description": "Help organize and run community events and workshops.",
-          "link": "View Events"
+        "education": {
+          "title": "Education & Training",
+          "description": "Help educate community members about safety and empowerment.",
+          "link": "Get Involved"
         },
-        "resources": {
-          "title": "Resource Distribution",
-          "description": "Assist in distributing resources to community members.",
-          "link": "Get Started"
+        "advocacy": {
+          "title": "Advocacy & Support",
+          "description": "Advocate for community rights and provide support services.",
+          "link": "Join Advocacy"
         }
       }
     },
@@ -92,10 +92,10 @@
           "description": "Join forces with like-minded organizations to amplify impact.",
           "link": "Partner With Us"
         },
-        "sharing": {
-          "title": "Resource Sharing",
-          "description": "Share resources and expertise to strengthen our community.",
-          "link": "Share Resources"
+        "institutions": {
+          "title": "Institutional Partnerships",
+          "description": "Partner with educational and community institutions.",
+          "link": "Learn More"
         },
         "initiatives": {
           "title": "Joint Initiatives",
@@ -116,6 +116,21 @@
       "viewAll": "View All News",
       "readMore": "Read More →"
     }
+  },
+  "launchCountdown": {
+    "launchIn": "Launch in:",
+    "launchingIn": "Launching in:",
+    "title": "Launch Countdown",
+    "live": "We're Live!",
+    "liveShort": "Live!",
+    "days": "d",
+    "hours": "h",
+    "minutes": "m",
+    "seconds": "s",
+    "daysLabel": "Days",
+    "hoursLabel": "Hours",
+    "minutesLabel": "Minutes",
+    "secondsLabel": "Seconds"
   },
   "community": {
     "hero": {
@@ -148,6 +163,10 @@
         "stories": "Success Stories",
         "updates": "Community Updates"
       }
+    },
+    "posts": {
+      "featuredTitle": "Featured Community Posts",
+      "viewAll": "View all posts →"
     },
     "events": {
       "title": "Local Events & Meetups",
@@ -244,6 +263,7 @@
         "oldest": "Oldest First",
         "type": "By Type"
       },
+      "sortLabel": "Sort by:",
       "filter": {
         "all": "All Incidents",
         "active": "Active",
@@ -311,7 +331,10 @@
         "list": "List",
         "map": "Map"
       },
-      "location": "Location not specified"
+      "location": "Location not specified",
+      "unknownType": "Unknown Incident Type",
+      "kmAway": "km away",
+      "reportedBy": "Reported by:"
     },
     "cta": {
       "title": "Download Our Mobile App",
@@ -377,6 +400,38 @@
         "button": "Access Documents"
       }
     },
+    "featured": {
+      "title": "Featured Resources",
+      "description": "Hand-picked resources to help you get started"
+    },
+    "library": {
+      "title": "Resource Library",
+      "description": "Browse our complete collection of guides, tools, and educational materials",
+      "allResources": "All Resources ({count})",
+      "noResults": "No resources found matching your criteria",
+      "clearFilters": "Clear all filters"
+    },
+    "card": {
+      "featured": "Featured",
+      "views": "views",
+      "by": "By",
+      "minRead": "min read",
+      "download": "Download",
+      "view": "View"
+    },
+    "filters": {
+      "searchPlaceholder": "Search resources...",
+      "activeFilters": "Active filters:",
+      "type": "Type:",
+      "category": "Category:",
+      "level": "Level:",
+      "language": "Language:",
+      "clearAll": "Clear all",
+      "resourceType": "Resource Type",
+      "categoryLabel": "Category",
+      "difficultyLevel": "Difficulty Level",
+      "languageLabel": "Language"
+    },
     "mobile": {
       "title": "Access Resources Anywhere",
       "description": "Download our app to access all resources and tools on your mobile device."
@@ -411,6 +466,9 @@
       "search": "Search by name or specialization...",
       "contact": "Contact Attorney",
       "featured": "Featured",
+      "loading": "Finding attorneys near you...",
+      "tryAgain": "Try Again",
+      "error": "Failed to get location. Please try again.",
       "filter": {
         "all": "All Attorneys",
         "featured": "Featured"
@@ -432,14 +490,150 @@
       "callButton": "Call Support"
     },
     "emergency": {
-      "title": "Emergency Contacts",
-      "services": {
-        "title": "Emergency Services",
-        "number": "911"
+      "alert": "If you are in immediate danger, call 911 or your local emergency services immediately",
+      "hero": {
+        "badge": "Crisis Support Available",
+        "title": "Emergency Resources & Support",
+        "description": "Access immediate help and support. You're not alone, and help is available 24/7."
       },
-      "crisis": {
-        "title": "Crisis Hotline",
-        "number": "1-800-555-0000"
+      "quickAccess": {
+        "emergency": "Emergency",
+        "domesticViolence": "Domestic Violence",
+        "crisisText": "Crisis Text"
+      },
+      "categories": {
+        "all": "All Resources",
+        "hotline": "Phone Hotlines",
+        "text": "Text Support",
+        "chat": "Online Chat",
+        "local": "Local Resources"
+      },
+      "contact": {
+        "available": "Available",
+        "specialties": "Specialties",
+        "languages": "Languages",
+        "callNow": "Call Now",
+        "sendText": "Send Text"
+      },
+      "safetyTips": {
+        "title": "Digital Safety Tips",
+        "description": "Protect yourself while seeking help online or through digital resources.",
+        "safeDevice": {
+          "title": "Use a Safe Device",
+          "description": "Use a device that your abuser doesn't have access to when seeking help."
+        },
+        "clearHistory": {
+          "title": "Clear Your History",
+          "description": "Clear your browser history and use incognito/private browsing mode."
+        },
+        "safetyPlan": {
+          "title": "Have a Safety Plan",
+          "description": "Develop a safety plan for leaving dangerous situations quickly."
+        },
+        "tellSomeone": {
+          "title": "Tell Someone You Trust",
+          "description": "Let a trusted friend or family member know about your situation."
+        }
+      },
+      "appDownload": {
+        "title": "Take Safety With You Everywhere",
+        "description": "Download the DESIST app for discreet access to emergency resources, documentation tools, and safety features wherever you go."
+      },
+      "importantNotice": {
+        "title": "Important: Your Safety Comes First",
+        "content": "If you are in immediate physical danger, call 911 immediately. If your internet activity is being monitored, consider using a safer computer or device. Clear your browser history after visiting safety resources."
+      }
+    },
+    "feedback": {
+      "title": "Feedback & Bug Reports",
+      "description": "Help us improve DESIST by sharing your feedback, reporting bugs, or suggesting new features. Your input helps us build better safety tools for everyone.",
+      "types": {
+        "question": "What type of feedback are you sharing?",
+        "general": {
+          "label": "General Feedback",
+          "description": "Share your thoughts about our website or services"
+        },
+        "bug": {
+          "label": "Bug Report",
+          "description": "Report a technical issue or something that isn't working"
+        },
+        "feature": {
+          "label": "Feature Request",
+          "description": "Suggest a new feature or improvement"
+        },
+        "safety": {
+          "label": "Safety Concern",
+          "description": "Report a safety or security issue"
+        }
+      },
+      "priority": {
+        "title": "Priority Level",
+        "low": {
+          "label": "Low",
+          "description": "Minor issue, no urgency"
+        },
+        "medium": {
+          "label": "Medium",
+          "description": "Moderate impact, should be addressed"
+        },
+        "high": {
+          "label": "High",
+          "description": "Significant issue affecting usability"
+        },
+        "critical": {
+          "label": "Critical",
+          "description": "Urgent safety or security concern"
+        }
+      },
+      "details": {
+        "title": "Details",
+        "category": "Category",
+        "categoryPlaceholder": "Select a category",
+        "incidentTitle": "Title",
+        "titlePlaceholder": "Brief description of your {type}",
+        "description": "Description",
+        "descriptionPlaceholders": {
+          "bug": "Please describe the bug, including steps to reproduce it, what you expected to happen, and what actually happened.",
+          "feature": "Describe the feature you'd like to see and how it would help you or others.",
+          "safety": "Please describe the safety concern in detail. Your report will be handled with priority and confidentiality.",
+          "general": "Share your thoughts, suggestions, or general feedback about our website or services."
+        },
+        "email": {
+          "label": "Email Address (Optional)",
+          "placeholder": "your@email.com",
+          "helper": "Provide your email if you'd like us to follow up with you about this {type}."
+        },
+        "attachments": {
+          "label": "Attachments (Optional)",
+          "helper": "Upload screenshots, documents, or other files that might help us understand your {type}.",
+          "filesSelected": "Files selected"
+        },
+        "technical": {
+          "title": "Technical Information",
+          "description": "This information helps us reproduce and fix technical issues.",
+          "url": "Current Page URL",
+          "browser": "Browser Information"
+        },
+        "privacy": {
+          "title": "Privacy & Safety",
+          "content": "Your feedback is important to us. We handle all reports confidentially and in accordance with our privacy policy. For safety concerns, our team will review and respond with appropriate priority. If you are in immediate danger, please contact emergency services directly."
+        },
+        "submit": {
+          "button": "Submit {type}",
+          "submitting": "Submitting..."
+        }
+      },
+      "success": {
+        "title": "Thank You!",
+        "message": "Your {type} has been submitted successfully. We appreciate your feedback and will review it carefully.",
+        "another": "Submit Another Report",
+        "home": "Return to Home"
+      },
+      "categories": {
+        "feedback": ["Website Experience", "Resource Quality", "Community Features", "Accessibility", "Other"],
+        "bug": ["Website Functionality", "Mobile Responsiveness", "Account Issues", "Search Problems", "Other"],
+        "feature-request": ["User Interface", "New Resources", "Community Tools", "Mobile App", "Other"],
+        "safety-concern": ["Content Safety", "Privacy Issue", "Security Vulnerability", "Harassment", "Other"]
       }
     },
     "immediate": {
@@ -587,6 +781,9 @@
       }
     }
   },
+  "cta": {
+    "readyToStart": "Ready to Get Started?"
+  },
   "testimonials": {
     "title": "Trusted by Communities Nationwide",
     "description": "See how DESIST is making a difference in neighborhoods across the country",
@@ -701,6 +898,7 @@
       "resources": "Resources",
       "support": "Support",
       "emergency": "Emergency",
+      "features": "Features",
       "stealthMode": "Stealth Mode",
       "press": "Press Kit",
       "download": "Download",
@@ -751,6 +949,368 @@
       "description": "Be part of our mission to protect and empower marginalized communities through unity and support.",
       "primaryAction": "Join Us",
       "secondaryAction": "Learn More"
+    }
+  },
+  "campaigns": {
+    "hero": {
+      "title": "Campaigns & Challenges",
+      "description": "Join our community-driven campaigns and daily challenges to create a safer, more supportive digital world for everyone."
+    },
+    "tabs": {
+      "campaigns": "Campaigns",
+      "challenges": "Challenges"
+    },
+    "filters": {
+      "all": "All Categories",
+      "awareness": "Awareness",
+      "fundraising": "Fundraising",
+      "action": "Action",
+      "education": "Education"
+    },
+    "status": {
+      "active": "Active",
+      "upcoming": "Upcoming",
+      "completed": "Completed"
+    },
+    "campaign": {
+      "participating": "✓ Participating",
+      "goal": "Goal:",
+      "participants": "participants",
+      "howToParticipate": "How to participate:",
+      "rewards": "Rewards:",
+      "continue": "Continue Campaign",
+      "join": "Join Campaign"
+    },
+    "challenges": {
+      "description": "Complete daily, weekly, and monthly challenges to earn points and badges while making a positive impact in the community.",
+      "daily": "Daily Challenges",
+      "weekly": "Weekly Challenges",
+      "monthly": "Monthly Challenges",
+      "available": "available",
+      "points": "points",
+      "due": "Due:",
+      "completed": "✓ Completed",
+      "start": "Start Challenge",
+      "progressTitle": "Your Challenge Progress",
+      "completedLabel": "Completed",
+      "pointsEarned": "Points Earned",
+      "dayStreak": "Day Streak",
+      "globalRank": "Global Rank",
+      "difficulty": {
+        "easy": "Easy",
+        "medium": "Medium",
+        "hard": "Hard"
+      }
+    }
+  },
+  "newsletterSignup": {
+    "badge": "🚀 COMING SOON",
+    "stayUpdated": "📬 Stay Updated",
+    "title": "Join the DESIST Newsletter",
+    "description": "Get the latest updates on safety features, community stories, and platform news",
+    "comingSoon": {
+      "title": "Newsletter Coming Soon",
+      "description": "The DESIST Newsletter is currently under development and will be launching soon! Subscribe now to get notified when it goes live. We're working hard to bring you the best content about safety, community updates, and platform news."
+    },
+    "success": {
+      "title": "Welcome to the Community!",
+      "description": "Thank you for subscribing! You'll receive your first newsletter within 24 hours.",
+      "emailConfirmed": "✓ Email confirmed",
+      "preferencesSaved": "✓ Preferences saved"
+    },
+    "email": {
+      "label": "Email Address",
+      "placeholder": "Enter your email address",
+      "placeholderCompact": "Your email"
+    },
+    "interests": {
+      "label": "What interests you? (Optional)",
+      "options": {
+        "launch": "Product Launches",
+        "safety": "Safety Tips",
+        "community": "Community Updates",
+        "research": "Research & Reports",
+        "events": "Events & Webinars",
+        "partnerships": "Partnerships"
+      }
+    },
+    "privacy": "📋 By subscribing, you agree to receive email updates from DESIST. We respect your privacy and will never share your email with third parties. You can unsubscribe at any time.",
+    "button": {
+      "subscribe": "Subscribe",
+      "subscribing": "Subscribing...",
+      "subscribeToNewsletter": "📬 Subscribe to Newsletter",
+      "subscribed": "Subscribed!"
+    },
+    "benefits": {
+      "title": "What you'll get:",
+      "safetyTips": "Weekly safety tips and best practices",
+      "earlyAccess": "Early access to new features",
+      "stories": "Community success stories",
+      "invitations": "Exclusive event invitations"
+    }
+  },
+  "stealthMode": {
+    "hero": {
+      "badge": "Privacy & Safety Feature",
+      "title": "Stealth Mode",
+      "description": "Protect yourself with discretion. DESIST's Stealth Mode lets you access support and document events without anyone knowing you're using a safety app."
+    },
+    "features": {
+      "title": "How Stealth Mode Protects You",
+      "description": "Your safety is our priority. Stealth Mode ensures you can access help and document incidents without putting yourself at additional risk.",
+      "hiddenIcon": {
+        "title": "Hidden App Icon",
+        "description": "Disguise the DESIST app to look like a calculator, weather app, or other innocuous utility."
+      },
+      "securePin": {
+        "title": "Secure PIN Access",
+        "description": "Access your safety tools and resources through a secret PIN that only you know."
+      },
+      "panicMode": {
+        "title": "Panic Mode",
+        "description": "Quickly exit to a decoy screen if someone unexpectedly looks at your phone."
+      },
+      "quickSwitch": {
+        "title": "Quick Switch",
+        "description": "Instantly switch between stealth mode and normal mode based on your safety needs."
+      },
+      "emergencyContacts": {
+        "title": "Emergency Contacts",
+        "description": "Access emergency contacts and safety resources even in stealth mode."
+      },
+      "noNotifications": {
+        "title": "No Notifications",
+        "description": "All notifications are disabled in stealth mode to maintain your privacy and safety."
+      }
+    },
+    "scenarios": {
+      "title": "When to Use Stealth Mode",
+      "description": "Stealth Mode is designed for situations where using an obvious safety app could put you at risk.",
+      "workplace": {
+        "title": "Workplace Harassment",
+        "description": "Document incidents discreetly while maintaining professional appearances."
+      },
+      "domestic": {
+        "title": "Domestic Situations",
+        "description": "Access safety resources without raising suspicion in your living environment."
+      },
+      "transportation": {
+        "title": "Public Transportation",
+        "description": "Report incidents and access help while appearing to use a normal app."
+      },
+      "social": {
+        "title": "Social Settings",
+        "description": "Get support and document experiences without drawing unwanted attention."
+      }
+    },
+    "setup": {
+      "title": "Setting Up Stealth Mode",
+      "description": "Follow these simple steps to enable and configure Stealth Mode on your device.",
+      "steps": {
+        "download": {
+          "title": "Download the DESIST App",
+          "description": "Install the DESIST app on your smartphone from the App Store or Google Play."
+        },
+        "setup": {
+          "title": "Complete Initial Setup",
+          "description": "Create your account and complete the safety assessment to personalize your experience."
+        },
+        "enable": {
+          "title": "Enable Stealth Mode",
+          "description": "Go to Settings > Privacy & Safety > Stealth Mode and toggle it on."
+        },
+        "disguise": {
+          "title": "Choose Your Disguise",
+          "description": "Select what type of app you want DESIST to appear as (calculator, weather, etc.)."
+        },
+        "pin": {
+          "title": "Set Your PIN",
+          "description": "Create a secure PIN that will be used to access DESIST features in stealth mode."
+        },
+        "test": {
+          "title": "Test the Feature",
+          "description": "Practice switching in and out of stealth mode to ensure you're comfortable with the process."
+        }
+      }
+    },
+    "safety": {
+      "title": "Important Safety Considerations",
+      "trustInstincts": "Trust Your Instincts: If you feel unsafe using any technology, prioritize your immediate safety over documentation.",
+      "practiceFirst": "Practice First: Familiarize yourself with stealth mode features before you need them in a real situation.",
+      "backupPlans": "Have Backup Plans: Stealth mode is one tool among many. Always have multiple safety strategies.",
+      "stayUpdated": "Stay Updated: Keep the app updated to ensure you have the latest security and privacy features.",
+      "notice": "If you are in immediate danger, call 911 or your local emergency services. Technology tools should supplement, not replace, traditional safety measures."
+    },
+    "cta": {
+      "title": "Ready to Get Protected?",
+      "description": "Download the DESIST app today and take control of your safety with discretion and confidence."
+    }
+  },
+  "press": {
+    "hero": {
+      "badge": "Press Kit",
+      "title": "DESIST Press Kit",
+      "description": "Media resources, company information, and brand assets for journalists, partners, and content creators covering DESIST."
+    },
+    "companyOverview": {
+      "title": "Company Overview",
+      "description": "DESIST is a comprehensive anti-harassment platform that combines cutting-edge AI technology with community-driven support to create safer digital spaces. Founded in 2025, we're on a mission to eliminate online harassment through real-time protection, educational resources, and crisis support.",
+      "facts": {
+        "founded": "Founded",
+        "mission": "Mission",
+        "userBase": "User Base",
+        "platforms": "Platforms",
+        "languages": "Languages",
+        "headquarters": "Headquarters",
+        "funding": "Funding"
+      }
+    },
+    "keyFeatures": {
+      "title": "Key Features & Capabilities",
+      "realTimeProtection": {
+        "title": "🛡️ Real-time Protection",
+        "description": "AI-powered detection and blocking of harassment across platforms"
+      },
+      "communitySupport": {
+        "title": "🤝 Community Support",
+        "description": "Peer-to-peer support networks and professional counseling resources"
+      },
+      "educationalResources": {
+        "title": "📚 Educational Resources",
+        "description": "Comprehensive guides on digital safety and harassment prevention"
+      },
+      "emergencyResponse": {
+        "title": "🚨 Emergency Response",
+        "description": "Immediate crisis support and connection to local resources"
+      },
+      "privacyFirst": {
+        "title": "🔒 Privacy First",
+        "description": "End-to-end encryption and user-controlled data privacy"
+      },
+      "crossPlatform": {
+        "title": "📱 Cross-Platform",
+        "description": "Seamless protection across web, mobile, and social platforms"
+      }
+    },
+    "pressReleases": {
+      "title": "Recent Press Releases",
+      "pressRelease": "Press Release",
+      "download": "Download",
+      "releases": {
+        "betaLaunch": {
+          "date": "September 1, 2025",
+          "title": "DESIST Launches Public Beta with 50,000+ Users",
+          "summary": "Anti-harassment platform opens to public after successful closed beta testing."
+        },
+        "funding": {
+          "date": "August 15, 2025",
+          "title": "DESIST Completes $5M Seed Round Led by Social Impact Ventures",
+          "summary": "Funding will accelerate platform development and expand community support programs."
+        },
+        "crisisPartnership": {
+          "date": "July 30, 2025",
+          "title": "DESIST Partners with National Crisis Hotlines for Emergency Support",
+          "summary": "Platform integrates direct access to professional crisis intervention services."
+        }
+      }
+    },
+    "mediaContact": {
+      "title": "Media Contact",
+      "scheduleInterview": "📞 Schedule Interview"
+    },
+    "quickFacts": {
+      "title": "Quick Facts",
+      "launchStatus": {
+        "title": "Launch Status",
+        "value": "Public Beta • Full Launch Sept 15"
+      },
+      "userSafety": {
+        "title": "User Safety",
+        "value": "99.2% harassment detection rate"
+      },
+      "communityImpact": {
+        "title": "Community Impact",
+        "value": "85% reduction in harassment reports"
+      }
+    },
+    "socialMedia": {
+      "title": "Follow DESIST"
+    }
+  },
+  "account": {
+    "loading": "Loading your account...",
+    "header": {
+      "title": "My Account",
+      "welcome": "Welcome back, {name}",
+      "backToSite": "Back to Site",
+      "signOut": "Sign Out"
+    },
+    "tabs": {
+      "dashboard": "Dashboard",
+      "incidents": "Incident Reports",
+      "badges": "Badges & Achievements",
+      "profile": "Profile Settings",
+      "privacy": "Privacy & Security"
+    },
+    "sidebar": {
+      "anonymousUser": "Anonymous User",
+      "memberSince": "Member since {year}"
+    },
+    "dashboard": {
+      "badgesEarned": "Badges Earned",
+      "communityPosts": "Community Posts",
+      "resourcesShared": "Resources Shared",
+      "helpfulVotes": "Helpful Votes",
+      "incidentReports": "Incident Reports",
+      "recentActivity": {
+        "title": "Recent Activity",
+        "none": "No Recent Activity",
+        "startEngaging": "Start engaging with the community to see your activity here."
+      }
+    },
+    "incidents": {
+      "title": "Your Incident Reports",
+      "description": "Track and manage your reported incidents.",
+      "none": "No Incident Reports Yet",
+      "noDescription": "You haven't submitted any incident reports yet. Use the report form to document incidents in your area.",
+      "reportButton": "Report an Incident",
+      "status": {
+        "pending": "Pending",
+        "under_review": "Under Review",
+        "resolved": "Resolved",
+        "closed": "Closed",
+        "active": "Active",
+        "investigating": "Investigating"
+      },
+      "locationNotSpecified": "Location not specified"
+    },
+    "badges": {
+      "title": "Badges & Achievements",
+      "none": "No badges earned yet. Continue participating in the community to unlock achievements!",
+      "description": "Your contributions are valued. Earn badges as you engage with the community."
+    },
+    "profile": {
+      "title": "Profile Settings",
+      "name": "Display Name",
+      "bio": "Bio",
+      "location": "Location",
+      "pronouns": "Pronouns",
+      "save": "Save Changes"
+    },
+    "privacy": {
+      "title": "Privacy & Security Settings",
+      "privateProfile": "Private Profile",
+      "showEmail": "Show Email",
+      "showLocation": "Show Location",
+      "allowMessages": "Allow Messages",
+      "deleteAccount": "Delete Account Permanently",
+      "deleteDescription": "This action cannot be undone. This will permanently delete all of your data from our servers and sign you out. Note: Your authentication account will remain in the system but will be inaccessible.",
+      "deleteWarning": "The following data will be deleted:",
+      "deleteConfirm": "Type DELETE to confirm:",
+      "deletePlaceholder": "Type DELETE here",
+      "deleteButton": "Delete Account",
+      "deleting": "Deleting...",
+      "cancel": "Cancel"
     }
   }
 } 

@@ -122,7 +122,7 @@ export const AnnouncementSystem: React.FC<AnnouncementSystemProps> = ({
       .slice(0, maxVisible);
 
     setActiveAnnouncements(sorted);
-  }, [announcements, dismissedIds, maxVisible]);
+  }, [announcements, maxVisible, dismissedIds]);
 
   const handleDismiss = (announcementId: string) => {
     const newDismissed = new Set(dismissedIds);

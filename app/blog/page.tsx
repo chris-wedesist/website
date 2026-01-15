@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { HeroSection } from "../components/HeroSection";
 import { getNews } from "../services/newsService";
 import supabase from "../../utils/supabase";
@@ -10,9 +11,16 @@ interface NewsItem {
   id: string;
   title: string;
   description: string;
-  url: string;
+  content?: string;
+  url: string; // Internal link to our detailed article page
+  fullUrl?: string; // Full URL with originalUrl query parameter
+  originalUrl?: string; // Original external URL for fetching full content
+  imageUrl?: string | null;
+  images?: string[];
   source: string;
   date: string;
+  author?: string;
+  categories?: string[];
 }
 
 export default function BlogPage() {
@@ -32,19 +40,22 @@ export default function BlogPage() {
   }>({ type: null, message: '' });
 
   const NewsSkeleton = () => (
-    <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg p-6">
-      <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-2">
-        <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-        <span>•</span>
-        <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+    <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg">
+      <div className="h-48 bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+      <div className="p-6">
+        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-2">
+          <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+          <span>•</span>
+          <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+        </div>
+        <div className="h-6 w-3/4 bg-gray-200 dark:bg-gray-700 rounded mb-4 animate-pulse"></div>
+        <div className="space-y-2">
+          <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+          <div className="h-4 w-5/6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+          <div className="h-4 w-4/6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+        </div>
+        <div className="mt-4 h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
       </div>
-      <div className="h-6 w-3/4 bg-gray-200 dark:bg-gray-700 rounded mb-4 animate-pulse"></div>
-      <div className="space-y-2">
-        <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-        <div className="h-4 w-5/6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-        <div className="h-4 w-4/6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-      </div>
-      <div className="mt-4 h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
     </div>
   );
 
@@ -64,10 +75,22 @@ export default function BlogPage() {
           }))
         });
         if (response.articles && response.articles.length > 0) {
+          console.log('[Blog Page] Setting news articles:', {
+            count: response.articles.length,
+            articles: response.articles.map(a => ({
+              id: a.id,
+              title: a.title,
+              url: a.url,
+              imageUrl: a.imageUrl,
+              imagesCount: a.images?.length || 0,
+              hasImage: !!(a.imageUrl || a.images?.[0])
+            }))
+          });
           setNews(response.articles);
           setHasMore(response.hasMore);
           // setTotalPages(response.totalPages);
         } else {
+          console.warn('[Blog Page] No articles in response');
           setError("No news articles available at the moment.");
         }
       } catch (err) {
@@ -242,65 +265,145 @@ export default function BlogPage() {
           ) : (
             <>
               <section aria-label="News articles" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {news.map((item, index) => (
-                  <motion.article
-                    key={`${item.id}-${index}`}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow p-6"
-                    itemScope
-                    itemType="https://schema.org/BlogPosting"
-                  >
-                    <meta itemProp="datePublished" content={item.date} />
-                    <meta itemProp="author" content={item.source} />
-                    
-                    <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-2">
-                      <span itemProp="publisher" itemScope itemType="https://schema.org/Organization">
-                        <span itemProp="name">{item.source}</span>
-                      </span>
-                      <span>•</span>
-                      <time dateTime={item.date}>{new Date(item.date).toLocaleDateString()}</time>
-                    </div>
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                      <a 
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        itemProp="headline"
-                        className="hover:text-blue-600 dark:hover:text-blue-400"
-                      >
-                        {item.title}
-                      </a>
-                    </h2>
-                    <p className="text-gray-600 dark:text-gray-300 mb-4" itemProp="description">
-                      {item.description}
-                    </p>
-                    <a
-                      href={item.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline"
-                      itemProp="url"
+                {news.map((item, index) => {
+                  console.log(`[Blog Page] Article ${index}:`, {
+                    id: item.id,
+                    title: item.title,
+                    url: item.url,
+                    linkPath: `/blog/${item.id}`
+                  });
+                  
+                  return (
+                    <motion.article
+                      key={`${item.id}-${index}`}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
+                      itemScope
+                      itemType="https://schema.org/BlogPosting"
+                      onClick={() => {
+                        const linkUrl = `/blog/${item.id}${item.originalUrl ? `?url=${encodeURIComponent(item.originalUrl)}` : ''}`;
+                        console.log(`[Blog Page] Clicked article:`, {
+                          id: item.id,
+                          title: item.title,
+                          url: item.url,
+                          originalUrl: item.originalUrl,
+                          navigatingTo: linkUrl
+                        });
+                        window.location.href = linkUrl;
+                      }}
                     >
-                      Read More
-                      <svg
-                        className="w-4 h-4 ml-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
+                      <meta itemProp="datePublished" content={item.date} />
+                      <meta itemProp="author" content={item.source} />
+                      
+                      {/* Article Image */}
+                      {(item.imageUrl || item.images?.[0]) ? (
+                        <div className="relative w-full h-48 overflow-hidden bg-gray-200 dark:bg-gray-700">
+                          <img
+                            src={item.imageUrl || item.images?.[0] || ''}
+                            alt={item.title}
+                            className="w-full h-full object-cover"
+                            itemProp="image"
+                            loading="lazy"
+                            onError={(e) => {
+                              console.error(`[Blog Page] Image failed to load:`, {
+                                imageUrl: item.imageUrl,
+                                firstImage: item.images?.[0],
+                                title: item.title
+                              });
+                              // Replace with default image
+                              const target = e.target as HTMLImageElement;
+                              target.src = '/images/blog/default-news.jpg';
+                              target.onerror = null; // Prevent infinite loop
+                            }}
+                            onLoad={() => {
+                              console.log(`[Blog Page] Image loaded successfully:`, {
+                                imageUrl: item.imageUrl || item.images?.[0],
+                                title: item.title
+                              });
+                            }}
+                          />
+                        </div>
+                      ) : (
+                        // Default placeholder image
+                        <div className="relative w-full h-48 overflow-hidden bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center">
+                          <svg className="w-16 h-16 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                      )}
+                      
+                      <div className="p-6">
+                        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-2">
+                          <Link 
+                            href="/blog"
+                            itemProp="publisher" 
+                            itemScope 
+                            itemType="https://schema.org/Organization"
+                            className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <span itemProp="name">{item.source}</span>
+                          </Link>
+                          <span>•</span>
+                          <time dateTime={item.date}>{new Date(item.date).toLocaleDateString()}</time>
+                        </div>
+                        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                        <Link 
+                          href={`/blog/${item.id}${item.originalUrl ? `?url=${encodeURIComponent(item.originalUrl)}` : ''}`}
+                          itemProp="headline"
+                          className="hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer"
+                          onClick={() => {
+                            console.log(`[Blog Page] Link clicked:`, {
+                              id: item.id,
+                              title: item.title,
+                              url: item.url,
+                              originalUrl: item.originalUrl,
+                              href: `/blog/${item.id}${item.originalUrl ? `?url=${encodeURIComponent(item.originalUrl)}` : ''}`
+                            });
+                          }}
+                        >
+                          {item.title}
+                        </Link>
+                      </h2>
+                      <p className="text-gray-600 dark:text-gray-300 mb-4" itemProp="description">
+                        {item.description}
+                      </p>
+                      <Link
+                        href={`/blog/${item.id}${item.originalUrl ? `?url=${encodeURIComponent(item.originalUrl)}` : ''}`}
+                        className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+                        itemProp="url"
+                        onClick={() => {
+                          console.log(`[Blog Page] Read More clicked:`, {
+                            id: item.id,
+                            title: item.title,
+                            url: item.url,
+                            originalUrl: item.originalUrl,
+                            href: `/blog/${item.id}${item.originalUrl ? `?url=${encodeURIComponent(item.originalUrl)}` : ''}`
+                          });
+                        }}
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M14 5l7 7m0 0l-7 7m7-7H3"
-                        />
-                      </svg>
-                    </a>
-                  </motion.article>
-                ))}
+                        Read More
+                        <svg
+                          className="w-4 h-4 ml-2"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M14 5l7 7m0 0l-7 7m7-7H3"
+                          />
+                        </svg>
+                      </Link>
+                      </div>
+                    </motion.article>
+                  );
+                })}
                 {loadingMore && [...Array(10)].map((_, index) => (
                   <NewsSkeleton key={`skeleton-${index}`} />
                 ))}
