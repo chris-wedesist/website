@@ -1,12 +1,13 @@
-import Head from "next/head";
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Terms of Service | DESIST!',
+  description: 'DESIST! Terms of Service',
+};
 
 export default function TermsPage() {
   return (
     <main className="container mx-auto px-4 py-12 max-w-4xl">
-      <Head>
-        <title>Terms of Service | DESIST!</title>
-        <meta name="description" content="DESIST! Terms of Service" />
-      </Head>
       <h1 className="text-3xl font-bold mb-6">DESIST! Terms of Service</h1>
       <p className="text-sm text-gray-500 mb-4">Last updated: 2026-01-16</p>
       <article className="prose dark:prose-invert">
