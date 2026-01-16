@@ -175,6 +175,8 @@ export const AnalyticsConsent: React.FC = () => {
 
     if (consent) {
       trackEvent('analytics_consent_granted');
+    } else {
+      trackEvent('analytics_consent_declined');
     }
   };
 
@@ -186,7 +188,10 @@ export const AnalyticsConsent: React.FC = () => {
         <div className="text-sm text-gray-700 dark:text-gray-300">
           <p>
             🍪 We use privacy-friendly analytics to improve your experience. 
-            No personal data is collected or shared.
+            No personal data is collected or shared.{' '}
+            <a href="/cookies" className="underline hover:text-blue-600 dark:hover:text-blue-400">
+              Read our Cookie Policy
+            </a>.
           </p>
         </div>
         <div className="flex gap-2">
