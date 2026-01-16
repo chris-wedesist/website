@@ -171,10 +171,10 @@ This website serves as a community-first hub for support, engagement, education,
 - **Maps**: Google Maps API, Leaflet
 
 ### Backend
-- **Database**: Supabase
+- **Database**: Supabase (PostgreSQL)
 - **Email**: Nodemailer
 - **AI**: Google Generative AI
-- **Authentication**: Supabase Auth
+- **Authentication**: Auth.js v5 (NextAuth) with Prisma adapter
 
 ## 📦 Installation
 
@@ -197,8 +197,25 @@ npm install
 ```
 
 4. **Environment Setup**
-Create a `.env.local` file in the root directory with the following variables:
+Create a `.env.local` file in the root directory. You can use `.env.local.example` as a template:
+```bash
+cp .env.local.example .env.local
+```
+
+Then update the values with your actual credentials:
 ```env
+# Auth.js Configuration
+AUTH_SECRET=your-auth-secret-here
+NEXTAUTH_SECRET=your-nextauth-secret-here
+NEXTAUTH_URL=http://localhost:3000
+
+# Google OAuth
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+# Database
+DATABASE_URL=file:./dev.db
+
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -206,15 +223,17 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 # Google Maps
 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
 
-# Email
+# Email (Nodemailer)
 SMTP_HOST=your_smtp_host
-SMTP_PORT=your_smtp_port
+SMTP_PORT=587
 SMTP_USER=your_smtp_user
 SMTP_PASS=your_smtp_password
 
 # Google AI
 GOOGLE_AI_API_KEY=your_google_ai_api_key
 ```
+
+See `.env.local.example` for a complete list of available environment variables.
 
 5. **Run the development server**
 ```bash
@@ -257,12 +276,12 @@ This handover document summarizes the current state of the project and identifie
 
 ### 1. SSO/Unified Authentication Integration
 **Priority: Critical**
-- Implement and test true single sign-on (SSO) between website and mobile app (Supabase Auth)
+- Implement and test true single sign-on (SSO) between website and mobile app
 - Ensure user profile and session data sync across platforms
-- Validate NextAuth.js integration with mobile app authentication flow
+- Validate Auth.js integration with mobile app authentication flow
 - Test session persistence and token refresh mechanisms
 
-**Current Status:** NextAuth.js implemented with Google OAuth and credentials providers. Prisma adapter configured.
+**Current Status:** Auth.js v5 (NextAuth) implemented with Google OAuth and credentials providers. Prisma adapter configured.
 
 ### 2. Community & Incident/Event System Testing
 **Priority: Critical**
@@ -412,7 +431,7 @@ due-date: {YYYY-MM-DD}
 
 ## 📊 Current Technical Debt & Known Issues
 
-- **NextAuth.js SessionProvider Integration:** Minor issues with provider wrapping identified
+- **Auth.js SessionProvider Integration:** Configuration centralized and updated to Auth.js v5
 - **Mobile Responsiveness:** Some components need mobile optimization
 - **Error Handling:** Need comprehensive error boundaries and fallbacks
 - **Loading States:** Implement proper loading indicators across all async operations
