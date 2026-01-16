@@ -7,7 +7,8 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useTranslation } from "../context/TranslationContext";
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "@/lib/use-session";
+import { signOutAction } from "@/lib/auth-actions";
 
 const navigation = [
   { name: "header.navigation.about", href: "/about" },
@@ -195,9 +196,9 @@ const AccountMenu = memo(() => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleSignOut = () => {
-    signOut({ callbackUrl: '/' });
+  const handleSignOut = async () => {
     setIsOpen(false);
+    await signOutAction();
   };
 
   if (!session) {

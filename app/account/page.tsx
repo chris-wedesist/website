@@ -1,12 +1,15 @@
+'use client';
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useState, useEffect } from 'react';
-import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { BadgeShowcase } from '../community/components/BadgeShowcase';
+import { useSession } from '@/lib/use-session';
+import { signOutAction } from '@/lib/auth-actions';
 
 interface UserProfile {
   id: string;
@@ -78,8 +81,8 @@ export default function AccountPage() {
     }, 1000);
   }, [session, status, router]);
 
-  const handleSignOut = () => {
-    signOut({ callbackUrl: '/' });
+  const handleSignOut = async () => {
+    await signOutAction();
   };
 
   if (status === 'loading' || isLoading) {
