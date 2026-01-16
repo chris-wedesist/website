@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import NextAuth from 'next-auth';
-import type { NextAuthConfig } from 'next-auth';
+import type { AuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@auth/prisma-adapter';
@@ -8,10 +7,10 @@ import { prisma } from './prisma';
 import bcrypt from 'bcryptjs';
 
 /**
- * Auth.js v5 Configuration
+ * NextAuth Configuration
  * Centralized authentication configuration for the application
  */
-export const authConfig: NextAuthConfig = {
+export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
@@ -81,20 +80,21 @@ export const authConfig: NextAuthConfig = {
 };
 
 /**
- * Initialize NextAuth with the centralized configuration
- */
-export const { handlers, auth, signIn, signOut } = NextAuth(authConfig);
-
-/**
- * Server-side session management utility
- * Query session data via the Auth.js endpoint
+ * Server-side session helper
+ * For use in server components and API routes
+ * 
+ * Note: This is a placeholder for future Auth.js v5 migration.
+ * In v5, you would use the `auth()` function from NextAuth.
+ * For now, use getServerSession from next-auth in server components:
+ * 
+ * import { getServerSession } from "next-auth";
+ * import { authOptions } from "@/lib/auth";
+ * const session = await getServerSession(authOptions);
  */
 export async function getSession() {
-  try {
-    const session = await auth();
-    return session;
-  } catch (error) {
-    console.error('Error fetching session:', error);
-    return null;
-  }
+  // This is a placeholder for v5 migration
+  // In production, use getServerSession from next-auth/next
+  console.warn('Use getServerSession from next-auth in server components');
+  return null;
 }
+
