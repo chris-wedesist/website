@@ -10,7 +10,7 @@ export default function PrivacyPolicyPage() {
       <h1 className="text-3xl font-bold mb-6">DESIST! Privacy Policy</h1>
       <p className="text-sm text-gray-500 mb-4">Last updated: 2026-01-16</p>
       <article className="prose dark:prose-invert">
-        <p>This Privacy Policy explains how DESIST! ("DESIST!", "we", "us", "our") collects, uses, and protects information across our mobile application ("App") and website ("Site").</p>
+        <p>This Privacy Policy explains how DESIST! (&quot;DESIST!&quot;, &quot;we&quot;, &quot;us&quot;, &quot;our&quot;) collects, uses, and protects information across our mobile application (&quot;App&quot;) and website (&quot;Site&quot;).</p>
         <h2>Summary</h2>
         <ul>
           <li>We collect incident reports you submit, device/app telemetry, and limited usage data.</li>
@@ -34,7 +34,7 @@ export default function PrivacyPolicyPage() {
         </ul>
         <h2>2. How We Use Information</h2>
         <ul>
-          <li>Operate DESIST!, improve safety/performance, communicate with you, fulfill legal obligations, and display "Sponsored" attorney listings.</li>
+          <li>Operate DESIST!, improve safety/performance, communicate with you, fulfill legal obligations, and display &quot;Sponsored&quot; attorney listings.</li>
         </ul>
         <h2>3. Legal Bases (EEA/UK)</h2>
         <ul>
@@ -52,14 +52,14 @@ export default function PrivacyPolicyPage() {
         <p>See our Cookie Policy. The App does not use browser cookies.</p>
         <h2>9. Sponsored Attorney Listings</h2>
         <p>Sponsored listings are labeled and do not imply endorsement or guarantee.</p>
-        <h2>10. Children's Privacy</h2>
+        <h2>10. Children&apos;s Privacy</h2>
         <p>Not directed to children.</p>
         <h2>11. Security</h2>
         <p>Encryption, access controls, monitoring; report issues to security@wedesist.com.</p>
         <h2>12. International Transfers</h2>
         <p>Standard safeguards and data minimization used where applicable.</p>
         <h2>13. Changes</h2>
-        <p>We'll post updates with a "Last updated" date and notify where material.</p>
+        <p>We&apos;ll post updates with a &quot;Last updated&quot; date and notify where material.</p>
         <h2>14. Contact</h2>
         <ul>
           <li>Privacy: privacy@wedesist.com</li>
