@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { signIn, getSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import Link from 'next/link';
+import { signInCredentials, signInAction } from '@/lib/auth-actions';
 
 export default function SignInPage() {
   const [email, setEmail] = useState('');
@@ -21,19 +21,13 @@ export default function SignInPage() {
     setError('');
 
     try {
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      });
+      const result = await signInCredentials(email, password);
 
-      if (result?.error) {
+      if (!result.success) {
         setError('Invalid email or password');
       } else {
-        const session = await getSession();
-        if (session) {
-          router.push('/account');
-        }
+        router.push('/account');
+        router.refresh();
       }
     } catch {
       setError('An error occurred. Please try again.');
@@ -42,8 +36,8 @@ export default function SignInPage() {
     }
   };
 
-  const handleGoogleSignIn = () => {
-    signIn('google', { callbackUrl: '/account' });
+  const handleGoogleSignIn = async () => {
+    await signInAction('google', '/account');
   };
 
   return (
