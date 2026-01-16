@@ -27,7 +27,6 @@ export default function SignInPage() {
         setError('Invalid email or password');
       } else {
         router.push('/account');
-        router.refresh();
       }
     } catch {
       setError('An error occurred. Please try again.');

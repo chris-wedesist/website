@@ -35,7 +35,8 @@ export function useSession() {
           setSession(null);
           setStatus('unauthenticated');
         }
-      } catch {
+      } catch (error) {
+        console.error('Session fetch error:', error);
         setSession(null);
         setStatus('unauthenticated');
       }

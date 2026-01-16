@@ -8,14 +8,20 @@ export async function signInAction(provider: string, callbackUrl?: string) {
 
 export async function signInCredentials(email: string, password: string) {
   try {
-    await authSignIn('credentials', {
+    const result = await authSignIn('credentials', {
       email,
       password,
       redirect: false,
     });
+    
+    if (result?.error) {
+      return { success: false, error: result.error };
+    }
+    
     return { success: true };
-  } catch {
-    return { success: false, error: 'Invalid credentials' };
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : 'Authentication failed';
+    return { success: false, error: errorMessage };
   }
 }
 
